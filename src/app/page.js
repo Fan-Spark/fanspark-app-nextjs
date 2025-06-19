@@ -1,10 +1,13 @@
 "use client";
 
-import HomeComponent from "@/components/home/homeComponent";
+import HomeComponent from "@/components/home/HomeComponent";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 export default function Home() {
   // Client-side only rendering
   return (
-    <HomeComponent />
+    <ErrorBoundary>
+      <HomeComponent />
+    </ErrorBoundary>
   );
 }

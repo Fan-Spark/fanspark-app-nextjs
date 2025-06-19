@@ -1,7 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
-import ClientLayout from './ClientLayout';
+import { CartProvider } from '@/components/CartProvider';
+import { ThemeProvider } from '@/components/common/ThemeProvider';
+import { ToastProvider } from '@/components/common/ToastProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,15 +16,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Reward Crate",
-  description: "A platform for minting and managing Crates on the Base Network",
+  title: "SSD Super Space Defenders",
+  description: "A platform for minting and managing NFT collections on the Base Network",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClientLayout>{children}</ClientLayout>
+        <ThemeProvider defaultTheme="dark" storageKey="ssd-theme">
+          <CartProvider>
+            <Providers>
+              {children}
+            </Providers>
+            <ToastProvider />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
