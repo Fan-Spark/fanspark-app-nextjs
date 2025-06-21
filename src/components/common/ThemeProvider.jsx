@@ -9,8 +9,20 @@ const ThemeContext = createContext({
 
 export function ThemeProvider({ children, defaultTheme = "system", storageKey = "ui-theme" }) {
   const [theme, setTheme] = useState(defaultTheme);
+  const [mounted, setMounted] = useState(false);
+
+  // Load theme from localStorage after component mounts
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem(storageKey);
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, [storageKey]);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
 
@@ -21,19 +33,23 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
     }
 
     root.classList.add(theme);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const value = {
     theme,
     setTheme: (theme) => {
-      localStorage.setItem(storageKey, theme);
+      if (mounted) {
+        localStorage.setItem(storageKey, theme);
+      }
       setTheme(theme);
     },
   };
 
   return (
     <ThemeContext.Provider value={value}>
-      {children}
+      <div suppressHydrationWarning>
+        {children}
+      </div>
     </ThemeContext.Provider>
   );
 }

@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from "react";
-import { useConnectWallet, useSetChain } from "@web3-onboard/react";
+import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useTheme } from '@/components/common/ThemeProvider';
 import Sidebar from '@/components/common/Sidebar';
+import DynamicWalletButton from '@/components/common/DynamicWalletButton';
+import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -11,24 +13,25 @@ import {
   Moon, 
   Sun,
   Menu,
-  Sparkles
+  Sparkles,
+  User
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 
 export default function Template({ children }) {
-  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
-  const [{ chains, connectedChain, settingChain }, setChain] = useSetChain();
+  const { 
+    isConnected, 
+    isConnecting, 
+    walletAddress, 
+    network,
+    connect,
+    disconnect
+  } = useDynamicWallet();
+  
   const [activeCollection, setActiveCollection] = useState("reward-crate");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-
-  const handleConnectWallet = () => {
-    connect();
-  };
-
-  const handleDisconnectWallet = () => {
-    disconnect({ label: wallet.label });
-  };
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -40,7 +43,7 @@ export default function Template({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" suppressHydrationWarning>
       {/* Desktop Floating Sidebar */}
       <div className="fixed left-6 top-6 h-[calc(100vh-3rem)] w-80 bg-background/80 backdrop-blur-xl border border-border/50 shadow-2xl rounded-2xl transition-all duration-500 z-50 hidden lg:block">
         <div className="flex flex-col h-full p-4">
@@ -64,46 +67,7 @@ export default function Template({ children }) {
 
           {/* Wallet Connection Section */}
           <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30">
-            {wallet ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold text-green-600">Connected</span>
-                  </div>
-                  <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm">
-                    {connectedChain?.label || "Unknown Network"}
-                  </Badge>
-                </div>
-                <div className="p-2 bg-background/50 rounded-lg border border-border/20">
-                  <p className="text-xs text-muted-foreground font-mono text-center">
-                    {formatAddress(wallet.accounts[0]?.address)}
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDisconnectWallet}
-                  className="w-full hover:bg-destructive/10 hover:text-destructive border-border/30"
-                >
-                  Disconnect
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-semibold">Connect Wallet</span>
-                </div>
-                <Button
-                  onClick={handleConnectWallet}
-                  disabled={connecting}
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
-                >
-                  {connecting ? "Connecting..." : "Connect Wallet"}
-                </Button>
-              </div>
-            )}
+            <DynamicWalletButton />
           </div>
 
           {/* Collections Navigation */}
@@ -199,48 +163,9 @@ export default function Template({ children }) {
                     </div>
                   </div>
 
-                  {/* Mobile Wallet Section */}
+                  {/* Mobile Wallet Connection */}
                   <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30">
-                    {wallet ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-semibold text-green-600">Connected</span>
-                          </div>
-                          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm">
-                            {connectedChain?.label || "Unknown Network"}
-                          </Badge>
-                        </div>
-                        <div className="p-2 bg-background/50 rounded-lg border border-border/20">
-                          <p className="text-xs text-muted-foreground font-mono text-center">
-                            {formatAddress(wallet.accounts[0]?.address)}
-                          </p>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleDisconnectWallet}
-                          className="w-full hover:bg-destructive/10 hover:text-destructive border-border/30"
-                        >
-                          Disconnect
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-semibold">Connect Wallet</span>
-                        </div>
-                        <Button
-                          onClick={handleConnectWallet}
-                          disabled={connecting}
-                          className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
-                        >
-                          {connecting ? "Connecting..." : "Connect Wallet"}
-                        </Button>
-                      </div>
-                    )}
+                    <DynamicWidget />
                   </div>
 
                   {/* Mobile Collections List */}

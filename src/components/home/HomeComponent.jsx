@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
-import { useConnectWallet, useSetChain } from "@web3-onboard/react";
+import { useDynamicWallet } from '@/hooks/useDynamicWallet';
+import { useContractDataSync } from '@/hooks/useContractDataSync';
+import { isEthereumWallet } from '@dynamic-labs/ethereum';
 import contractABI from "@/utils/contractABI.json";
 import { formatEther } from "ethers/lib/utils";
 import { SUPPORTED_NETWORKS, DEFAULT_NETWORK, getNetworkById } from "@/utils/networkConfig";
@@ -16,6 +18,8 @@ import CartButton from "@/components/common/CartButton";
 import BatchMintModal from "@/components/common/BatchMintModal";
 import NetworkModal from "@/components/common/NetworkModal";
 import ComingSoonPage from "@/components/common/ComingSoonPage";
+import SyncIndicator from "@/components/common/SyncIndicator";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 // Import shadcn components
 import { Button } from "@/components/ui/button";
@@ -42,12 +46,12 @@ import {
   Shield,
   Coins,
   Users,
-  X,
   Minus,
   Plus,
   Trash2
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from 'react-toastify';
 
 // Utility function to delay execution
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -69,56 +73,390 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
 };
 
 export default function HomeComponent() {
-  const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
-  const [{ chains, connectedChain, settingChain }, setChain] = useSetChain();
-  const [tokens, setTokens] = useState([]);
+  const { 
+    isConnected, 
+    hasWallet,
+    isConnecting, 
+    walletAddress, 
+    network,
+    primaryWallet,
+    connect,
+    disconnect,
+    openConnectionModal,
+    switchToBase,
+    switchToEthereum,
+  } = useDynamicWallet();
+  
+  // Use the enhanced cached contract data with real-time sync
+  const { 
+    tokens, 
+    isLoading: isDataLoading, 
+    error: dataError, 
+    isDataStale, 
+    getDataAge, 
+    refresh: refreshContractData,
+    // Sync features
+    isListening,
+    lastSyncTime,
+    pendingRefresh,
+    autoSyncEnabled,
+    setAutoSyncEnabled,
+    autoSyncInterval,
+    setAutoSyncInterval,
+    startEventListening,
+    stopEventListening,
+    checkForUpdates
+  } = useContractDataSync();
+  
   const [showBatchMintModal, setShowBatchMintModal] = useState(false);
   const [showNetworkModal, setShowNetworkModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
   const [currentYear, setCurrentYear] = useState('');
   const [whitelistStatus, setWhitelistStatus] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState("reward-crate");
-  const [retryCount, setRetryCount] = useState(0);
+  
+  // Minting state management
+  const [mintingStates, setMintingStates] = useState({}); // Track loading per token
+  
   const { theme, setTheme } = useTheme();
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart, getCartQuantity, isInCart } = useCart();
 
   const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+
+  // Minting state helpers
+  const setTokenMinting = useCallback((tokenId, isLoading) => {
+    setMintingStates(prev => ({
+      ...prev,
+      [tokenId]: isLoading
+    }));
+  }, []);
+
+  const isTokenMinting = useCallback((tokenId) => {
+    return mintingStates[tokenId] || false;
+  }, [mintingStates]);
+
+  // Utility function to show error toasts with user-friendly messages
+  const showErrorToast = useCallback((error, tokenId = null) => {
+    try {
+      
+      let message = "An unknown error occurred";
+      
+      // Extract message from various error formats
+      if (typeof error === 'string') {
+        message = error;
+      } else if (error?.message) {
+        message = error.message;
+      } else if (error?.reason) {
+        message = error.reason;
+      } else if (error?.data?.message) {
+        message = error.data.message;
+      }
+      
+      // Handle specific error patterns and make them user-friendly
+      if (message.includes("insufficient funds")) {
+        toast.error("💸 Insufficient Funds", {
+          autoClose: 7000,
+          onClose: () => {
+            toast.info("💡 Try: Add more ETH, mint fewer tokens, or wait for lower gas fees", {
+              autoClose: 5000,
+            });
+          }
+        });
+        return;
+      } else if (message.includes("User denied") || message.includes("user rejected")) {
+        toast.warn("🚫 Transaction Cancelled", {
+          autoClose: 3000,
+        });
+        return;
+      } else if (message.includes("execution reverted")) {
+        // Try to extract revert reason
+        const revertMatch = message.match(/execution reverted: (.+)/);
+        if (revertMatch) {
+          const revertReason = revertMatch[1];
+          if (revertReason.includes("not whitelisted")) {
+            toast.error("❌ Not Whitelisted", {
+              autoClose: 5000,
+              onClose: () => {
+                toast.info("💡 Check if you're using the correct wallet address", {
+                  autoClose: 4000,
+                });
+              }
+            });
+            return;
+          } else if (revertReason.includes("sold out")) {
+            toast.error("😢 Sold Out", {
+              autoClose: 5000,
+              onClose: () => {
+                toast.info("💡 Try other available tokens or check back later", {
+                  autoClose: 4000,
+                });
+              }
+            });
+            return;
+          } else if (revertReason.includes("inactive")) {
+            toast.error("⏸️ Minting Inactive", {
+              autoClose: 5000,
+            });
+            return;
+          }
+          toast.error(`❌ Contract Error: ${revertReason}`, {
+            autoClose: 5000,
+          });
+          return;
+        }
+        toast.error("❌ Transaction would fail due to contract conditions", {
+          autoClose: 5000,
+        });
+        return;
+      } else if (message.includes("gas limit") || message.includes("out of gas")) {
+        toast.error("⛽ Gas Limit Issue", {
+          autoClose: 7000,
+          onClose: () => {
+            toast.info("💡 Check minting requirements or try fewer tokens", {
+              autoClose: 4000,
+            });
+          }
+        });
+        return;
+      } else if (message.includes("network") || message.includes("connection")) {
+        toast.error("🌐 Network Error", {
+          autoClose: 5000,
+          onClose: () => {
+            toast.info("💡 Check your internet connection and try again", {
+              autoClose: 4000,
+            });
+          }
+        });
+        return;
+      }
+      
+      // Default error toast
+      toast.error(`❌ ${message}`, {
+        autoClose: 5000,
+      });
+      
+    } catch (parseErrorException) {
+      console.error("Error in showErrorToast:", parseErrorException);
+      toast.error("An unexpected error occurred. Please try again.", {
+        autoClose: 5000,
+      });
+    }
+  }, []);
+
+  // Utility function to show success toasts
+  const showSuccessToast = useCallback((message, txHash = null, tokenId = null) => {
+    toast.success(`🎉 ${message}`, {
+      autoClose: 5000,
+      onClick: () => {
+        if (txHash) {
+          // Open transaction in explorer
+          const explorerUrl = network?.blockExplorers?.default?.url || 'https://basescan.org';
+          window.open(`${explorerUrl}/tx/${txHash}`, '_blank');
+        }
+      }
+    });
+    
+    if (txHash) {
+      // Show a follow-up toast with transaction details
+      setTimeout(() => {
+        toast.info(
+          `📋 Transaction: ${txHash.slice(0, 10)}...${txHash.slice(-8)} (Click to view)`,
+          {
+            autoClose: 7000,
+            onClick: () => {
+              const explorerUrl = network?.blockExplorers?.default?.url || 'https://basescan.org';
+              window.open(`${explorerUrl}/tx/${txHash}`, '_blank');
+            }
+          }
+        );
+      }, 1000);
+    }
+  }, [network]);
+
+  // Helper function to mint using Dynamic.xyz wallet client
+  const mintWithDynamicWallet = async (tokenId, amount, useWhitelist = false) => {
+    try {
+      console.log("Available wallet methods:", Object.keys(primaryWallet));
+      
+      // Check if this is an EVM-compatible wallet
+      if (!primaryWallet || !isEthereumWallet(primaryWallet)) {
+        throw new Error("Please connect an EVM-compatible wallet (MetaMask, WalletConnect, etc.)");
+      }
+
+    const address = walletAddress;
+    const token = tokens.find(t => t.id === tokenId);
+    if (!token) {
+      throw new Error(`Token with ID ${tokenId} not found`);
+    }
+
+    const priceStr = useWhitelist ? token.whitelistPrice : token.price;
+    if (!priceStr) {
+      throw new Error(`Price information for token #${tokenId} is not available`);
+    }
+
+    const price = ethers.utils.parseEther(priceStr);
+    const amountBN = ethers.BigNumber.from(amount);
+    const totalPrice = price.mul(amountBN);
+
+    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} ETH, total: ${totalPrice.toString()}`);
+
+    // Create contract interface for encoding function calls
+    const contractInterface = new ethers.utils.Interface(contractABI);
+    
+    let txData;
+    if (useWhitelist) {
+      // Fetch the Merkle proof for this address and token
+      const proofData = await fetchWhitelistProof(address, tokenId);
+      
+      if (!proofData.isWhitelisted) {
+        throw new Error("You are not whitelisted for this token.");
+      }
+
+      console.log("Encoding whitelist mint with proof:", proofData.proof);
+      
+      // Encode mintWhitelist function call
+      txData = contractInterface.encodeFunctionData("mintWhitelist", [
+        tokenId,
+        amount,
+        proofData.proof,
+        address
+      ]);
+    } else {
+      // Encode mint function call
+      txData = contractInterface.encodeFunctionData("mint", [
+        tokenId,
+        amount,
+        address
+      ]);
+    }
+
+    try {
+      // Get the wallet client from Dynamic.xyz
+      console.log("Getting wallet client...");
+      const walletClient = await primaryWallet.getWalletClient();
+      console.log("Wallet client obtained:", walletClient);
+
+      // Create transaction object
+      const transaction = {
+        to: CONTRACT_ADDRESS,
+        value: totalPrice.toString(), // viem expects string, not hex
+        data: txData,
+      };
+
+      console.log("Sending transaction with Dynamic wallet client:", transaction);
+      
+      // Use the wallet client's sendTransaction method
+      const txHash = await walletClient.sendTransaction(transaction);
+      console.log("Transaction sent, hash:", txHash);
+      
+      return { hash: txHash };
+
+    } catch (error) {
+      console.error("Error sending transaction:", error);
+      
+      // Parse and handle specific error types
+      let friendlyMessage = "Transaction failed";
+      
+      if (error.message) {
+        const msg = error.message.toLowerCase();
+        
+        // Insufficient funds
+        if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
+          friendlyMessage = "Insufficient funds - you don't have enough ETH to cover the transaction cost and gas fees";
+        }
+        // User rejected transaction
+        else if (msg.includes('user rejected') || msg.includes('user denied')) {
+          friendlyMessage = "Transaction was cancelled by user";
+        }
+        // Gas estimation failed
+        else if (msg.includes('gas required exceeds allowance') || msg.includes('out of gas')) {
+          friendlyMessage = "Transaction would fail due to gas limit - the contract may be rejecting this mint";
+        }
+        // Network issues
+        else if (msg.includes('network') || msg.includes('connection')) {
+          friendlyMessage = "Network connection issue - please check your internet and try again";
+        }
+        // Contract revert messages
+        else if (msg.includes('revert') || msg.includes('execution reverted')) {
+          if (msg.includes('not whitelisted')) {
+            friendlyMessage = "You are not whitelisted for this token";
+          } else if (msg.includes('mint not active')) {
+            friendlyMessage = "Minting is not currently active for this token";
+          } else if (msg.includes('sold out') || msg.includes('max supply')) {
+            friendlyMessage = "This token is sold out";
+          } else if (msg.includes('max mint')) {
+            friendlyMessage = "You are trying to mint more than the maximum allowed per transaction";
+          } else {
+            friendlyMessage = "Contract rejected the transaction - please check minting requirements";
+          }
+        }
+        // Fallback to original message for unknown errors
+        else {
+          friendlyMessage = error.message;
+        }
+      }
+      
+      // Show error toast instead of throwing
+      showErrorToast(friendlyMessage, tokenId);
+      return null;
+    }
+  } catch (outerError) {
+    // Final safety net - should never reach here but prevents app crashes
+    console.error("Unexpected error in mintWithDynamicWallet:", outerError);
+    showErrorToast("An unexpected error occurred during minting. Please try again.", tokenId);
+    return null;
+  }
+};
 
   // Set current year on client side only to avoid hydration mismatch
   useEffect(() => {
     setCurrentYear(new Date().getFullYear().toString());
   }, []);
 
+  // Debug logging for connection state
+  useEffect(() => {
+    console.log('Connection state changed:', { 
+      isConnected, 
+      hasWallet, 
+      walletAddress, 
+      isConnecting,
+      networkChainId: network?.chainId,
+      isBase: network?.isBase,
+      primaryWallet: primaryWallet ? {
+        address: primaryWallet.address,
+        connector: primaryWallet.connector ? Object.keys(primaryWallet.connector) : null
+      } : null
+    });
+  }, [isConnected, hasWallet, walletAddress, isConnecting, network, primaryWallet]);
+
   // Check if user is on correct network
   useEffect(() => {
-    if (wallet && connectedChain) {
-      const isSupported = Object.values(SUPPORTED_NETWORKS).some(
-        network => network.id.toLowerCase() === connectedChain.id.toLowerCase()
-      );
+    if (hasWallet && network && network.chainId) {
+      const isSupported = network.isSupported;
       setIsCorrectNetwork(isSupported);
       
       if (!isSupported) {
         setShowNetworkModal(true);
       }
+    } else if (hasWallet && network && !network.chainId) {
+      // Network data is incomplete, don't show modal yet
+      console.log('Network data incomplete:', network);
     }
-  }, [wallet, connectedChain]);
+  }, [hasWallet, network]);
 
   // Fetch whitelist status when wallet connects
   useEffect(() => {
     const checkWhitelist = async () => {
-      if (!wallet) {
+      if (!hasWallet || !walletAddress) {
         setWhitelistStatus(null);
         return;
       }
       
       try {
-        const address = wallet.accounts[0].address;
-        console.log("Checking whitelist for address:", address);
+        console.log("Checking whitelist for address:", walletAddress);
         
-        const response = await fetch(`/api/whitelist?address=${address}`);
+        const response = await fetch(`/api/whitelist?address=${walletAddress}`);
         
         if (!response.ok) {
           throw new Error('Failed to check whitelist status');
@@ -134,182 +472,45 @@ export default function HomeComponent() {
     };
     
     checkWhitelist();
-  }, [wallet]);
+  }, [hasWallet, walletAddress]);
 
-  // Optimized fetch function that fetches tokens one by one but displays them as they're fetched
-  const fetchTokenInfo = useCallback(async () => {
-    if (!isCorrectNetwork) return;
-    
+  // Function to refresh data after successful mint
+  const refreshTokenData = useCallback(async () => {
+    console.log('🔄 Refreshing token data after mint...');
+    await refreshContractData();
+  }, [refreshContractData]);
+
+  const handleSwitchNetwork = async (targetNetwork) => {
     try {
-      setIsLoading(true);
-      setError(null);
-      setTokens([]); // Clear existing tokens to show fresh loading
+      console.log("Switching to network:", targetNetwork);
       
-      // If wallet is connected, use it; otherwise use a default provider
-      let provider;
-      if (wallet) {
-        provider = new ethers.providers.Web3Provider(wallet.provider);
-      } else {
-        // Use a default provider for read-only operations
-        provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
+      // Show loading toast
+      toast.info("🔄 Switching network...", {
+        autoClose: 2000,
+      });
+      
+      // Use Dynamic's switchNetwork function
+      if (targetNetwork.chainId === 8453) {
+        await switchToBase();
+        toast.success("✅ Switched to Base Network", {
+          autoClose: 3000,
+        });
+      } else if (targetNetwork.chainId === 1) {
+        await switchToEthereum();
+        toast.success("✅ Switched to Ethereum Network", {
+          autoClose: 3000,
+        });
       }
       
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, provider);
-      
-      // Fetch tokens one by one but display them as they're fetched
-      for (let i = 0; i < 10; i++) {
-        try {
-          // Add a small delay between requests to avoid rate limiting
-          if (i > 0) {
-            await delay(200); // 200ms delay between requests
-          }
-          
-          // Fetch config and unminted supply for this token
-          const [config, unminted] = await Promise.all([
-            contract.tokenConfigs(i),
-            contract.getUnmintedSupply(i)
-          ]);
-          
-          // Add debug logging
-          console.log(`Token #${i} config:`, {
-            price: formatEther(config.price),
-            whitelistPrice: formatEther(config.whitelistPrice),
-            isWhitelistActive: config.isWhitelistActive,
-            mintingActive: config.mintingActive
-          });
-          
-          const tokenInfo = {
-            id: i,
-            price: formatEther(config.price),
-            whitelistPrice: formatEther(config.whitelistPrice),
-            maxSupply: config.unlimited ? "∞" : config.maxSupply.toString(),
-            minted: config.minted.toString(),
-            maxMintPerTx: config.maxMintPerTx.toString(),
-            mintingActive: config.mintingActive,
-            isWhitelistActive: config.isWhitelistActive,
-            unlimited: config.unlimited,
-            unminted: config.unlimited ? "Unlimited" : unminted.toString()
-          };
-          
-          // Add this token to the state immediately
-          setTokens(prevTokens => {
-            const newTokens = [...prevTokens];
-            newTokens[i] = tokenInfo;
-            return newTokens;
-          });
-          
-        } catch (err) {
-          console.error(`Error fetching token ${i}:`, err);
-          
-          // Wait 1 second on any error before retrying
-          console.log(`Error while fetching token ${i}, waiting 1 second before retry...`);
-          setError(`Loading token ${i + 1}/10... Please wait.`);
-          await delay(1000); // Wait 1 second before retrying
-          
-          // Try to fetch this token again
-          try {
-            const [config, unminted] = await Promise.all([
-              contract.tokenConfigs(i),
-              contract.getUnmintedSupply(i)
-            ]);
-            
-            console.log(`Token #${i} config (retry):`, {
-              price: formatEther(config.price),
-              whitelistPrice: formatEther(config.whitelistPrice),
-              isWhitelistActive: config.isWhitelistActive,
-              mintingActive: config.mintingActive
-            });
-            
-            const tokenInfo = {
-              id: i,
-              price: formatEther(config.price),
-              whitelistPrice: formatEther(config.whitelistPrice),
-              maxSupply: config.unlimited ? "∞" : config.maxSupply.toString(),
-              minted: config.minted.toString(),
-              maxMintPerTx: config.maxMintPerTx.toString(),
-              mintingActive: config.mintingActive,
-              isWhitelistActive: config.isWhitelistActive,
-              unlimited: config.unlimited,
-              unminted: config.unlimited ? "Unlimited" : unminted.toString()
-            };
-            
-            setTokens(prevTokens => {
-              const newTokens = [...prevTokens];
-              newTokens[i] = tokenInfo;
-              return newTokens;
-            });
-            
-          } catch (retryErr) {
-            console.error(`Failed to fetch token ${i} after retry:`, retryErr);
-            // Add a placeholder token for failed fetches
-            const placeholderToken = {
-              id: i,
-              price: "0",
-              whitelistPrice: "0",
-              maxSupply: "0",
-              minted: "0",
-              maxMintPerTx: "0",
-              mintingActive: false,
-              isWhitelistActive: false,
-              unlimited: false,
-              unminted: "0",
-              error: true
-            };
-            
-            setTokens(prevTokens => {
-              const newTokens = [...prevTokens];
-              newTokens[i] = placeholderToken;
-              return newTokens;
-            });
-          }
-        }
-      }
-      
-      setIsLoading(false);
-      setError(null); // Clear any error messages
-      setRetryCount(0); // Reset retry count on success
-      
-    } catch (err) {
-      console.error("Error in fetchTokenInfo:", err);
-      
-      // Handle specific error types
-      if (err.message?.includes('Rate limited') || err.status === 429) {
-        setError("Network is busy. Please wait a moment and try again.");
-        setRetryCount(prev => prev + 1);
-      } else if (err.message?.includes('Failed to fetch')) {
-        setError("Network connection issue. Please check your internet connection.");
-      } else {
-        setError("Failed to load token data. Please check your connection and try again.");
-      }
-      
-      setIsLoading(false);
-    }
-  }, [wallet, CONTRACT_ADDRESS, isCorrectNetwork]);
-
-  // Fetch token data when on correct network
-  useEffect(() => {
-    if (isCorrectNetwork) {
-      fetchTokenInfo();
-    }
-  }, [isCorrectNetwork, fetchTokenInfo]);
-
-  // Auto-retry on rate limit errors
-  useEffect(() => {
-    if (error && retryCount < 3 && error.includes('Network is busy')) {
-      const timer = setTimeout(() => {
-        console.log(`Auto-retrying fetch (attempt ${retryCount + 1})`);
-        fetchTokenInfo();
-      }, 2000 * (retryCount + 1)); // Exponential backoff: 2s, 4s, 6s
-      
-      return () => clearTimeout(timer);
-    }
-  }, [error, retryCount, fetchTokenInfo]);
-
-  const handleSwitchNetwork = async (network) => {
-    const success = await setChain({ chainId: network.chainId });
-    if (success) {
+      // Close the modal after switching
       setShowNetworkModal(false);
-      setIsCorrectNetwork(true);
+    } catch (error) {
+      console.error("Failed to switch network:", error);
+      toast.error("❌ Failed to switch network. Please try manually in your wallet.", {
+        autoClose: 5000,
+      });
+      // Still close the modal even if switching fails
+      setShowNetworkModal(false);
     }
   };
 
@@ -329,142 +530,113 @@ export default function HomeComponent() {
     }
   };
 
-  // Update the handleMint function to call mintWhitelist correctly
+  // Update the handleMint function to work with Dynamic WaaS
   const handleMint = async (tokenId, amount, useWhitelist = false) => {
-    if (!wallet) {
-      alert("Please connect your wallet first");
+    if (!hasWallet || !walletAddress) {
+      showErrorToast("Please connect your wallet first", tokenId);
       return;
     }
     
+    // Set loading state for this specific token
+    setTokenMinting(tokenId, true);
+    
     try {
-      const provider = new ethers.providers.Web3Provider(wallet.provider);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
-      const address = wallet.accounts[0].address;
+      // Use Dynamic wallet helper function - it handles errors via toasts now
+      const txResponse = await mintWithDynamicWallet(tokenId, amount, useWhitelist);
       
-      const token = tokens.find(t => t.id === tokenId);
-      if (!token) {
-        throw new Error(`Token with ID ${tokenId} not found`);
+      // If txResponse is null, an error occurred and was already shown via toast
+      if (!txResponse || !txResponse.hash) {
+        return; // Exit early, error already handled
       }
       
-      const priceStr = useWhitelist ? token.whitelistPrice : token.price;
-      if (!priceStr) {
-        throw new Error(`Price information for token #${tokenId} is not available`);
-      }
+      // Transaction hash is returned directly
+      console.log("Transaction submitted:", txResponse.hash);
       
-      const price = ethers.utils.parseEther(priceStr);
-      const amountBN = ethers.BigNumber.from(amount);
-      const totalPrice = price.mul(amountBN);
-      
-      console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} ETH, total: ${totalPrice.toString()}`);
-      
-      // Call the appropriate mint function based on whitelist status
-      let tx;
-      if (useWhitelist) {
-        // Fetch the Merkle proof for this address and token
-        const proofData = await fetchWhitelistProof(address, tokenId);
-        
-        if (!proofData.isWhitelisted) {
-          alert("You are not whitelisted for this token.");
-          return;
-        }
-        
-        console.log("Sending whitelist mint with proof:", proofData.proof);
-        
-        // Call mintWhitelist with the Merkle proof
-        tx = await contract.mintWhitelist(
-          tokenId, 
-          amount, 
-          proofData.proof,
-          address, // Use connected wallet address as recipient
-          { value: totalPrice }
-        );
-      } else {
-        // Call mint with the recipient
-        tx = await contract.mint(
-          tokenId, 
-          amount, 
-          address, // Use connected wallet address as recipient
-          { value: totalPrice }
-        );
-      }
-      
-      await tx.wait();
-      alert(`Successfully minted token #${tokenId}`);
+      // Show success toast
+      showSuccessToast(
+        `Successfully minted ${amount}x Token #${tokenId}!`, 
+        txResponse.hash, 
+        tokenId
+      );
       
       // Refresh token data after successful mint
-      fetchTokenInfo();
+      try {
+        await refreshContractData();
+      } catch (refreshError) {
+        console.error("Failed to refresh data:", refreshError);
+        // Show a warning toast but don't fail the mint
+        toast.warn("🔄 Mint successful but data refresh failed. Page may need refresh.", {
+          autoClose: 4000,
+        });
+      }
       
     } catch (err) {
-      console.error("Error minting token:", err);
-      alert(`Error minting token: ${err.message || err}`);
+      // This should rarely happen now since mintWithDynamicWallet handles its own errors
+      console.error("Unexpected error in handleMint:", err);
+      showErrorToast("An unexpected error occurred", tokenId);
+      
+    } finally {
+      // Always clear loading state, even if errors occur
+      try {
+        setTokenMinting(tokenId, false);
+      } catch (finallyError) {
+        console.error("Failed to clear loading state:", finallyError);
+      }
     }
   };
   
-  // Also update the batch mint function for whitelist
+  // Also update the batch mint function to work with Dynamic wallet
   const handleBatchMint = async (tokenId, amount, useWhitelist) => {
-    if (!wallet) {
-      alert("Please connect your wallet first");
-      return;
+    if (!hasWallet || !walletAddress) {
+      showErrorToast("Please connect your wallet first", tokenId);
+      return null; // Return null to indicate failure
     }
     
+    // Set loading state for this token
+    setTokenMinting(tokenId, true);
+    
     try {
-      const provider = new ethers.providers.Web3Provider(wallet.provider);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
-      const address = wallet.accounts[0].address;
+      // Use Dynamic wallet helper function - it handles errors via toasts now
+      const txResponse = await mintWithDynamicWallet(tokenId, amount, useWhitelist);
       
-      const token = tokens.find(t => t.id === tokenId);
-      if (!token) {
-        throw new Error(`Token with ID ${tokenId} not found`);
+      // If txResponse is null, an error occurred and was already shown via toast
+      if (!txResponse || !txResponse.hash) {
+        return null; // Return null to indicate failure
       }
       
-      const priceStr = useWhitelist ? token.whitelistPrice : token.price;
-      if (!priceStr) {
-        throw new Error(`Price information for token #${tokenId} is not available`);
-      }
+      // Transaction hash is returned directly
+      console.log("Batch mint transaction submitted:", txResponse.hash);
       
-      const price = ethers.utils.parseEther(priceStr);
-      const amountBN = ethers.BigNumber.from(amount);
-      const totalPrice = price.mul(amountBN);
-      
-      console.log(`Batch minting token #${tokenId}, amount: ${amount}, price: ${priceStr} ETH, total: ${totalPrice.toString()}`);
-      
-      let tx;
-      if (useWhitelist) {
-        const proofData = await fetchWhitelistProof(address, tokenId);
-        
-        if (!proofData.isWhitelisted) {
-          throw new Error(`You are not whitelisted for token #${tokenId}`);
-        }
-        
-        tx = await contract.mintWhitelist(
-          tokenId, 
-          amount, 
-          proofData.proof,
-          address,
-          { value: totalPrice }
-        );
-      } else {
-        tx = await contract.mint(
-          tokenId, 
-          amount, 
-          address,
-          { value: totalPrice }
-        );
-      }
-      
-      await tx.wait();
+      // Show success toast
+      showSuccessToast(
+        `Successfully batch minted ${amount}x Token #${tokenId}!`, 
+        txResponse.hash, 
+        tokenId
+      );
       
       // Remove from cart after successful mint
       removeFromCart(tokenId);
       
       // Refresh token data
-      await fetchTokenInfo();
+      try {
+        await refreshContractData();
+      } catch (refreshError) {
+        console.error("Failed to refresh data:", refreshError);
+        toast.warn("🔄 Mint successful but data refresh failed. Page may need refresh.", {
+          autoClose: 4000,
+        });
+      }
+      
+      return txResponse;
       
     } catch (err) {
-      console.error("Error batch minting token:", err);
-      throw err;
+      // This should rarely happen now since mintWithDynamicWallet handles its own errors
+      console.error("Unexpected error in handleBatchMint:", err);
+      showErrorToast("An unexpected error occurred", tokenId);
+      return null;
+    } finally {
+      // Clear loading state
+      setTokenMinting(tokenId, false);
     }
   };
 
@@ -508,10 +680,10 @@ export default function HomeComponent() {
     explorerUrl: network.blockExplorerUrl
   }));
 
-  const currentNetwork = connectedChain ? {
-    chainId: connectedChain.id,
-    name: connectedChain.label,
-    explorerUrl: SUPPORTED_NETWORKS[connectedChain.id]?.blockExplorerUrl
+  const currentNetwork = network ? {
+    chainId: network.chainId,
+    name: network.label,
+    explorerUrl: SUPPORTED_NETWORKS[network.chainId]?.blockExplorerUrl
   } : null;
 
   // Collection configurations
@@ -538,119 +710,74 @@ export default function HomeComponent() {
 
   // Hero Section Component
   const HeroSection = () => (
-    <div className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 rounded-3xl border border-border/30 shadow-2xl mb-8">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-transparent rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
-
-      {/* Grid Pattern Overlay */}
-      <div 
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}
-      ></div>
-
-      <div className="relative z-10 p-6 lg:p-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header Section */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl lg:text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent">
-              Reward Crate
-            </h1>
-            
-            <p className="text-lg lg:text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
-              Unlock exclusive rewards and collect rare NFTs from the Super Space Defenders universe
-            </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-background/50 backdrop-blur-sm rounded-full border border-border/30">
-                <Shield className="h-3 w-3 text-primary" />
-                <span className="text-xs font-medium">ERC1155 Standard</span>
-              </div>
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-background/50 backdrop-blur-sm rounded-full border border-border/30">
-                <Coins className="h-3 w-3 text-primary" />
-                <span className="text-xs font-medium">Base Network</span>
-              </div>
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-background/50 backdrop-blur-sm rounded-full border border-border/30">
-                <Users className="h-3 w-3 text-primary" />
-                <span className="text-xs font-medium">Community Driven</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-border/30 backdrop-blur-sm">
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <Rocket className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-foreground">10</p>
-                  <p className="text-xs text-muted-foreground">Unique Rewards</p>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">Exclusive collectibles with varying rarities</p>
-            </div>
-
-            <div className="p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-border/30 backdrop-blur-sm">
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-foreground">Limited</p>
-                  <p className="text-xs text-muted-foreground">Supply</p>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">Most tokens have limited availability</p>
-            </div>
-
-            <div className="p-4 bg-gradient-to-br from-accent/10 to-accent/5 rounded-xl border border-border/30 backdrop-blur-sm">
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center">
-                  <Crown className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-foreground">Whitelist</p>
-                  <p className="text-xs text-muted-foreground">Priority Access</p>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">Exclusive benefits for community members</p>
-            </div>
-          </div>
-
-          {/* CTA Section */}
+    <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-border/50 bg-gradient-to-br from-accent/10 to-accent/5">
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+      
+      <div className="relative container mx-auto px-4 py-24 text-center">
+        <div className="max-w-3xl mx-auto">
+          <Badge variant="outline" className="mb-4 text-xs bg-background/50 backdrop-blur-sm border-border/30">
+            <Sparkles className="w-3 h-3 mr-2 text-primary" />
+            ERC1155 Collection on Base
+          </Badge>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
+            Mint Your Reward Crate
+          </h1>
+          
+          <p className="text-lg text-muted-foreground mb-8">
+            Get exclusive access to digital collectibles, in-game items, and special rewards within the Super Space Defenders ecosystem. Each crate holds a unique piece of the universe.
+          </p>
+          
           <div className="text-center">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
-                onClick={() => {
-                  if (!wallet) {
-                    connect();
-                  } else {
-                    // Scroll to tokens section
-                    document.getElementById('tokens-section')?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-              >
-                {wallet ? (
-                  <>
-                    <Package className="h-4 w-4 mr-2" />
-                    Start Collecting
-                  </>
-                ) : (
-                  <>
-                    <Wallet className="h-4 w-4 mr-2" />
-                    Connect Wallet
-                  </>
-                )}
-              </Button>
+              {(() => {
+                // Debug: Log current state for hero button
+                console.log('Hero button logic:', {
+                  isConnected,
+                  hasWallet,
+                  network,
+                  networkChainId: network?.chainId,
+                  isBase: network?.isBase,
+                  shouldShowSwitch: hasWallet && network && network.chainId !== 8453
+                });
+                
+                if (!isConnected) {
+                  return (
+                    <Button 
+                      size="lg" 
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
+                      onClick={openConnectionModal}
+                    >
+                      <Wallet className="h-4 w-4 mr-2" />
+                      Connect to Start
+                    </Button>
+                  );
+                } else if (hasWallet && network && network.chainId && network.chainId !== 8453) {
+                  return (
+                    <Button 
+                      size="lg" 
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg px-6 py-2 text-base font-semibold"
+                      onClick={switchToBase}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Switch to Base Network
+                    </Button>
+                  );
+                } else {
+                  return (
+                    <Button 
+                      size="lg" 
+                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
+                      onClick={() => {
+                        document.getElementById('tokens-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      Start Collecting
+                    </Button>
+                  );
+                }
+              })()}
               
               <Button 
                 variant="outline" 
@@ -674,19 +801,19 @@ export default function HomeComponent() {
 
   return (
     <div className="pr-6 lg:pr-8">
-      {error ? (
+      {dataError ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
-            <span>{error}</span>
+            <span>{dataError}</span>
             <Button
               variant="outline"
               size="sm"
-              onClick={fetchTokenInfo}
-              disabled={isLoading}
+              onClick={refreshContractData}
+              disabled={isDataLoading}
               className="ml-4"
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-4 h-4 mr-2 ${isDataLoading ? 'animate-spin' : ''}`} />
               Retry
             </Button>
           </AlertDescription>
@@ -709,6 +836,12 @@ export default function HomeComponent() {
             </div>
             
             <div className="flex items-center gap-2">
+              {/* Sync Indicator */}
+              <SyncIndicator
+                pendingRefresh={pendingRefresh}
+                onManualSync={checkForUpdates}
+              />
+              
               <CartButton 
                 cartItemCount={getTotalCartItems()}
                 onClick={() => setIsCartOpen(true)}
@@ -729,24 +862,59 @@ export default function HomeComponent() {
           {/* Tokens Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {tokens.map(token => (
-              <TokenCard 
-                key={token.id} 
-                token={token}
-                onAddToCart={addToCart}
-                onRemoveFromCart={removeFromCart}
-                onUpdateQuantity={updateQuantity}
-                isInCart={isInCart(token.id)}
-                cartQuantity={getCartQuantity(token.id)}
-                whitelistStatus={whitelistStatus}
-                onMint={handleMint}
-                isCorrectNetwork={isCorrectNetwork}
-                wallet={wallet}
-              />
+              <ErrorBoundary key={token.id}>
+                <TokenCard 
+                  token={token}
+                  onAddToCart={addToCart}
+                  onRemoveFromCart={removeFromCart}
+                  onUpdateQuantity={updateQuantity}
+                  isInCart={isInCart(token.id)}
+                  cartQuantity={getCartQuantity(token.id)}
+                  whitelistStatus={whitelistStatus}
+                  onMint={handleMint}
+                  walletConnected={isConnected}
+                  hasWallet={hasWallet}
+                  isCorrectNetwork={isCorrectNetwork}
+                  wallet={primaryWallet}
+                  network={network}
+                  isMinting={isTokenMinting(token.id)}
+                />
+              </ErrorBoundary>
             ))}
           </div>
 
+          {/* Data Age Warning
+          {isDataStale() && (
+            <Alert className="mb-6 border-amber-500/50 bg-amber-500/10">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="text-amber-600">
+                Contract data is {getDataAge()} old. Consider running the fetch script to get latest data.
+                <Button 
+                  variant="link" 
+                  className="p-0 h-auto ml-2 text-amber-600" 
+                  onClick={refreshContractData}
+                >
+                  Refresh now
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )} */}
+
+          {/* Error Display */}
+          {dataError && (
+            <Alert className="mb-6 border-red-500/50 bg-red-500/10">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="text-red-600">
+                {dataError}
+                <div className="mt-2 text-sm">
+                  Try running: <code className="bg-gray-800 px-2 py-1 rounded">npm run fetch-contract-data</code>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Loading State */}
-          {isLoading && (
+          {isDataLoading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden">
@@ -769,7 +937,7 @@ export default function HomeComponent() {
           )}
 
           {/* Empty State */}
-          {!isLoading && tokens.length === 0 && !error && (
+          {!isDataLoading && tokens.length === 0 && !dataError && (
             <div className="text-center py-12">
               <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No rewards available</h3>
@@ -908,16 +1076,12 @@ export default function HomeComponent() {
                         <div className="space-y-2 pt-2">
                           <Button 
                             onClick={() => setShowBatchMintModal(true)}
-                            disabled={!wallet || !isCorrectNetwork}
+                            disabled={!hasWallet || !isCorrectNetwork}
                             className="w-full"
                             size="lg"
                           >
                             <Zap className="w-4 h-4 mr-2" />
-                            {!wallet 
-                              ? "Connect Wallet" 
-                              : !isCorrectNetwork
-                                ? "Wrong Network"
-                                : "Batch Mint"}
+                            {!hasWallet ? "Connect Wallet" : !isCorrectNetwork ? "Wrong Network" : "Batch Mint"}
                           </Button>
 
                           <Button 
@@ -946,18 +1110,29 @@ export default function HomeComponent() {
         cart={cart}
         onMint={handleBatchMint}
         isCorrectNetwork={isCorrectNetwork}
-        wallet={wallet}
+        wallet={primaryWallet}
       />
 
       <NetworkModal
         isOpen={showNetworkModal}
         onClose={() => setShowNetworkModal(false)}
         onSwitchNetwork={handleSwitchNetwork}
-        supportedNetworks={Object.values(SUPPORTED_NETWORKS)}
-        currentNetwork={connectedChain ? {
-          chainId: connectedChain.id,
-          name: connectedChain.label,
-          explorerUrl: SUPPORTED_NETWORKS[connectedChain.id]?.blockExplorer
+        supportedNetworks={[
+          {
+            chainId: 8453,
+            name: 'Base',
+            explorerUrl: 'https://basescan.org'
+          },
+          {
+            chainId: 1,
+            name: 'Ethereum',
+            explorerUrl: 'https://etherscan.io'
+          }
+        ]}
+        currentNetwork={network ? {
+          chainId: network.chainId,
+          name: network.name,
+          explorerUrl: network.chainId === 8453 ? 'https://basescan.org' : 'https://etherscan.io'
         } : null}
       />
 

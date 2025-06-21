@@ -194,7 +194,7 @@ export default function Cart({
             </Button>
 
             {/* Credit Card Payment for entire cart */}
-            {walletConnected && (
+            {walletConnected && process.env.NEXT_PUBLIC_ENABLE_CARD_PAYMENTS === 'true' && (
               <Button 
                 variant="outline"
                 className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-500/50"

@@ -13,7 +13,8 @@ import {
   ShoppingCart, 
   CreditCard,
   Zap,
-  Crown
+  Crown,
+  Loader2
 } from "lucide-react";
 
 export default function TokenCard({ 
@@ -24,7 +25,8 @@ export default function TokenCard({
   whitelistStatus,
   onAddToCart,
   isInCart,
-  cartQuantity
+  cartQuantity,
+  isMinting = false
 }) {
   const [mintAmount, setMintAmount] = useState(1);
   const [isWhitelisted, setIsWhitelisted] = useState(false);
@@ -115,6 +117,11 @@ export default function TokenCard({
 
   // For the credit card payment button
   const CreditCardButton = () => {
+    // Don't render if card payments are disabled
+    if (process.env.NEXT_PUBLIC_ENABLE_CARD_PAYMENTS !== 'true') {
+      return null;
+    }
+
     return (
       <Button 
         variant="outline"
@@ -242,15 +249,17 @@ export default function TokenCard({
         <div className="space-y-2">
           <Button 
             onClick={handleAddToCart}
-            disabled={!isMintingAvailable || !walletConnected}
+            disabled={!isMintingAvailable || !walletConnected || isMinting}
             className="w-full"
             variant={isInCart ? "outline" : "default"}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             {!walletConnected 
-              ? "Connect Wallet" 
+              ? "Add to Cart" 
               : !isMintingAvailable
                 ? "Not Available"
+                : isMinting
+                  ? "Minting..."
                 : isInCart
                   ? "Update Cart"
                   : "Add to Cart"}
@@ -261,10 +270,20 @@ export default function TokenCard({
             <Button 
               variant="outline"
               onClick={() => onMint(token.id, mintAmount, canUseWhitelist)}
+              disabled={isMinting}
               className="w-full"
             >
-              <Zap className="w-4 h-4 mr-2" />
-              Quick Mint
+              {isMinting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Minting...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 mr-2" />
+                  Quick Mint
+                </>
+              )}
             </Button>
           )}
           

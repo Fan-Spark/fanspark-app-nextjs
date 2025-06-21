@@ -1,14 +1,31 @@
 "use client";
 
-import { Toaster } from "@/components/ui/sonner";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from './ThemeProvider';
 
 export function ToastProvider() {
+  const { theme } = useTheme();
+  
   return (
-    <Toaster 
+    <ToastContainer
       position="top-right"
-      richColors
-      closeButton
-      duration={4000}
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme={theme === 'dark' ? 'dark' : 'light'}
+      style={{
+        fontSize: '14px',
+      }}
+      toastStyle={{
+        borderRadius: '8px',
+        border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+      }}
     />
   );
 } 

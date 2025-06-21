@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import PortalLink from "@/components/common/PortalLink";
+import { useRouter } from "next/navigation";
 import { 
   Package,
   StickyNote,
@@ -16,6 +19,8 @@ export default function Sidebar({
   onCollectionChange,
   isMobile = false
 }) {
+  const router = useRouter();
+  
   const collections = [
     {
       id: "reward-crate",
@@ -23,7 +28,7 @@ export default function Sidebar({
       description: "ERC1155 NFT Collection",
       icon: Package,
       status: "active",
-      href: "#reward-crate",
+      href: "/",
       gradient: "from-blue-500 to-purple-600"
     },
     {
@@ -85,8 +90,15 @@ export default function Sidebar({
     }
   };
 
-  const handleCollectionChange = (collectionId) => {
-    onCollectionChange(collectionId);
+  const handleCollectionChange = (collection) => {
+    // If it's the reward crate, navigate to home page
+    if (collection.id === "reward-crate") {
+      router.push("/");
+      return;
+    }
+    
+    // For other collections, use the existing collection change handler
+    onCollectionChange(collection.id);
   };
 
   return (
@@ -122,7 +134,7 @@ export default function Sidebar({
                   } ${
                     collection.status === "coming-soon" ? "opacity-60" : ""
                   }`}
-                  onClick={() => handleCollectionChange(collection.id)}
+                  onClick={() => handleCollectionChange(collection)}
                   disabled={collection.status === "coming-soon"}
                 >
                   <div className="flex items-center w-full">
@@ -167,9 +179,17 @@ export default function Sidebar({
       {/* Collections Footer */}
       {!isMobile && (
         <div className="mt-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
-          <div className="text-center">
-            <p className="text-xs text-muted-foreground font-medium">More Collections</p>
-            <p className="text-[10px] text-muted-foreground/60 mt-1">Coming Soon</p>
+          <div className="space-y-3">
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground font-medium">More Collections</p>
+              <p className="text-[10px] text-muted-foreground/60 mt-1">Coming Soon</p>
+            </div>
+            <Separator className="bg-border/30" />
+            <PortalLink 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-xs"
+            />
           </div>
         </div>
       )}

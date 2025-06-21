@@ -66,8 +66,10 @@ function SidebarProvider({
       _setOpen(openState)
     }
 
-    // This sets the cookie to keep the sidebar state.
-    document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    // This sets the cookie to keep the sidebar state (client-side only).
+    if (typeof window !== 'undefined') {
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    }
   }, [setOpenProp, open])
 
   // Helper to toggle the sidebar.
@@ -571,10 +573,8 @@ function SidebarMenuSkeleton({
   showIcon = false,
   ...props
 }) {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, [])
+  // Use a fixed width to avoid hydration mismatch
+  const width = "70%";
 
   return (
     <div
