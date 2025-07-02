@@ -6,6 +6,7 @@ import { useTheme } from '@/components/common/ThemeProvider';
 import Sidebar from '@/components/common/Sidebar';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
+import NoSSR from '@/components/common/NoSSR';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -165,7 +166,11 @@ export default function Template({ children }) {
 
                   {/* Mobile Wallet Connection */}
                   <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30">
-                    <DynamicWidget />
+                    <NoSSR fallback={
+                      <div className="h-10 w-full bg-muted animate-pulse rounded-md"></div>
+                    }>
+                      <DynamicWidget />
+                    </NoSSR>
                   </div>
 
                   {/* Mobile Collections List */}

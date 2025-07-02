@@ -8,53 +8,108 @@ import {
   Sparkles,
   CheckCircle
 } from "lucide-react";
+import NoSSR from "@/components/common/NoSSR";
+import { useState, useEffect } from "react";
 
-export default function DynamicConnectButton({ 
+function DynamicConnectButtonContent({ 
   variant = "default", 
   size = "default", 
   className = "",
   showSupportedWallets = false 
 }) {
-  const { 
-    handleConnect, 
-    isConnecting, 
-    isLoggedIn,
-    user 
-  } = useDynamicContext();
+  const [mounted, setMounted] = useState(false);
 
-  if (isLoggedIn && user) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
     return (
-      <div className="flex items-center gap-2">
-        <CheckCircle className="w-4 h-4 text-green-500" />
-        <span className="text-sm text-green-600">Connected</span>
-      </div>
+      <Button 
+        disabled
+        variant={variant}
+        size={size}
+        className={className}
+      >
+        <Wallet className="w-4 h-4 mr-2" />
+        Loading...
+      </Button>
     );
   }
 
-  return (
-    <div className="space-y-2">
+  try {
+    const { 
+      handleConnect, 
+      isConnecting, 
+      isLoggedIn,
+      user 
+    } = useDynamicContext();
+
+    if (isLoggedIn && user) {
+      return (
+        <div className="flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-green-500" />
+          <span className="text-sm text-green-600">Connected</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-2">
+        <Button 
+          onClick={handleConnect} 
+          disabled={isConnecting}
+          variant={variant}
+          size={size}
+          className={`bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg ${className}`}
+        >
+          <Wallet className="w-4 h-4 mr-2" />
+          {isConnecting ? "Connecting..." : "Connect Wallet"}
+        </Button>
+        
+        {showSupportedWallets && (
+          <div className="text-xs text-muted-foreground text-center space-y-1">
+            <p>Supported wallets:</p>
+            <div className="flex flex-wrap justify-center gap-1">
+              <Badge variant="outline" className="text-xs">MetaMask</Badge>
+              <Badge variant="outline" className="text-xs">WalletConnect</Badge>
+              <Badge variant="outline" className="text-xs">Coinbase</Badge>
+              <Badge variant="outline" className="text-xs">Rainbow</Badge>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  } catch (error) {
+    console.error("Error in DynamicConnectButton:", error);
+    return (
       <Button 
-        onClick={handleConnect} 
-        disabled={isConnecting}
-        variant={variant}
+        disabled
+        variant="outline"
         size={size}
-        className={`bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg ${className}`}
+        className={className}
       >
         <Wallet className="w-4 h-4 mr-2" />
-        {isConnecting ? "Connecting..." : "Connect Wallet"}
+        Connection Error
       </Button>
-      
-      {showSupportedWallets && (
-        <div className="text-xs text-muted-foreground text-center space-y-1">
-          <p>Supported wallets:</p>
-          <div className="flex flex-wrap justify-center gap-1">
-            <Badge variant="outline" className="text-xs">MetaMask</Badge>
-            <Badge variant="outline" className="text-xs">WalletConnect</Badge>
-            <Badge variant="outline" className="text-xs">Coinbase</Badge>
-            <Badge variant="outline" className="text-xs">Rainbow</Badge>
-          </div>
-        </div>
-      )}
-    </div>
+    );
+  }
+}
+
+export default function DynamicConnectButton(props) {
+  return (
+    <NoSSR fallback={
+      <Button 
+        disabled
+        variant={props.variant || "default"}
+        size={props.size || "default"}
+        className={props.className || ""}
+      >
+        <Wallet className="w-4 h-4 mr-2" />
+        Loading...
+      </Button>
+    }>
+      <DynamicConnectButtonContent {...props} />
+    </NoSSR>
   );
 } 

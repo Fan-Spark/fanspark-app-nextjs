@@ -16,8 +16,9 @@ import {
   Sparkles
 } from "lucide-react";
 import { useState } from "react";
+import NoSSR from "@/components/common/NoSSR";
 
-export default function DynamicDemo() {
+function DynamicDemoContent() {
   const { 
     isConnected, 
     isConnecting, 
@@ -258,5 +259,36 @@ export default function DynamicDemo() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function DynamicDemo() {
+  return (
+    <NoSSR fallback={
+      <div className="space-y-6 w-full max-w-4xl mx-auto p-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-4">
+            Dynamic.xyz Integration Demo
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Loading...
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading Demo...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
+              <div className="h-10 bg-muted rounded"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <DynamicDemoContent />
+    </NoSSR>
   );
 } 
