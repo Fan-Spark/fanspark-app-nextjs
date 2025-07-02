@@ -6,7 +6,7 @@ const crypto = require('crypto');
  */
 
 // Example webhook secret (you should use your actual secret from .env)
-const WEBHOOK_SECRET = '0e94f3c465f0238d4756f73c001ef60fca3437d062fbcc5054dea113a8993c32';
+const WEBHOOK_SECRET = 'yXdew/orNwPBOP7jMLu6oWhUPFOIpnXsX4aMevJ1knU=';
 
 // Example payload
 const payload = JSON.stringify({"eventType": "request"});
