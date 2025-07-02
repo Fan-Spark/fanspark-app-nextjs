@@ -29,6 +29,12 @@ NEXT_PUBLIC_CROSSMINT_PROJECT_ID=your_crossmint_project_id_here
 NEXT_PUBLIC_CROSSMINT_BASE_URL=https://staging.crossmint.com
 ```
 
+### Webhook Configuration
+```bash
+# Webhook secret for signature verification (required for webhook endpoints)
+WEBHOOK_SECRET=your_webhook_secret_here
+```
+
 ### Other Configuration
 ```bash
 # Base network configuration
@@ -71,6 +77,9 @@ NEXT_PUBLIC_NETWORK_CHAIN_ID=8453
 NEXT_PUBLIC_ENABLE_CARD_PAYMENTS=true
 NEXT_PUBLIC_CROSSMINT_PROJECT_ID=your_project_id
 NEXT_PUBLIC_CROSSMINT_BASE_URL=https://staging.crossmint.com
+
+# Webhook
+WEBHOOK_SECRET=your_secure_webhook_secret_key
 
 # Network
 NEXT_PUBLIC_NETWORK_NAME=Base
