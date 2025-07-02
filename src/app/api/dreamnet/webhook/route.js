@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createHmac } from 'crypto';
 
 export async function POST(request) {
   try {
@@ -36,16 +35,8 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    // Generate the expected signature
-    const expectedSignature = createHmac('sha256', webhookSecret)
-      .update(body)
-      .digest('hex');
-
-    // Remove 'sha256=' prefix if present
-    const providedSignature = signature.replace(/^sha256=/, '');
-    
-    // Compare signatures using a constant-time comparison
-    const isValidSignature = providedSignature === expectedSignature;
+    // Direct comparison with the webhook secret
+    const isValidSignature = signature === webhookSecret;
 
     if (!isValidSignature) {
       return NextResponse.json({ 
