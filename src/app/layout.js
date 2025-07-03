@@ -18,7 +18,46 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "FanSpark's",
-  description: "A platform for minting and managing NFT collections on the Base Network",
+  description: "Where fans and creators unite to spark ideas to life 💡",
+  metadataBase: new URL('https://fanspark.app'),
+  openGraph: {
+    title: "FanSpark's",
+    description: "Where fans and creators unite to spark ideas to life 💡",
+    url: 'https://fanspark.app',
+    siteName: "FanSpark's",
+    images: [
+      {
+        url: '/preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'FanSpark - Where fans and creators unite to spark ideas to life',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "FanSpark's",
+    description: "Where fans and creators unite to spark ideas to life 💡",
+    images: ['/preview.png'],
+    creator: '@aamirorbit',
+    site: '@FanSpark_',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
 };
 
 export default function RootLayout({ children }) {

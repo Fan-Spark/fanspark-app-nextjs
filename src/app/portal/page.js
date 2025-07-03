@@ -3,6 +3,17 @@ import DynamicPortal from '@/components/common/DynamicPortal';
 export const metadata = {
   title: "User Portal - FanSpark's",
   description: "Manage your profile and wallet settings with Dynamic.xyz",
+  openGraph: {
+    title: "User Portal - FanSpark's",
+    description: "Manage your profile and wallet settings with Dynamic.xyz",
+    images: ['/preview.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "User Portal - FanSpark's",
+    description: "Manage your profile and wallet settings with Dynamic.xyz",
+    images: ['/preview.png'],
+  },
 };
 
 export default function PortalPage() {
