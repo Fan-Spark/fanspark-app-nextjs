@@ -65,7 +65,7 @@ export default function Sidebar({
       case "active":
         return (
           <Badge className="text-xs bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm">
-            Live
+            Testing
           </Badge>
         );
       case "coming-soon":
@@ -113,6 +113,21 @@ export default function Sidebar({
           <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
             {collections.length}
           </Badge>
+        </div>
+      )}
+
+      {/* Mobile Testing Indicator */}
+      {isMobile && (
+        <div className="mb-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
+          <div className="flex items-center justify-center">
+            <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/5 to-blue-500/5 animate-pulse"></div>
+              <div className="relative flex items-center space-x-2">
+                <div className="w-1 h-1 rounded-full bg-cyan-400 animate-ping"></div>
+                <span className="text-[10px] font-medium text-cyan-300 tracking-wider">BETA TESTING</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -184,6 +199,18 @@ export default function Sidebar({
               <p className="text-xs text-muted-foreground font-medium">More Collections</p>
               <p className="text-[10px] text-muted-foreground/60 mt-1">Coming Soon</p>
             </div>
+            
+            {/* Testing Indicator */}
+            <div className="flex items-center justify-center">
+              <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/5 to-blue-500/5 animate-pulse"></div>
+                <div className="relative flex items-center space-x-2">
+                  <div className="w-1 h-1 rounded-full bg-cyan-400 animate-ping"></div>
+                  <span className="text-[10px] font-medium text-cyan-300 tracking-wider">BETA TESTING</span>
+                </div>
+              </div>
+            </div>
+            
             <Separator className="bg-border/30" />
             <PortalLink 
               variant="ghost" 
