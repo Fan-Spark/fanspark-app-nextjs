@@ -6,13 +6,13 @@ export const metadata = {
   openGraph: {
     title: "User Portal - FanSpark's",
     description: "Manage your profile and wallet settings with Dynamic.xyz",
-    images: ['/preview.png'],
+    images: ['https://checkout.fanspark.xyz/preview.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: "User Portal - FanSpark's",
     description: "Manage your profile and wallet settings with Dynamic.xyz",
-    images: ['/preview.png'],
+    images: ['https://checkout.fanspark.xyz/preview.png'],
   },
 };
 

@@ -19,15 +19,15 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "FanSpark's",
   description: "Where fans and creators unite to spark ideas to life 💡",
-  metadataBase: new URL('https://fanspark.app'),
+  metadataBase: new URL('https://checkout.fanspark.xyz'),
   openGraph: {
     title: "FanSpark's",
     description: "Where fans and creators unite to spark ideas to life 💡",
-    url: 'https://fanspark.app',
+    url: 'https://checkout.fanspark.xyz',
     siteName: "FanSpark's",
     images: [
       {
-        url: '/preview.png',
+        url: 'https://checkout.fanspark.xyz/preview.png',
         width: 1200,
         height: 630,
         alt: 'FanSpark - Where fans and creators unite to spark ideas to life',
@@ -40,7 +40,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: "FanSpark's",
     description: "Where fans and creators unite to spark ideas to life 💡",
-    images: ['/preview.png'],
+    images: ['https://checkout.fanspark.xyz/preview.png'],
     creator: '@aamirorbit',
     site: '@FanSpark_',
   },
