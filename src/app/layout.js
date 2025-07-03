@@ -4,6 +4,7 @@ import { Providers } from './providers';
 import { CartProvider } from '@/components/CartProvider';
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { ToastProvider } from '@/components/common/ToastProvider';
+import FloatingChat from '@/components/common/FloatingChat';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
               {children}
             </Providers>
             <ToastProvider />
+            <FloatingChat />
           </CartProvider>
         </ThemeProvider>
       </body>
