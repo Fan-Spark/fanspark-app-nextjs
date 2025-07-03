@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "SSD Super Space Defenders",
+  title: "FanSpark's",
   description: "A platform for minting and managing NFT collections on the Base Network",
 };
 
@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
-        <ThemeProvider defaultTheme="dark" storageKey="ssd-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="fanspark-theme">
           <CartProvider>
             <Providers>
               {children}

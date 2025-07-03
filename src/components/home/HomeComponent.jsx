@@ -690,7 +690,7 @@ export default function HomeComponent() {
   const collectionConfigs = {
     "sticker-collection": {
       name: "Sticker Collection",
-      description: "Exclusive digital stickers for the SSD community",
+                      description: "Exclusive digital stickers for the FanSpark's community",
       icon: StickyNote,
       expectedDate: "Q2 2024"
     },
@@ -725,7 +725,7 @@ export default function HomeComponent() {
           </h1>
           
           <p className="text-lg text-muted-foreground mb-8">
-            Get exclusive access to digital collectibles, in-game items, and special rewards within the Super Space Defenders ecosystem. Each crate holds a unique piece of the universe.
+                            Get exclusive access to digital collectibles, in-game items, and special rewards within the FanSpark's ecosystem. Each crate holds a unique piece of the universe.
           </p>
           
           <div className="text-center">
@@ -791,7 +791,7 @@ export default function HomeComponent() {
             </div>
             
             <p className="text-xs text-muted-foreground">
-              Join thousands of collectors in the Super Space Defenders ecosystem
+                              Join thousands of collectors in the FanSpark's ecosystem
             </p>
           </div>
         </div>
@@ -1139,7 +1139,7 @@ export default function HomeComponent() {
       {/* Footer */}
       <footer className="border-t py-6 mt-16">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>SSD Super Space Defenders · Base Network · {currentYear}</p>
+          <p>FanSpark's · Base Network · {currentYear}</p>
         </div>
       </footer>
     </div>

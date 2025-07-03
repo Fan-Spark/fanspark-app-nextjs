@@ -15,6 +15,7 @@ import {
   Menu,
   X
 } from "lucide-react";
+import Image from 'next/image';
 
 export default function Header({ 
   walletConnected, 
@@ -50,10 +51,15 @@ export default function Header({
           {/* Mobile Menu Header */}
           <div className="flex items-center justify-between pb-4 border-b">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SSD</span>
+              <div className="h-8 w-auto flex items-center justify-center">
+                <Image 
+                  src="/fanspark.png" 
+                  alt="FanSpark Logo" 
+                  width={80} 
+                  height={32}
+                  className="object-contain"
+                />
               </div>
-              <span className="font-bold">Super Space Defenders</span>
             </div>
             <Button
               variant="ghost"
@@ -150,12 +156,15 @@ export default function Header({
           {/* Logo/Brand */}
           <div className="flex items-center">
             <a href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SSD</span>
+              <div className="h-8 w-auto flex items-center justify-center">
+                <Image 
+                  src="/fanspark.png" 
+                  alt="FanSpark Logo" 
+                  width={100} 
+                  height={32}
+                  className="object-contain"
+                />
               </div>
-              <span className="hidden sm:inline-block font-bold text-lg">
-                Super Space Defenders
-              </span>
             </a>
           </div>
 
@@ -243,9 +252,9 @@ export default function Header({
                   <div className="flex items-center justify-between pb-4 border-b">
                     <div className="flex items-center space-x-2">
                       <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">SSD</span>
+                        <span className="text-white font-bold text-sm">FS</span>
                       </div>
-                      <span className="font-bold">Super Space Defenders</span>
+                      <span className="font-bold">FanSpark's</span>
                     </div>
                     <Button
                       variant="ghost"

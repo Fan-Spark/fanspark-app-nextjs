@@ -9,6 +9,7 @@ import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import NoSSR from '@/components/common/NoSSR';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Image from 'next/image';
 import { 
   Wallet, 
   Moon, 
@@ -52,17 +53,18 @@ export default function Template({ children }) {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-xl">SSD</span>
+                <div className="h-12 w-auto flex items-center justify-center">
+                  <Image 
+                    src="/fanspark.png" 
+                    alt="FanSpark Logo" 
+                    width={220} 
+                    height={68}
+                    className="object-contain"
+                  />
                 </div>
                 <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  Super Space Defenders
-                </h1>
-                <p className="text-xs text-muted-foreground font-medium">NFT Collections</p>
-              </div>
+
             </div>
           </div>
 
@@ -108,15 +110,18 @@ export default function Template({ children }) {
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">SSD</span>
+              <div className="h-10 w-auto flex items-center justify-center">
+                <Image 
+                  src="/fanspark.png" 
+                  alt="FanSpark Logo" 
+                  width={100} 
+                  height={40}
+                  className="object-contain"
+                />
               </div>
               <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Super Space Defenders
-              </h1>
               <p className="text-xs text-muted-foreground font-medium">NFT Collections</p>
             </div>
           </div>
@@ -151,8 +156,14 @@ export default function Template({ children }) {
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className="relative">
-                        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-lg">
-                          <span className="text-white font-bold text-xl">SSD</span>
+                        <div className="h-12 w-auto flex items-center justify-center">
+                          <Image 
+                            src="/fanspark.png" 
+                            alt="FanSpark Logo" 
+                            width={120} 
+                            height={48}
+                            className="object-contain"
+                          />
                         </div>
                         <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
                       </div>

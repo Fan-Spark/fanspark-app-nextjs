@@ -1,7 +1,7 @@
 import DynamicPortal from '@/components/common/DynamicPortal';
 
 export const metadata = {
-  title: "User Portal - SSD Super Space Defenders",
+  title: "User Portal - FanSpark's",
   description: "Manage your profile and wallet settings with Dynamic.xyz",
 };
 
