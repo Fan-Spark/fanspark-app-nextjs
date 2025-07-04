@@ -48,7 +48,8 @@ import {
   Users,
   Minus,
   Plus,
-  Trash2
+  Trash2,
+  X
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from 'react-toastify';
@@ -717,15 +718,15 @@ export default function HomeComponent() {
         <div className="max-w-3xl mx-auto">
           <Badge variant="outline" className="mb-4 text-xs bg-background/50 backdrop-blur-sm border-border/30">
             <Sparkles className="w-3 h-3 mr-2 text-primary" />
-            ERC1155 Collection on Base
+            Verified on-chain authenticity
           </Badge>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
-            Mint Your Reward Crate
+            Spark This Story Today!
           </h1>
           
           <p className="text-lg text-muted-foreground mb-8">
-                            Get exclusive access to digital collectibles, in-game items, and special rewards within the FanSpark's ecosystem. Each crate holds a unique piece of the universe.
+            Get exclusive access to digital collectibles, in-game items, and special rewards within the FanSpark ecosystem of creators. Each tier contains core and bonus rewards from a different universe that's claimable at the end of the campaign.
           </p>
           
           <div className="text-center">
@@ -791,7 +792,7 @@ export default function HomeComponent() {
             </div>
             
             <p className="text-xs text-muted-foreground">
-                              Join thousands of collectors in the FanSpark's ecosystem
+              Join our growing community of collectors in the FanSpark ecosystem
             </p>
           </div>
         </div>
@@ -860,8 +861,8 @@ export default function HomeComponent() {
           <Separator />
 
           {/* Tokens Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {tokens.map(token => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tokens.filter(token => token.mintingActive).map(token => (
               <ErrorBoundary key={token.id}>
                 <TokenCard 
                   token={token}
@@ -915,8 +916,8 @@ export default function HomeComponent() {
 
           {/* Loading State */}
           {isDataLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 8 }).map((_, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden">
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -1108,7 +1109,8 @@ export default function HomeComponent() {
         isOpen={showBatchMintModal}
         onClose={() => setShowBatchMintModal(false)}
         cart={cart}
-        onMint={handleBatchMint}
+        onBatchMint={handleBatchMint}
+        walletConnected={hasWallet}
         isCorrectNetwork={isCorrectNetwork}
         wallet={primaryWallet}
       />

@@ -46,7 +46,7 @@ export default function BatchMintModal({
     setError(null);
     
     try {
-      // Initialize status for all items
+      // Initialize status for all items as pending now that batch mint started
       const initialStatus = {};
       cart.forEach(item => {
         initialStatus[item.tokenId] = { status: 'pending', message: 'Waiting...' };
@@ -66,13 +66,25 @@ export default function BatchMintModal({
           }));
 
           // Call the mint function
-          await onBatchMint(item.tokenId, item.quantity, item.useWhitelist);
+          const result = await onBatchMint(item.tokenId, item.quantity, item.useWhitelist);
           
-          // Update status to success
-          setMintStatus(prev => ({
-            ...prev,
-            [item.tokenId]: { status: 'success', message: 'Minted successfully!' }
-          }));
+          // Check if the mint was successful (onBatchMint returns null on failure)
+          if (result && result.hash) {
+            // Update status to success
+            setMintStatus(prev => ({
+              ...prev,
+              [item.tokenId]: { status: 'success', message: 'Minted successfully!' }
+            }));
+          } else {
+            // Mint failed or was cancelled
+            setMintStatus(prev => ({
+              ...prev,
+              [item.tokenId]: { 
+                status: 'error', 
+                message: 'Transaction failed or was cancelled' 
+              }
+            }));
+          }
           
         } catch (error) {
           console.error(`Error minting token ${item.tokenId}:`, error);
@@ -138,7 +150,7 @@ export default function BatchMintModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="w-5 h-5" />
@@ -151,7 +163,7 @@ export default function BatchMintModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex-1 overflow-y-auto">
           {/* Progress Bar */}
           {isProcessing && totalSteps > 0 && (
             <div className="space-y-2">
@@ -194,7 +206,7 @@ export default function BatchMintModal({
             <ScrollArea className="h-64">
               <div className="space-y-2">
                 {cart.map((item) => {
-                  const status = mintStatus[item.tokenId] || { status: 'pending', message: 'Waiting...' };
+                  const status = mintStatus[item.tokenId];
                   
                   return (
                     <div 
@@ -202,7 +214,7 @@ export default function BatchMintModal({
                       className="flex items-center justify-between p-3 rounded-lg border border-border/50"
                     >
                       <div className="flex items-center gap-3">
-                        {getStatusIcon(status.status)}
+                        {status ? getStatusIcon(status.status) : <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />}
                         <div>
                           <div className="font-medium">Token #{item.tokenId}</div>
                           <div className="text-sm text-muted-foreground">
@@ -215,8 +227,8 @@ export default function BatchMintModal({
                           </div>
                         </div>
                       </div>
-                      <div className={`text-sm ${getStatusColor(status.status)}`}>
-                        {status.message}
+                      <div className={`text-sm ${status ? getStatusColor(status.status) : 'text-muted-foreground'}`}>
+                        {status ? status.message : 'Ready to mint'}
                       </div>
                     </div>
                   );
@@ -226,7 +238,7 @@ export default function BatchMintModal({
           </div>
 
           {/* Summary Stats */}
-          {Object.keys(mintStatus).length > 0 && (
+          {isProcessing || Object.keys(mintStatus).length > 0 ? (
             <div className="grid grid-cols-3 gap-4 p-4 rounded-lg bg-muted/50">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-500">{successfulMints}</div>
@@ -241,38 +253,39 @@ export default function BatchMintModal({
                 <div className="text-xs text-muted-foreground">Pending</div>
               </div>
             </div>
-          )}
+          ) : null}
 
-          {/* Action Buttons */}
-          <div className="flex gap-2">
-            {!isProcessing ? (
-              <>
-                <Button 
-                  onClick={handleBatchMint}
-                  disabled={!walletConnected || cart.length === 0}
-                  className="flex-1"
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  Start Batch Mint
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={onClose}
-                >
-                  Cancel
-                </Button>
-              </>
-            ) : (
+        </div>
+
+        {/* Action Buttons - Fixed at bottom */}
+        <div className="flex gap-2 pt-4 border-t border-border/50">
+          {!isProcessing ? (
+            <>
+              <Button 
+                onClick={handleBatchMint}
+                disabled={!walletConnected || cart.length === 0}
+                className="flex-1"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                {!walletConnected ? 'Connect Wallet' : cart.length === 0 ? 'Cart Empty' : 'Start Batch Mint'}
+              </Button>
               <Button 
                 variant="outline" 
                 onClick={onClose}
-                className="flex-1"
-                disabled={isProcessing}
               >
-                {isProcessing ? 'Processing...' : 'Close'}
+                Cancel
               </Button>
-            )}
-          </div>
+            </>
+          ) : (
+            <Button 
+              variant="outline" 
+              onClick={onClose}
+              className="flex-1"
+              disabled={isProcessing}
+            >
+              {isProcessing ? 'Processing...' : 'Close'}
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
