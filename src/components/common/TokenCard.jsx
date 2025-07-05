@@ -224,11 +224,19 @@ export default function TokenCard({
         <div className="grid grid-cols-2 gap-3 mb-6">
           <div className="bg-muted/50 rounded-lg p-3">
             <Label className="text-xs text-muted-foreground">Minted</Label>
-            <div className="font-medium">{token.minted} / {token.maxSupply}</div>
+            <div className="font-medium">
+              {token.minted} / {token.unlimited ? "∞" : token.maxSupply}
+            </div>
           </div>
           <div className="bg-muted/50 rounded-lg p-3">
             <Label className="text-xs text-muted-foreground">Available</Label>
-            <div className="font-medium">{token.unminted}</div>
+            <div className="font-medium">
+              {token.unlimited ? (
+                <span className="text-green-600 font-semibold">Unlimited</span>
+              ) : (
+                token.unminted
+              )}
+            </div>
           </div>
         </div>
         
