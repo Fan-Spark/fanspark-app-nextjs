@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useTheme } from '@/components/common/ThemeProvider';
+import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import Sidebar from '@/components/common/Sidebar';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
@@ -85,8 +86,8 @@ export default function Template({ children }) {
           <div className="mt-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
             <div className="flex items-center justify-between">
               <div className="text-xs text-muted-foreground">
-                <p className="font-medium">Base Network</p>
-                <p className="text-[10px] opacity-70">Layer 2 Solution</p>
+                <p className="font-medium">{CURRENT_NETWORK.displayName}</p>
+                <p className="text-[10px] opacity-70">{CURRENT_NETWORK.name}</p>
               </div>
               <Button
                 variant="ghost"
@@ -196,8 +197,8 @@ export default function Template({ children }) {
                   {/* Mobile Sidebar Footer */}
                   <div className="mt-6 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
                     <div className="text-xs text-muted-foreground text-center">
-                      <p className="font-medium">Base Network</p>
-                      <p className="text-[10px] opacity-70">Layer 2 Solution</p>
+                      <p className="font-medium">{CURRENT_NETWORK.displayName}</p>
+                      <p className="text-[10px] opacity-70">{CURRENT_NETWORK.name}</p>
                     </div>
                   </div>
                 </div>

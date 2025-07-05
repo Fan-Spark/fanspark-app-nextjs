@@ -13,6 +13,10 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'contract-data.json');
 
+// Collection configuration - can be passed as command line argument
+const COLLECTION = process.argv[2] || 'reward-crate';
+const METADATA_DIR = path.join(__dirname, '..', 'public', 'metadata', COLLECTION);
+
 // Load contract ABI
 const contractABI = require('../src/utils/contractABI.json');
 
@@ -34,10 +38,44 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
   }
 };
 
+// Function to load metadata for a specific token
+async function loadTokenMetadata(tokenId) {
+  try {
+    const metadataFile = path.join(METADATA_DIR, `${tokenId}.json`);
+    const metadataContent = await fs.readFile(metadataFile, 'utf8');
+    const metadata = JSON.parse(metadataContent);
+    
+    console.log(`📄 Loaded metadata for Token #${tokenId}: ${metadata.name}`);
+    
+    return {
+      metadata: metadata,
+      name: metadata.name,
+      description: metadata.description,
+      image: metadata.image,
+      external_url: metadata.external_url,
+      attributes: metadata.attributes || [],
+      properties: metadata.properties || {}
+    };
+  } catch (error) {
+    console.log(`⚠️  No metadata found for Token #${tokenId}: ${error.message}`);
+    return {
+      metadata: null,
+      name: `Token #${tokenId}`,
+      description: `Token #${tokenId} from the ${COLLECTION} collection`,
+      image: null,
+      external_url: null,
+      attributes: [],
+      properties: {}
+    };
+  }
+}
+
 async function fetchContractData() {
   console.log('🚀 Starting contract data fetch...');
   console.log(`📊 Contract: ${CONTRACT_ADDRESS}`);
   console.log(`🌐 RPC URL: ${RPC_URL}`);
+  console.log(`🎨 Collection: ${COLLECTION}`);
+  console.log(`📁 Metadata Directory: ${METADATA_DIR}`);
   
   if (!CONTRACT_ADDRESS || !RPC_URL) {
     throw new Error('Missing required environment variables: NEXT_PUBLIC_CONTRACT_ADDRESS and NEXT_PUBLIC_RPC_URL');
@@ -53,6 +91,8 @@ async function fetchContractData() {
       fetchedAt: new Date().toISOString(),
       fetchedTimestamp: Date.now(),
       rpcUrl: RPC_URL,
+      collection: COLLECTION,
+      metadataDirectory: METADATA_DIR,
       version: "1.0.0"
     },
     tokens: [],
@@ -83,15 +123,17 @@ async function fetchContractData() {
       }
 
       // Fetch token config and unminted supply with retry logic
-      const [config, unminted] = await retryWithBackoff(async () => {
+      const [config, unminted, tokenMetadata] = await retryWithBackoff(async () => {
         return Promise.all([
           contract.tokenConfigs(tokenId),
-          contract.getUnmintedSupply(tokenId)
+          contract.getUnmintedSupply(tokenId),
+          loadTokenMetadata(tokenId)
         ]);
       });
 
       const tokenInfo = {
         id: tokenId,
+        // Contract data
         price: formatEther(config.price),
         priceWei: config.price.toString(),
         whitelistPrice: formatEther(config.whitelistPrice),
@@ -105,6 +147,14 @@ async function fetchContractData() {
         unlimited: config.unlimited,
         unminted: config.unlimited ? null : parseInt(unminted.toString()),
         unmintedDisplay: config.unlimited ? "Unlimited" : unminted.toString(),
+        // Metadata
+        name: tokenMetadata.name,
+        description: tokenMetadata.description,
+        image: tokenMetadata.image,
+        external_url: tokenMetadata.external_url,
+        attributes: tokenMetadata.attributes,
+        properties: tokenMetadata.properties,
+        metadata: tokenMetadata.metadata,
         // Additional computed fields
         isAvailable: config.mintingActive || config.isWhitelistActive,
         isSoldOut: !config.unlimited && parseInt(config.minted.toString()) >= parseInt(config.maxSupply.toString()),
@@ -122,14 +172,15 @@ async function fetchContractData() {
       if (tokenInfo.mintingActive) activeTokens++;
       if (tokenInfo.isWhitelistActive) whitelistActiveTokens++;
 
-      console.log(`✅ Token #${tokenId}: ${tokenInfo.price} ETH, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
+      console.log(`✅ Token #${tokenId} (${tokenInfo.name}): ${tokenInfo.price} ETH, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
 
     } catch (error) {
       console.error(`❌ Failed to fetch Token #${tokenId}:`, error.message);
       
-      // Add error placeholder
+      // Add error placeholder with minimal metadata
       contractData.tokens.push({
         id: tokenId,
+        // Contract data (default/error values)
         price: "0",
         priceWei: "0",
         whitelistPrice: "0",
@@ -143,6 +194,15 @@ async function fetchContractData() {
         unlimited: false,
         unminted: 0,
         unmintedDisplay: "0",
+        // Metadata (default values)
+        name: `Token #${tokenId}`,
+        description: `Token #${tokenId} from the ${COLLECTION} collection`,
+        image: null,
+        external_url: null,
+        attributes: [],
+        properties: {},
+        metadata: null,
+        // Additional computed fields
         isAvailable: false,
         isSoldOut: true,
         mintedPercentage: 0,
@@ -220,6 +280,7 @@ async function main() {
     console.log(`📁 Output: ${OUTPUT_FILE}`);
     
     console.log('\n🎉 Contract data fetch completed successfully!');
+    console.log(`🎨 Collection "${COLLECTION}" metadata included`);
     console.log('\n💡 To use this data in your app, import it from /contract-data.json');
     
   } catch (error) {

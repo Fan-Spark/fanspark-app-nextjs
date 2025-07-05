@@ -1,65 +1,83 @@
-export const SUPPORTED_NETWORKS = {
-  base: {
-    id: '0x2105',
-    name: 'Base',
-    chainId: 8453,
-    token: 'ETH',
-    rpcUrl: 'https://mainnet.base.org',
-    blockExplorer: 'https://basescan.org',
-    isDefault: true // Mark Base as the default network
-  },
-  // baseGoerli: {
-  //   id: '0x14a33',
-  //   name: 'Base Goerli',
-  //   chainId: 84531,
-  //   token: 'ETH',
-  //   rpcUrl: 'https://goerli.base.org',
-  //   blockExplorer: 'https://goerli.basescan.org',
-  //   isDefault: false
-  // },
-  // baseSepolia: {
-  //   id: '0x14a34',
-  //   name: 'Base Sepolia',
-  //   chainId: 84532,
-  //   token: 'ETH',
-  //   rpcUrl: 'https://sepolia.base.org',
-  //   blockExplorer: 'https://sepolia.basescan.org',
-  //   isDefault: false
-  // },
-  // mainnet: {
-  //   id: '0x1',
-  //   name: 'Ethereum Mainnet',
-  //   chainId: 1,
-  //   token: 'ETH',
-  //   rpcUrl: 'https://eth.llamarpc.com',
-  //   blockExplorer: 'https://etherscan.io',
-  //   isDefault: false
-  // },
-  // goerli: {
-  //   id: '0x5',
-  //   name: 'Goerli Testnet',
-  //   chainId: 5,
-  //   token: 'ETH',
-  //   rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  //   blockExplorer: 'https://goerli.etherscan.io',
-  //   isDefault: false
-  // },
-  // sepolia: {
-  //   id: '0xaa36a7',
-  //   name: 'Sepolia Testnet',
-  //   chainId: 11155111,
-  //   token: 'ETH',
-  //   rpcUrl: 'https://rpc.sepolia.org',
-  //   blockExplorer: 'https://sepolia.etherscan.io',
-  //   isDefault: false
-  // }
+// Network configuration using environment variables
+const getCurrentNetworkConfig = () => {
+  const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '84532'); // Default to Base Sepolia
+  
+  return {
+    id: chainId,
+    name: process.env.NEXT_PUBLIC_NETWORK_NAME || 'Base Sepolia',
+    displayName: process.env.NEXT_PUBLIC_NETWORK_DISPLAY_NAME || 'Base Sepolia Testnet',
+    chainId: chainId,
+    rpcUrl: process.env.NEXT_PUBLIC_RPC_URL || 'https://sepolia.base.org',
+    blockExplorerUrl: process.env.NEXT_PUBLIC_BLOCK_EXPLORER_URL || 'https://sepolia.basescan.org',
+    blockExplorerName: process.env.NEXT_PUBLIC_BLOCK_EXPLORER_NAME || 'BaseScan',
+    isDefault: true
+  };
 };
 
-export const DEFAULT_NETWORK = Object.values(SUPPORTED_NETWORKS).find(network => network.isDefault);
+// Get the current network configuration
+export const CURRENT_NETWORK = getCurrentNetworkConfig();
 
-export const getNetworkById = (id) => {
-  return Object.values(SUPPORTED_NETWORKS).find(network => 
-    network.id.toLowerCase() === id.toLowerCase() || 
-    network.chainId === parseInt(id)
-  );
+// Legacy support for existing code
+export const SUPPORTED_NETWORKS = {
+  [CURRENT_NETWORK.id]: {
+    id: CURRENT_NETWORK.id,
+    name: CURRENT_NETWORK.name,
+    label: CURRENT_NETWORK.displayName,
+    chainId: CURRENT_NETWORK.chainId,
+    rpcUrl: CURRENT_NETWORK.rpcUrl,
+    blockExplorerUrl: CURRENT_NETWORK.blockExplorerUrl,
+    blockExplorerName: CURRENT_NETWORK.blockExplorerName,
+    isSupported: true
+  }
+};
+
+// Default network is the current configured network
+export const DEFAULT_NETWORK = CURRENT_NETWORK;
+
+// Helper function to get network by ID
+export const getNetworkById = (chainId) => {
+  return SUPPORTED_NETWORKS[chainId] || null;
+};
+
+// Helper function to check if a network is supported
+export const isNetworkSupported = (chainId) => {
+  return !!SUPPORTED_NETWORKS[chainId];
+};
+
+// Helper function to get the block explorer URL for a transaction
+export const getTransactionUrl = (txHash) => {
+  return `${CURRENT_NETWORK.blockExplorerUrl}/tx/${txHash}`;
+};
+
+// Helper function to get the block explorer URL for an address
+export const getAddressUrl = (address) => {
+  return `${CURRENT_NETWORK.blockExplorerUrl}/address/${address}`;
+};
+
+// Helper function to get the block explorer URL for a contract
+export const getContractUrl = (contractAddress) => {
+  return `${CURRENT_NETWORK.blockExplorerUrl}/address/${contractAddress}`;
+};
+
+// Brand configuration
+export const BRAND_CONFIG = {
+  name: process.env.NEXT_PUBLIC_BRAND_NAME || 'FanSpark',
+  projectName: process.env.NEXT_PUBLIC_PROJECT_NAME || 'Reward Crate Minter',
+  url: process.env.NEXT_PUBLIC_BRAND_URL || 'https://www.fanspark.xyz',
+  metadataBaseUrl: process.env.NEXT_PUBLIC_METADATA_BASE_URL || 'https://checkout.fanspark.xyz',
+  defaultCollection: process.env.NEXT_PUBLIC_DEFAULT_COLLECTION || 'reward-crate'
+};
+
+// Export for backwards compatibility
+export default {
+  getCurrentNetworkConfig,
+  CURRENT_NETWORK,
+  SUPPORTED_NETWORKS,
+  DEFAULT_NETWORK,
+  getNetworkById,
+  isNetworkSupported,
+  getTransactionUrl,
+  getAddressUrl,
+  getContractUrl,
+  BRAND_CONFIG
 }; 

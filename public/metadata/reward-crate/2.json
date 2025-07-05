@@ -1,0 +1,71 @@
+{
+  "name": "Super Stellar",
+  "description": "Super Stellar tier reward crate with premium digital and physical collectibles, maximum $ARDENT rewards, and exclusive luxury merchandise. Ultra-rare with only 20 editions for the most dedicated collectors.",
+  "image": "https://checkout.fanspark.xyz/metadata/reward-crate/images/2.png",
+  "external_url": "https://www.fanspark.xyz",
+  "attributes": [
+    {
+      "trait_type": "Tier",
+      "value": "Super Stellar"
+    },
+    {
+      "trait_type": "Edition Type",
+      "value": "Ultra Limited Edition"
+    },
+    {
+      "trait_type": "Max Supply",
+      "value": "20"
+    },
+    {
+      "trait_type": "Digital Comic",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Physical Comic",
+      "value": "Included"
+    },
+    {
+      "trait_type": "$ARDENT Tokens",
+      "value": "2000"
+    },
+    {
+      "trait_type": "PFP Collectibles",
+      "value": "10"
+    },
+    {
+      "trait_type": "T-shirt",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Hoodie",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Limited Pin",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://checkout.fanspark.xyz/metadata/reward-crate/images/2.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "supply": 20,
+    "rewards": [
+      "Digital Comic book",
+      "Physical Comic book",
+      "2,000 $ARDENT DN IP tokens",
+      "10x Stellar Ardent character PFP collectibles",
+      "Stellar Ardent T-shirt",
+      "Stellar Ardent Hoodie",
+      "Limited edition physical pin"
+    ]
+  }
+} 

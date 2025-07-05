@@ -1,0 +1,51 @@
+{
+  "name": "Standard",
+  "description": "Standard tier reward crate with digital collectibles and $ARDENT tokens. Open edition available to all collectors in the FanSpark ecosystem.",
+  "image": "https://checkout.fanspark.xyz/metadata/reward-crate/images/0.png",
+  "external_url": "https://www.fanspark.xyz",
+  "attributes": [
+    {
+      "trait_type": "Tier",
+      "value": "Standard"
+    },
+    {
+      "trait_type": "Edition Type",
+      "value": "Open Edition"
+    },
+    {
+      "trait_type": "Digital Comic",
+      "value": "Included"
+    },
+    {
+      "trait_type": "$ARDENT Tokens",
+      "value": "200"
+    },
+    {
+      "trait_type": "PFP Collectibles",
+      "value": "1"
+    },
+    {
+      "trait_type": "Physical Items",
+      "value": "None"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://checkout.fanspark.xyz/metadata/reward-crate/images/0.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "supply": "unlimited",
+    "rewards": [
+      "Digital Comic book",
+      "200 $ARDENT DN IP tokens",
+      "1x Stellar Ardent character PFP collectible"
+    ]
+  }
+} 

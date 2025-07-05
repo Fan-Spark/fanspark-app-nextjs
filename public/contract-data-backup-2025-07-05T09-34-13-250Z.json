@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "contractAddress": "0x1BAe974868F1b3d146d6B99eA27B370300615909",
-    "fetchedAt": "2025-07-05T10:41:35.793Z",
-    "fetchedTimestamp": 1751712095794,
+    "contractAddress": "0x9b32FcDeE11D85e35C53c55e30C854EF012F9567",
+    "fetchedAt": "2025-07-05T09:34:04.609Z",
+    "fetchedTimestamp": 1751708044614,
     "rpcUrl": "https://sepolia.base.org",
     "collection": "reward-crate",
     "metadataDirectory": "/Users/knightorbit/Documents/ssd/ui-reward-crate-minter/public/metadata/reward-crate",
@@ -19,7 +19,7 @@
       "maxSupplyDisplay": "∞",
       "minted": 0,
       "maxMintPerTx": 10,
-      "mintingActive": true,
+      "mintingActive": false,
       "isWhitelistActive": false,
       "unlimited": true,
       "unminted": null,
@@ -124,10 +124,10 @@
           ]
         }
       },
-      "isAvailable": true,
+      "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712096977
+      "lastUpdated": 1751708046340
     },
     {
       "id": 1,
@@ -135,15 +135,15 @@
       "priceWei": "5000000000000",
       "whitelistPrice": "0.000002",
       "whitelistPriceWei": "2000000000000",
-      "maxSupply": 200,
-      "maxSupplyDisplay": "200",
+      "maxSupply": 100,
+      "maxSupplyDisplay": "100",
       "minted": 0,
       "maxMintPerTx": 5,
-      "mintingActive": true,
+      "mintingActive": false,
       "isWhitelistActive": false,
       "unlimited": false,
-      "unminted": 200,
-      "unmintedDisplay": "200",
+      "unminted": 100,
+      "unmintedDisplay": "100",
       "name": "Ardent Fan",
       "description": "Ardent Fan tier reward crate with digital and physical collectibles, enhanced $ARDENT rewards, and exclusive merchandise. Limited to 200 editions for dedicated fans.",
       "image": "https://checkout.fanspark.xyz/metadata/reward-crate/images/1.png",
@@ -274,10 +274,10 @@
           ]
         }
       },
-      "isAvailable": true,
+      "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712097704
+      "lastUpdated": 1751708047086
     },
     {
       "id": 2,
@@ -285,15 +285,15 @@
       "priceWei": "5000000000000",
       "whitelistPrice": "0.000002",
       "whitelistPriceWei": "2000000000000",
-      "maxSupply": 20,
-      "maxSupplyDisplay": "20",
+      "maxSupply": 100,
+      "maxSupplyDisplay": "100",
       "minted": 0,
       "maxMintPerTx": 5,
-      "mintingActive": true,
+      "mintingActive": false,
       "isWhitelistActive": false,
       "unlimited": false,
-      "unminted": 20,
-      "unmintedDisplay": "20",
+      "unminted": 100,
+      "unmintedDisplay": "100",
       "name": "Super Stellar",
       "description": "Super Stellar tier reward crate with premium digital and physical collectibles, maximum $ARDENT rewards, and exclusive luxury merchandise. Ultra-rare with only 20 editions for the most dedicated collectors.",
       "image": "https://checkout.fanspark.xyz/metadata/reward-crate/images/2.png",
@@ -434,10 +434,10 @@
           ]
         }
       },
-      "isAvailable": true,
+      "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712099314
+      "lastUpdated": 1751708047829
     },
     {
       "id": 3,
@@ -464,7 +464,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712100081
+      "lastUpdated": 1751708048571
     },
     {
       "id": 4,
@@ -491,7 +491,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712100897
+      "lastUpdated": 1751708049310
     },
     {
       "id": 5,
@@ -518,7 +518,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712102517
+      "lastUpdated": 1751708050132
     },
     {
       "id": 6,
@@ -545,7 +545,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712103510
+      "lastUpdated": 1751708050924
     },
     {
       "id": 7,
@@ -572,7 +572,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712104530
+      "lastUpdated": 1751708051644
     },
     {
       "id": 8,
@@ -599,7 +599,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712105471
+      "lastUpdated": 1751708052459
     },
     {
       "id": 9,
@@ -626,14 +626,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1751712106241
+      "lastUpdated": 1751708053246
     }
   ],
   "summary": {
     "totalTokens": 10,
     "totalMinted": 0,
-    "totalAvailable": 920,
-    "activeTokens": 3,
+    "totalAvailable": 900,
+    "activeTokens": 0,
     "whitelistActiveTokens": 0,
     "successfulFetches": 10,
     "failedFetches": 0

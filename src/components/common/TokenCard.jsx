@@ -149,17 +149,38 @@ export default function TokenCard({
 
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02]">
-      {/* Token Header with Gradient */}
-      <div className={`relative h-48 bg-gradient-to-br ${getTokenGradient(token.id)} group-hover:scale-[1.02] transition-transform duration-300`}>
-        {/* Pattern overlay */}
-        <div className="absolute inset-0 opacity-20 mix-blend-overlay" 
-             style={{backgroundImage: "url('data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E')"}} />
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/70 flex items-center justify-center">
-          <div className="text-center">
-            <div className="font-bold text-7xl text-white mb-1 text-shadow-lg">{token.id}</div>
+      {/* Token Header with Image */}
+      <div className="relative h-48 bg-gradient-to-br from-slate-900 to-slate-800 group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
+        {token.image ? (
+          <>
+            {/* NFT Image */}
+            <img 
+              src={token.image} 
+              alt={token.name || `Token #${token.id}`}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback to gradient if image fails to load
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            {/* Fallback gradient (hidden by default) */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${getTokenGradient(token.id)} hidden items-center justify-center`}>
+              <div className="text-center">
+                <div className="font-bold text-7xl text-white mb-1 text-shadow-lg">{token.id}</div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className={`absolute inset-0 bg-gradient-to-br ${getTokenGradient(token.id)} flex items-center justify-center`}>
+            <div className="text-center">
+              <div className="font-bold text-7xl text-white mb-1 text-shadow-lg">{token.id}</div>
+            </div>
           </div>
-        </div>
+        )}
+        
+        {/* Dark overlay for badges */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/70 pointer-events-none" />
         
         {/* Status badges */}
         <div className="absolute top-3 right-3 flex flex-col gap-2">
@@ -183,7 +204,7 @@ export default function TokenCard({
         {/* Token Info */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">Token #{token.id}</h3>
+            <h3 className="text-lg font-semibold">{token.name || `Token #${token.id}`}</h3>
           </div>
           <Badge variant="outline" className="font-mono">
             {isWhitelisted && token.isWhitelistActive 
@@ -191,6 +212,13 @@ export default function TokenCard({
               : `${token.price} ETH`}
           </Badge>
         </div>
+        
+        {/* Token Description */}
+        {token.description && (
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground line-clamp-2">{token.description}</p>
+          </div>
+        )}
         
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3 mb-6">

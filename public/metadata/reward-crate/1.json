@@ -1,0 +1,66 @@
+{
+  "name": "Ardent Fan",
+  "description": "Ardent Fan tier reward crate with digital and physical collectibles, enhanced $ARDENT rewards, and exclusive merchandise. Limited to 200 editions for dedicated fans.",
+  "image": "https://checkout.fanspark.xyz/metadata/reward-crate/images/1.png",
+  "external_url": "https://www.fanspark.xyz",
+  "attributes": [
+    {
+      "trait_type": "Tier",
+      "value": "Ardent Fan"
+    },
+    {
+      "trait_type": "Edition Type",
+      "value": "Limited Edition"
+    },
+    {
+      "trait_type": "Max Supply",
+      "value": "200"
+    },
+    {
+      "trait_type": "Digital Comic",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Physical Comic",
+      "value": "Included"
+    },
+    {
+      "trait_type": "$ARDENT Tokens",
+      "value": "500"
+    },
+    {
+      "trait_type": "PFP Collectibles",
+      "value": "3"
+    },
+    {
+      "trait_type": "T-shirt",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Limited Pin",
+      "value": "Included"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://checkout.fanspark.xyz/metadata/reward-crate/images/1.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "supply": 200,
+    "rewards": [
+      "Digital Comic book",
+      "Physical Comic book",
+      "500 $ARDENT DN IP tokens",
+      "3x Stellar Ardent character PFP collectibles",
+      "Stellar Ardent T-shirt",
+      "Limited edition physical pin"
+    ]
+  }
+} 

@@ -2,6 +2,7 @@
 
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useCallback, useState, useEffect } from "react";
+import { CURRENT_NETWORK } from "@/utils/networkConfig";
 
 export function useDynamicWallet() {
   const [mounted, setMounted] = useState(false);
@@ -106,38 +107,39 @@ export function useDynamicWallet() {
     return {
       chainId: network.chainId,
       name: network.name,
-      isSupported: network.chainId === 8453 || network.chainId === 1, // Base or Ethereum
-      isBase: network.chainId === 8453,
-      isEthereum: network.chainId === 1,
+      isSupported: network.chainId === CURRENT_NETWORK.chainId,
+      isCurrentNetwork: network.chainId === CURRENT_NETWORK.chainId,
+      label: network.chainId === CURRENT_NETWORK.chainId ? CURRENT_NETWORK.displayName : network.name,
     };
   }, [network, mounted]);
 
-  const switchToBase = useCallback(async () => {
+  const switchToCurrentNetwork = useCallback(async () => {
     if (!mounted || !switchNetwork) return;
     
     try {
       if (typeof switchNetwork === 'function') {
-        await switchNetwork({ networkChainId: 8453 });
+        await switchNetwork({ networkChainId: CURRENT_NETWORK.chainId });
       } else {
         console.warn('switchNetwork is not available');
       }
     } catch (error) {
-      console.error("Failed to switch to Base network:", error);
+      console.error(`Failed to switch to ${CURRENT_NETWORK.name} network:`, error);
       throw error;
     }
   }, [switchNetwork, mounted]);
 
-  const switchToEthereum = useCallback(async () => {
+  // Generic network switch function
+  const switchToNetwork = useCallback(async (chainId) => {
     if (!mounted || !switchNetwork) return;
     
     try {
       if (typeof switchNetwork === 'function') {
-        await switchNetwork({ networkChainId: 1 });
+        await switchNetwork({ networkChainId: chainId });
       } else {
         console.warn('switchNetwork is not available');
       }
     } catch (error) {
-      console.error("Failed to switch to Ethereum network:", error);
+      console.error(`Failed to switch to network ${chainId}:`, error);
       throw error;
     }
   }, [switchNetwork, mounted]);
@@ -167,8 +169,8 @@ export function useDynamicWallet() {
       switchNetwork: async () => {},
       setNetwork: () => {},
       openConnectionModal: () => {},
-      switchToBase: async () => {},
-      switchToEthereum: async () => {},
+      switchToCurrentNetwork: async () => {},
+      switchToNetwork: async () => {},
       
       // Error handling
       walletConnectorError: null,
@@ -201,8 +203,12 @@ export function useDynamicWallet() {
     switchNetwork,
     setNetwork,
     openConnectionModal,
-    switchToBase,
-    switchToEthereum,
+    switchToCurrentNetwork,
+    switchToNetwork,
+    
+    // Legacy support for backward compatibility
+    switchToBase: switchToCurrentNetwork,
+    switchToEthereum: switchToNetwork.bind(null, 1),
     
     // Error handling
     walletConnectorError,

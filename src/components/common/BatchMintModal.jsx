@@ -70,11 +70,11 @@ export default function BatchMintModal({
           
           // Check if the mint was successful (onBatchMint returns null on failure)
           if (result && result.hash) {
-            // Update status to success
-            setMintStatus(prev => ({
-              ...prev,
-              [item.tokenId]: { status: 'success', message: 'Minted successfully!' }
-            }));
+          // Update status to success
+          setMintStatus(prev => ({
+            ...prev,
+            [item.tokenId]: { status: 'success', message: 'Minted successfully!' }
+          }));
           } else {
             // Mint failed or was cancelled
             setMintStatus(prev => ({
@@ -259,33 +259,33 @@ export default function BatchMintModal({
 
         {/* Action Buttons - Fixed at bottom */}
         <div className="flex gap-2 pt-4 border-t border-border/50">
-          {!isProcessing ? (
-            <>
-              <Button 
-                onClick={handleBatchMint}
-                disabled={!walletConnected || cart.length === 0}
-                className="flex-1"
-              >
-                <Zap className="w-4 h-4 mr-2" />
+            {!isProcessing ? (
+              <>
+                <Button 
+                  onClick={handleBatchMint}
+                  disabled={!walletConnected || cart.length === 0}
+                  className="flex-1"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
                 {!walletConnected ? 'Connect Wallet' : cart.length === 0 ? 'Cart Empty' : 'Start Batch Mint'}
-              </Button>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={onClose}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
               <Button 
                 variant="outline" 
                 onClick={onClose}
+                className="flex-1"
+                disabled={isProcessing}
               >
-                Cancel
+                {isProcessing ? 'Processing...' : 'Close'}
               </Button>
-            </>
-          ) : (
-            <Button 
-              variant="outline" 
-              onClick={onClose}
-              className="flex-1"
-              disabled={isProcessing}
-            >
-              {isProcessing ? 'Processing...' : 'Close'}
-            </Button>
-          )}
+            )}
         </div>
       </DialogContent>
     </Dialog>

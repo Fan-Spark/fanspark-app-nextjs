@@ -7,7 +7,7 @@ import { useContractDataSync } from '@/hooks/useContractDataSync';
 import { isEthereumWallet } from '@dynamic-labs/ethereum';
 import contractABI from "@/utils/contractABI.json";
 import { formatEther } from "ethers/lib/utils";
-import { SUPPORTED_NETWORKS, DEFAULT_NETWORK, getNetworkById } from "@/utils/networkConfig";
+import { SUPPORTED_NETWORKS, DEFAULT_NETWORK, getNetworkById, CURRENT_NETWORK, getTransactionUrl, getContractUrl, BRAND_CONFIG } from "@/utils/networkConfig";
 import { useCart } from '@/components/CartProvider';
 import { useTheme } from '@/components/common/ThemeProvider';
 
@@ -84,8 +84,8 @@ export default function HomeComponent() {
     connect,
     disconnect,
     openConnectionModal,
-    switchToBase,
-    switchToEthereum,
+    switchToCurrentNetwork,
+    switchToNetwork,
   } = useDynamicWallet();
   
   // Use the enhanced cached contract data with real-time sync
@@ -251,9 +251,8 @@ export default function HomeComponent() {
       autoClose: 5000,
       onClick: () => {
         if (txHash) {
-          // Open transaction in explorer
-          const explorerUrl = network?.blockExplorers?.default?.url || 'https://basescan.org';
-          window.open(`${explorerUrl}/tx/${txHash}`, '_blank');
+          // Open transaction in explorer using helper
+          window.open(getTransactionUrl(txHash), '_blank');
         }
       }
     });
@@ -266,14 +265,13 @@ export default function HomeComponent() {
           {
             autoClose: 7000,
             onClick: () => {
-              const explorerUrl = network?.blockExplorers?.default?.url || 'https://basescan.org';
-              window.open(`${explorerUrl}/tx/${txHash}`, '_blank');
+              window.open(getTransactionUrl(txHash), '_blank');
             }
           }
         );
       }, 1000);
     }
-  }, [network]);
+  }, []);
 
   // Helper function to mint using Dynamic.xyz wallet client
   const mintWithDynamicWallet = async (tokenId, amount, useWhitelist = false) => {
@@ -491,14 +489,14 @@ export default function HomeComponent() {
       });
       
       // Use Dynamic's switchNetwork function
-      if (targetNetwork.chainId === 8453) {
-        await switchToBase();
-        toast.success("✅ Switched to Base Network", {
+      if (targetNetwork.chainId === CURRENT_NETWORK.chainId) {
+        await switchToCurrentNetwork();
+        toast.success(`✅ Switched to ${CURRENT_NETWORK.displayName}`, {
           autoClose: 3000,
         });
-      } else if (targetNetwork.chainId === 1) {
-        await switchToEthereum();
-        toast.success("✅ Switched to Ethereum Network", {
+      } else {
+        await switchToNetwork(targetNetwork.chainId);
+        toast.success(`✅ Switched to ${targetNetwork.name}`, {
           autoClose: 3000,
         });
       }
@@ -738,8 +736,8 @@ export default function HomeComponent() {
                   hasWallet,
                   network,
                   networkChainId: network?.chainId,
-                  isBase: network?.isBase,
-                  shouldShowSwitch: hasWallet && network && network.chainId !== 8453
+                  isCurrentNetwork: network?.isCurrentNetwork,
+                  shouldShowSwitch: hasWallet && network && network.chainId !== CURRENT_NETWORK.chainId
                 });
                 
                 if (!isConnected) {
@@ -753,15 +751,15 @@ export default function HomeComponent() {
                       Connect to Start
                     </Button>
                   );
-                } else if (hasWallet && network && network.chainId && network.chainId !== 8453) {
+                } else if (hasWallet && network && network.chainId && network.chainId !== CURRENT_NETWORK.chainId) {
                   return (
                     <Button 
                       size="lg" 
                       className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg px-6 py-2 text-base font-semibold"
-                      onClick={switchToBase}
+                      onClick={switchToCurrentNetwork}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
-                      Switch to Base Network
+                      Switch to {CURRENT_NETWORK.displayName}
                     </Button>
                   );
                 } else {
@@ -784,10 +782,10 @@ export default function HomeComponent() {
                 variant="outline" 
                 size="lg"
                 className="border-border/30 hover:bg-accent/20 px-6 py-2 text-base font-semibold"
-                onClick={() => window.open('https://basescan.org', '_blank')}
+                onClick={() => window.open(getContractUrl(CONTRACT_ADDRESS), '_blank')}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
-                View on BaseScan
+                View on {CURRENT_NETWORK.blockExplorerName}
               </Button>
             </div>
             
@@ -1121,27 +1119,22 @@ export default function HomeComponent() {
         onSwitchNetwork={handleSwitchNetwork}
         supportedNetworks={[
           {
-            chainId: 8453,
-            name: 'Base',
-            explorerUrl: 'https://basescan.org'
-          },
-          {
-            chainId: 1,
-            name: 'Ethereum',
-            explorerUrl: 'https://etherscan.io'
+            chainId: CURRENT_NETWORK.chainId,
+            name: CURRENT_NETWORK.displayName,
+            explorerUrl: CURRENT_NETWORK.blockExplorerUrl
           }
         ]}
         currentNetwork={network ? {
           chainId: network.chainId,
           name: network.name,
-          explorerUrl: network.chainId === 8453 ? 'https://basescan.org' : 'https://etherscan.io'
+          explorerUrl: CURRENT_NETWORK.blockExplorerUrl
         } : null}
       />
 
       {/* Footer */}
       <footer className="border-t py-6 mt-16">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>FanSpark's · Base Network · {currentYear}</p>
+          <p>{BRAND_CONFIG.name} · {CURRENT_NETWORK.displayName} · {currentYear}</p>
         </div>
       </footer>
     </div>

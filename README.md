@@ -1,39 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Reward Crate Minter
 
-## Getting Started
+A Next.js application for minting RewardCrate ERC1155 tokens on configurable blockchain networks.
 
-First, run the development server:
+## Features
+
+- 🔗 **Multi-Network Support**: Configurable blockchain networks (Base, Flow, Ethereum, etc.)
+- 💰 **Dynamic Pricing**: Support for public and whitelist pricing
+- 🛒 **Cart System**: Add multiple tokens to cart for batch minting
+- ⚡ **Batch Minting**: Mint multiple tokens in sequence
+- 🎨 **NFT Metadata**: Display actual NFT images and metadata
+- 📱 **Mobile Responsive**: Works on all devices
+- 🔐 **Wallet Integration**: Multiple wallet support via Dynamic.xyz
+- 🌐 **Real-time Updates**: Live contract data synchronization
+
+## Network Configuration
+
+This application supports multiple blockchain networks through environment variables. By default, it's configured for Base Sepolia testnet, but can be easily switched to other networks.
+
+### Supported Networks
+
+- **Base Mainnet** (Chain ID: 8453)
+- **Base Sepolia** (Chain ID: 84532) - Default
+- **Ethereum Mainnet** (Chain ID: 1)
+- **Flow EVM** (Chain ID: 747) - Future support
+- **Custom Networks** - Configure any EVM-compatible network
+
+### Environment Configuration
+
+Copy `.env.local.example` to `.env.local` and configure your network:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Key environment variables:
+- `NEXT_PUBLIC_NETWORK_NAME`: Network identifier
+- `NEXT_PUBLIC_NETWORK_DISPLAY_NAME`: User-friendly network name
+- `NEXT_PUBLIC_CHAIN_ID`: Network chain ID
+- `NEXT_PUBLIC_RPC_URL`: Network RPC endpoint
+- `NEXT_PUBLIC_BLOCK_EXPLORER_URL`: Block explorer URL
+- `NEXT_PUBLIC_CONTRACT_ADDRESS`: Smart contract address
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Quick Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Configure environment**
+   ```bash
+   cp .env.local.example .env.local
+   # Edit .env.local with your configuration
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Fetch contract data**
+   ```bash
+   npm run fetch-contract-data
+   # or for specific collection:
+   node scripts/fetch-contract-data.js reward-crate
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run fetch-contract-data` - Fetch latest contract data from blockchain
+- `npm run test-whitelist` - Test whitelist functionality
+- `npm run test-agents` - Test AI agents API
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+
+- **Frontend**: Next.js 15 with React 18
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Wallet**: Dynamic.xyz for multi-wallet support
+- **Blockchain**: Ethers.js for smart contract interaction
+- **State**: React hooks with local storage persistence
+
+## Development
+
+### Adding New Networks
+
+1. Update `.env.local` with new network configuration
+2. The application will automatically adapt to the new network
+3. Test with the new network's testnet first
+
+### Adding New Collections
+
+1. Create metadata files in `public/metadata/[collection-name]/`
+2. Run the fetch script with the collection name:
+   ```bash
+   node scripts/fetch-contract-data.js [collection-name]
+   ```
+
+## Deployment
+
+The application is designed to be deployed on Vercel, Netlify, or any platform supporting Next.js.
+
+1. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+2. **Set environment variables** on your hosting platform
+
+3. **Deploy** using your preferred method
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+[MIT License](LICENSE)
 
 # RewardCrate Minting dApp
 
