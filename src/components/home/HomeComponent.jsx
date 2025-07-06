@@ -538,10 +538,11 @@ export default function HomeComponent() {
   }, [tokens]);
 
   // Function to merge live counts with existing token data
-  const updateTokensWithLiveCounts = useCallback((liveCounts) => {
-    if (!tokens || Object.keys(liveCounts).length === 0) return tokens;
+  const updateTokensWithLiveCounts = useCallback((liveCounts, currentTokens = null) => {
+    const baseTokens = currentTokens || tokensWithLiveData;
+    if (!baseTokens || Object.keys(liveCounts).length === 0) return baseTokens;
     
-    return tokens.map(token => {
+    return baseTokens.map(token => {
       const liveData = liveCounts[token.id];
       if (liveData) {
         return {
@@ -553,9 +554,9 @@ export default function HomeComponent() {
           isAvailable: token.mintingActive && !liveData.isSoldOut,
         };
       }
-      return token;
+      return token; // Keep existing token data (including any previous live data)
     });
-  }, [tokens]);
+  }, [tokensWithLiveData]);
 
   // State to hold tokens with live data
   const [tokensWithLiveData, setTokensWithLiveData] = useState([]);
@@ -609,9 +610,11 @@ export default function HomeComponent() {
       const liveCounts = await fetchLiveTokenCounts(specificTokenIds);
       
       if (Object.keys(liveCounts).length > 0) {
-        // Merge with existing token data
-        const updatedTokens = updateTokensWithLiveCounts(liveCounts);
-        setTokensWithLiveData(updatedTokens);
+        // Merge with existing token data using current state
+        setTokensWithLiveData(currentTokens => {
+          const updatedTokens = updateTokensWithLiveCounts(liveCounts, currentTokens);
+          return updatedTokens;
+        });
         
         console.log('✅ Token counts updated:', Object.keys(liveCounts));
         return liveCounts;
@@ -736,11 +739,11 @@ export default function HomeComponent() {
         autoClose: 2000,
       });
       
-      // Refresh only the dynamic data (counts) for this specific token
+      // Refresh all token counts to maintain consistency
       try {
         // Wait a moment for blockchain to update
         setTimeout(async () => {
-          await refreshTokenCounts([tokenId], false);
+          await refreshTokenCounts(null, false); // Refresh all tokens, not just the minted one
           toast.success("✅ Token counts updated!", {
             autoClose: 2000,
           });
@@ -806,11 +809,11 @@ export default function HomeComponent() {
         autoClose: 2000,
       });
       
-      // Refresh only the dynamic data (counts) for this specific token
+      // Refresh all token counts to maintain consistency
       try {
         // Wait a moment for blockchain to update
         setTimeout(async () => {
-          await refreshTokenCounts([tokenId], false);
+          await refreshTokenCounts(null, false); // Refresh all tokens, not just the minted one
           toast.success("✅ Token counts updated!", {
             autoClose: 2000,
           });
