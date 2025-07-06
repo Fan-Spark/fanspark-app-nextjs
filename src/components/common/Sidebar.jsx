@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import PortalLink from "@/components/common/PortalLink";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
   Package,
   StickyNote,
@@ -24,17 +25,19 @@ export default function Sidebar({
   const collections = [
     {
       id: "reward-crate",
-      name: "Reward Crate",
-      description: "ERC1155 NFT Collection",
+      name: "Stellar Ardent",
+      description: "Issue #1 Comic Book",
       icon: Package,
+      image: "/reward-crate.png",
+      useImage: true,
       status: "active",
       href: "/",
       gradient: "from-blue-500 to-purple-600"
     },
     {
       id: "sticker-collection",
-      name: "Sticker Collection",
-      description: "Coming Soon",
+      name: "Stickers",
+      description: "Collect All to Earn Rewards",
       icon: StickyNote,
       status: "coming-soon",
       href: "#sticker-collection",
@@ -42,8 +45,8 @@ export default function Sidebar({
     },
     {
       id: "chain-competition",
-      name: "Chain Competition",
-      description: "Soulbound Tokens",
+      name: "Chain Spark",
+      description: "Choose The Winner Chain",
       icon: Trophy,
       status: "coming-soon",
       href: "#chain-competition",
@@ -51,8 +54,8 @@ export default function Sidebar({
     },
     {
       id: "featured-fs",
-      name: "Featured FS Collectibles",
-      description: "Premium Collection",
+      name: "Featured Collectibles",
+      description: "Grab it before it's gone!",
       icon: Star,
       status: "coming-soon",
       href: "#featured-fs",
@@ -154,16 +157,33 @@ export default function Sidebar({
                 >
                   <div className="flex items-center w-full">
                     <div className="relative mr-3">
-                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
-                        isActive 
-                          ? `bg-gradient-to-br ${collection.gradient} shadow-lg` 
-                          : "bg-accent/20 border border-border/30"
-                      }`}>
-                        <Icon className={`h-4 w-4 ${
-                          isActive ? "text-white" : getStatusColor(collection.status)
-                        }`} />
-                      </div>
-                      {isActive && (
+                      {collection.useImage ? (
+                        <div className="relative">
+                          <Image
+                            src={collection.image}
+                            alt={collection.name}
+                            width={32}
+                            height={32}
+                            className={`h-8 w-8 object-cover rounded-lg ${
+                              isActive ? "ring-2 ring-primary shadow-lg" : "border border-border/30"
+                            }`}
+                          />
+                          {isActive && (
+                            <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full border border-background animate-pulse"></div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${
+                          isActive 
+                            ? `bg-gradient-to-br ${collection.gradient} shadow-lg` 
+                            : "bg-accent/20 border border-border/30"
+                        }`}>
+                          <Icon className={`h-4 w-4 ${
+                            isActive ? "text-white" : getStatusColor(collection.status)
+                          }`} />
+                        </div>
+                      )}
+                      {!collection.useImage && isActive && (
                         <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full border border-background animate-pulse"></div>
                       )}
                     </div>

@@ -712,7 +712,7 @@ export default function HomeComponent() {
     <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-border/50 bg-gradient-to-br from-accent/10 to-accent/5">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       
-      <div className="relative container mx-auto px-4 py-24 text-center">
+      <div className="relative container mx-auto px-4 py-12 text-center">
         <div className="max-w-3xl mx-auto">
           <Badge variant="outline" className="mb-4 text-xs bg-background/50 backdrop-blur-sm border-border/30">
             <Sparkles className="w-3 h-3 mr-2 text-primary" />
