@@ -474,7 +474,7 @@ export default function HomeComponent() {
   }, [hasWallet, walletAddress]);
 
   // Helper function to fetch only dynamic data (minted counts) from blockchain using RPC
-  const fetchLiveTokenCounts = useCallback(async (tokenIds = null) => {
+  const fetchLiveTokenCounts = useCallback(async (tokenIds = null, currentTokens = null) => {
     try {
       console.log('🔄 Fetching live token counts from blockchain...');
       
@@ -493,7 +493,15 @@ export default function HomeComponent() {
       );
 
       // Get token IDs to update (either specific ones or all active tokens)
-      const targetTokenIds = tokenIds || tokens.filter(t => t.mintingActive || t.isAvailable).map(t => t.id);
+      let targetTokenIds;
+      if (tokenIds) {
+        targetTokenIds = tokenIds;
+      } else if (currentTokens && currentTokens.length > 0) {
+        targetTokenIds = currentTokens.filter(t => t.mintingActive || t.isAvailable).map(t => t.id);
+      } else {
+        // Default to common token IDs if no tokens available
+        targetTokenIds = [0, 1, 2];
+      }
       
       const updatedCounts = {};
       
@@ -535,14 +543,13 @@ export default function HomeComponent() {
       console.error('❌ Failed to fetch live token counts:', error);
       return {};
     }
-  }, [tokens]);
+  }, []);
 
   // Function to merge live counts with existing token data
-  const updateTokensWithLiveCounts = useCallback((liveCounts, currentTokens = null) => {
-    const baseTokens = currentTokens || tokensWithLiveData;
-    if (!baseTokens || Object.keys(liveCounts).length === 0) return baseTokens;
+  const updateTokensWithLiveCounts = useCallback((liveCounts, currentTokens) => {
+    if (!currentTokens || Object.keys(liveCounts).length === 0) return currentTokens;
     
-    return baseTokens.map(token => {
+    return currentTokens.map(token => {
       const liveData = liveCounts[token.id];
       if (liveData) {
         return {
@@ -556,7 +563,7 @@ export default function HomeComponent() {
       }
       return token; // Keep existing token data (including any previous live data)
     });
-  }, [tokensWithLiveData]);
+  }, []);
 
   // State to hold tokens with live data
   const [tokensWithLiveData, setTokensWithLiveData] = useState([]);
@@ -571,6 +578,14 @@ export default function HomeComponent() {
 
   // Track if we've done the initial fetch
   const initialFetchDone = useRef(false);
+  
+  // Keep a ref to the current tokens to avoid dependency issues
+  const tokensRef = useRef(tokens);
+  
+  // Update the ref when tokens change
+  useEffect(() => {
+    tokensRef.current = tokens;
+  }, [tokens]);
 
   // Fetch live counts when component mounts (no wallet needed)
   useEffect(() => {
@@ -581,7 +596,7 @@ export default function HomeComponent() {
         console.error('❌ Failed to fetch initial live counts:', error);
       });
     }
-  }, [tokens.length > 0]); // Only run when we first have tokens
+  }, [tokens.length]); // Only run when we first have tokens
 
   // Optional: Periodically refresh counts (every 60 seconds)
   useEffect(() => {
@@ -606,29 +621,47 @@ export default function HomeComponent() {
         setIsRefreshingCounts(true);
       }
       
-      // Fetch only the dynamic counts from blockchain
-      const liveCounts = await fetchLiveTokenCounts(specificTokenIds);
-      
-      if (Object.keys(liveCounts).length > 0) {
-        // Merge with existing token data using current state
+      // Use functional update to get current tokens
+      return new Promise((resolve, reject) => {
         setTokensWithLiveData(currentTokens => {
-          const updatedTokens = updateTokensWithLiveCounts(liveCounts, currentTokens);
-          return updatedTokens;
+          // Use current tokens to fetch live counts
+          const currentTokensToUse = currentTokens.length > 0 ? currentTokens : tokensRef.current;
+          
+          fetchLiveTokenCounts(specificTokenIds, currentTokensToUse)
+            .then(liveCounts => {
+              if (Object.keys(liveCounts).length > 0) {
+                // Merge with existing token data
+                const updatedTokens = updateTokensWithLiveCounts(liveCounts, currentTokensToUse);
+                setTokensWithLiveData(updatedTokens);
+                
+                console.log('✅ Token counts updated:', Object.keys(liveCounts));
+                resolve(liveCounts);
+              } else {
+                resolve({});
+              }
+            })
+            .catch(error => {
+              console.error('❌ Token count refresh failed:', error);
+              reject(error);
+            })
+            .finally(() => {
+              if (showLoading) {
+                setIsRefreshingCounts(false);
+              }
+            });
+          
+          return currentTokens; // Return current tokens unchanged
         });
-        
-        console.log('✅ Token counts updated:', Object.keys(liveCounts));
-        return liveCounts;
-      }
+      });
       
     } catch (error) {
       console.error('❌ Token count refresh failed:', error);
-      throw error;
-    } finally {
       if (showLoading) {
         setIsRefreshingCounts(false);
       }
+      throw error;
     }
-  }, [fetchLiveTokenCounts, updateTokensWithLiveCounts]);
+  }, [fetchLiveTokenCounts]);
 
   // Manual refresh function for the refresh button
   const handleManualRefresh = useCallback(async () => {
