@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Minus, 
   Plus, 
@@ -36,7 +37,8 @@ export default function TokenCard({
   onAddToCart,
   isInCart,
   cartQuantity,
-  isMinting = false
+  isMinting = false,
+  isRefreshingCounts = false
 }) {
   const [mintAmount, setMintAmount] = useState(1);
   const [isWhitelisted, setIsWhitelisted] = useState(false);
@@ -274,11 +276,19 @@ export default function TokenCard({
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Trophy className="w-3 h-3" />
-              <span>{token.minted} / {token.unlimited ? "∞" : token.maxSupply}</span>
+              {isRefreshingCounts ? (
+                <Skeleton className="h-4 w-16" />
+              ) : (
+                <span>{token.minted} / {token.unlimited ? "∞" : token.maxSupply}</span>
+              )}
             </div>
             <div className="flex items-center gap-1">
               <Package className="w-3 h-3" />
-              <span>{token.unlimited ? "Unlimited" : token.unminted} left</span>
+              {isRefreshingCounts ? (
+                <Skeleton className="h-4 w-14" />
+              ) : (
+                <span>{token.unlimited ? "Unlimited" : token.unminted} left</span>
+              )}
             </div>
           </div>
         </div>
@@ -309,11 +319,19 @@ export default function TokenCard({
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-muted/50 rounded-lg p-2">
                       <Label className="text-xs text-muted-foreground">Max per TX</Label>
-                      <div className="text-sm font-medium">{token.maxMintPerTx}</div>
+                      {isRefreshingCounts ? (
+                        <Skeleton className="h-4 w-8 mt-1" />
+                      ) : (
+                        <div className="text-sm font-medium">{token.maxMintPerTx}</div>
+                      )}
                     </div>
                     <div className="bg-muted/50 rounded-lg p-2">
                       <Label className="text-xs text-muted-foreground">Progress</Label>
-                      <div className="text-sm font-medium">{token.mintedPercentage}%</div>
+                      {isRefreshingCounts ? (
+                        <Skeleton className="h-4 w-10 mt-1" />
+                      ) : (
+                        <div className="text-sm font-medium">{token.mintedPercentage}%</div>
+                      )}
                     </div>
                   </div>
                 </div>

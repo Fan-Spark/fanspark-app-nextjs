@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ethers } from "ethers";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useContractDataSync } from '@/hooks/useContractDataSync';
@@ -473,11 +473,184 @@ export default function HomeComponent() {
     checkWhitelist();
   }, [hasWallet, walletAddress]);
 
-  // Function to refresh data after successful mint
-  const refreshTokenData = useCallback(async () => {
-    console.log('🔄 Refreshing token data after mint...');
-    await refreshContractData();
-  }, [refreshContractData]);
+  // Helper function to fetch only dynamic data (minted counts) from blockchain using RPC
+  const fetchLiveTokenCounts = useCallback(async (tokenIds = null) => {
+    try {
+      console.log('🔄 Fetching live token counts from blockchain...');
+      
+      if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || !process.env.NEXT_PUBLIC_RPC_URL) {
+        throw new Error('Missing contract configuration');
+      }
+
+      // Create provider using RPC endpoint (no wallet needed for reading)
+      const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
+      
+      // Create contract instance for reading
+      const contract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        contractABI,
+        provider
+      );
+
+      // Get token IDs to update (either specific ones or all active tokens)
+      const targetTokenIds = tokenIds || tokens.filter(t => t.mintingActive || t.isAvailable).map(t => t.id);
+      
+      const updatedCounts = {};
+      
+      // Fetch current counts for each token
+      for (const tokenId of targetTokenIds) {
+        try {
+          // Fetch both token config and unminted supply
+          const [tokenConfig, unmintedSupply] = await Promise.all([
+            contract.tokenConfigs(tokenId),
+            contract.getUnmintedSupply(tokenId).catch(() => null) // Some contracts might not have this
+          ]);
+          
+          const minted = parseInt(tokenConfig.minted.toString());
+          const maxSupply = parseInt(tokenConfig.maxSupply.toString());
+          const unlimited = tokenConfig.unlimited || maxSupply === 0;
+          const unminted = unlimited ? null : (unmintedSupply ? parseInt(unmintedSupply.toString()) : maxSupply - minted);
+          
+          updatedCounts[tokenId] = {
+            minted,
+            maxSupply: unlimited ? null : maxSupply,
+            unminted,
+            unlimited,
+            mintingActive: tokenConfig.mintingActive,
+            isWhitelistActive: tokenConfig.isWhitelistActive,
+            mintedPercentage: unlimited ? 0 : Math.floor((minted / maxSupply) * 100),
+            isSoldOut: unlimited ? false : minted >= maxSupply,
+            lastUpdated: Date.now()
+          };
+          
+          console.log(`✅ Token ${tokenId}: ${minted}/${unlimited ? '∞' : maxSupply} minted (${unlimited ? 'unlimited' : unminted} left)`);
+        } catch (error) {
+          console.error(`❌ Failed to fetch data for token ${tokenId}:`, error);
+        }
+      }
+
+      return updatedCounts;
+      
+    } catch (error) {
+      console.error('❌ Failed to fetch live token counts:', error);
+      return {};
+    }
+  }, [tokens]);
+
+  // Function to merge live counts with existing token data
+  const updateTokensWithLiveCounts = useCallback((liveCounts) => {
+    if (!tokens || Object.keys(liveCounts).length === 0) return tokens;
+    
+    return tokens.map(token => {
+      const liveData = liveCounts[token.id];
+      if (liveData) {
+        return {
+          ...token,
+          ...liveData,
+          // Update display values
+          maxSupplyDisplay: liveData.unlimited ? "∞" : liveData.maxSupply.toString(),
+          unmintedDisplay: liveData.unlimited ? "Unlimited" : liveData.unminted.toString(),
+          isAvailable: token.mintingActive && !liveData.isSoldOut,
+        };
+      }
+      return token;
+    });
+  }, [tokens]);
+
+  // State to hold tokens with live data
+  const [tokensWithLiveData, setTokensWithLiveData] = useState([]);
+  
+  // Loading state for live count fetching
+  const [isRefreshingCounts, setIsRefreshingCounts] = useState(false);
+
+  // Update tokens with live data when base tokens change
+  useEffect(() => {
+    setTokensWithLiveData(tokens);
+  }, [tokens]);
+
+  // Track if we've done the initial fetch
+  const initialFetchDone = useRef(false);
+
+  // Fetch live counts when component mounts (no wallet needed)
+  useEffect(() => {
+    if (tokens && tokens.length > 0 && !initialFetchDone.current) {
+      console.log('🔄 Fetching initial live token counts...');
+      initialFetchDone.current = true;
+      refreshTokenCounts(null, true).catch(error => {
+        console.error('❌ Failed to fetch initial live counts:', error);
+      });
+    }
+  }, [tokens.length > 0]); // Only run when we first have tokens
+
+  // Optional: Periodically refresh counts (every 60 seconds)
+  useEffect(() => {
+    if (!tokens || tokens.length === 0) return;
+
+    const interval = setInterval(() => {
+      console.log('🔄 Periodic refresh of token counts...');
+      refreshTokenCounts(null, false).catch(error => {
+        console.error('❌ Periodic refresh failed:', error);
+      });
+    }, 60000); // 60 seconds (less frequent)
+
+    return () => clearInterval(interval);
+  }, [tokens.length]); // Only depend on whether we have tokens
+
+  // Enhanced refresh function that only updates dynamic data
+  const refreshTokenCounts = useCallback(async (specificTokenIds = null, showLoading = false) => {
+    try {
+      console.log('🔄 Refreshing token counts...');
+      
+      if (showLoading) {
+        setIsRefreshingCounts(true);
+      }
+      
+      // Fetch only the dynamic counts from blockchain
+      const liveCounts = await fetchLiveTokenCounts(specificTokenIds);
+      
+      if (Object.keys(liveCounts).length > 0) {
+        // Merge with existing token data
+        const updatedTokens = updateTokensWithLiveCounts(liveCounts);
+        setTokensWithLiveData(updatedTokens);
+        
+        console.log('✅ Token counts updated:', Object.keys(liveCounts));
+        return liveCounts;
+      }
+      
+    } catch (error) {
+      console.error('❌ Token count refresh failed:', error);
+      throw error;
+    } finally {
+      if (showLoading) {
+        setIsRefreshingCounts(false);
+      }
+    }
+  }, [fetchLiveTokenCounts, updateTokensWithLiveCounts]);
+
+  // Manual refresh function for the refresh button
+  const handleManualRefresh = useCallback(async () => {
+    try {
+      console.log('🔄 Manual refresh triggered...');
+      
+      // Show loading toast
+      toast.info("🔄 Refreshing token counts...", {
+        autoClose: 2000,
+      });
+      
+      // Refresh with loading state
+      await refreshTokenCounts(null, true);
+      
+      toast.success("✅ Token counts refreshed!", {
+        autoClose: 2000,
+      });
+      
+    } catch (error) {
+      console.error('❌ Manual refresh failed:', error);
+      toast.error("❌ Failed to refresh token counts", {
+        autoClose: 3000,
+      });
+    }
+  }, [refreshTokenCounts]);
 
   const handleSwitchNetwork = async (targetNetwork) => {
     try {
@@ -558,14 +731,26 @@ export default function HomeComponent() {
         tokenId
       );
       
-      // Refresh token data after successful mint
+      // Show immediate feedback that counts are being updated
+      toast.info("🔄 Updating token counts...", {
+        autoClose: 2000,
+      });
+      
+      // Refresh only the dynamic data (counts) for this specific token
       try {
-        await refreshContractData();
+        // Wait a moment for blockchain to update
+        setTimeout(async () => {
+          await refreshTokenCounts([tokenId], false);
+          toast.success("✅ Token counts updated!", {
+            autoClose: 2000,
+          });
+        }, 3000);
+        
       } catch (refreshError) {
-        console.error("Failed to refresh data:", refreshError);
+        console.error("Failed to refresh counts:", refreshError);
         // Show a warning toast but don't fail the mint
-        toast.warn("🔄 Mint successful but data refresh failed. Page may need refresh.", {
-          autoClose: 4000,
+        toast.warn("🔄 Mint successful but count refresh failed. Please refresh to see updated counts.", {
+          autoClose: 6000,
         });
       }
       
@@ -616,13 +801,25 @@ export default function HomeComponent() {
       // Remove from cart after successful mint
       removeFromCart(tokenId);
       
-      // Refresh token data
+      // Show immediate feedback that counts are being updated
+      toast.info("🔄 Updating token counts...", {
+        autoClose: 2000,
+      });
+      
+      // Refresh only the dynamic data (counts) for this specific token
       try {
-        await refreshContractData();
+        // Wait a moment for blockchain to update
+        setTimeout(async () => {
+          await refreshTokenCounts([tokenId], false);
+          toast.success("✅ Token counts updated!", {
+            autoClose: 2000,
+          });
+        }, 3000);
+        
       } catch (refreshError) {
-        console.error("Failed to refresh data:", refreshError);
-        toast.warn("🔄 Mint successful but data refresh failed. Page may need refresh.", {
-          autoClose: 4000,
+        console.error("Failed to refresh counts:", refreshError);
+        toast.warn("🔄 Mint successful but count refresh failed. Please refresh to see updated counts.", {
+          autoClose: 6000,
         });
       }
       
@@ -837,8 +1034,8 @@ export default function HomeComponent() {
             <div className="flex items-center gap-2">
               {/* Sync Indicator */}
               <SyncIndicator
-                pendingRefresh={pendingRefresh}
-                onManualSync={checkForUpdates}
+                pendingRefresh={isRefreshingCounts}
+                onManualSync={handleManualRefresh}
               />
               
               <CartButton 
@@ -860,7 +1057,7 @@ export default function HomeComponent() {
 
           {/* Tokens Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tokens.filter(token => token.mintingActive).map(token => (
+            {tokensWithLiveData.filter(token => token.mintingActive).map(token => (
               <ErrorBoundary key={token.id}>
                 <TokenCard 
                   token={token}
@@ -877,6 +1074,7 @@ export default function HomeComponent() {
                   wallet={primaryWallet}
                   network={network}
                   isMinting={isTokenMinting(token.id)}
+                  isRefreshingCounts={isRefreshingCounts}
                 />
               </ErrorBoundary>
             ))}
@@ -913,7 +1111,7 @@ export default function HomeComponent() {
           )}
 
           {/* Loading State */}
-          {isDataLoading && (
+          {(isDataLoading || (isRefreshingCounts && tokensWithLiveData.length === 0)) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index} className="overflow-hidden">
@@ -936,7 +1134,7 @@ export default function HomeComponent() {
           )}
 
           {/* Empty State */}
-          {!isDataLoading && tokens.length === 0 && !dataError && (
+          {!isDataLoading && tokensWithLiveData.length === 0 && !dataError && (
             <div className="text-center py-12">
               <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No rewards available</h3>
