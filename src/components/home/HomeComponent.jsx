@@ -20,6 +20,7 @@ import NetworkModal from "@/components/common/NetworkModal";
 import ComingSoonPage from "@/components/common/ComingSoonPage";
 import SyncIndicator from "@/components/common/SyncIndicator";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
+import WelcomePopup from "@/components/common/WelcomePopup";
 
 // Import shadcn components
 import { Button } from "@/components/ui/button";
@@ -1033,6 +1034,9 @@ export default function HomeComponent() {
 
   return (
     <div className="pr-6 lg:pr-8">
+      {/* Welcome Popup */}
+      <WelcomePopup />
+      
       {dataError ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
