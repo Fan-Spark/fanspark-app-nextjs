@@ -253,7 +253,7 @@ export default function FloatingChat() {
                 <div className="flex items-center space-x-2 flex-1 justify-center">
                   <Sparkles size={20} />
                   <h3 className="font-semibold text-lg">
-                    {currentView === 'agents' ? 'Doodle Agents' : selectedAgent?.name}
+                    {currentView === 'agents' ? 'Fanspark Agents' : selectedAgent?.name}
                   </h3>
                 </div>
                 {currentView === 'chat' && (
@@ -336,7 +336,7 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
       return (
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="p-4 border-b flex-shrink-0">
-          <h4 className="text-sm font-medium text-muted-foreground">Choose a Doodle Agent to chat with</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">Choose a Fanspark Agent to chat with</h4>
         </div>
               <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-4 pb-6 space-y-3">
@@ -359,7 +359,7 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
                       <h4 className="font-semibold text-base">{agent.name}</h4>
                       <Badge variant="secondary" className="text-xs">
                         <Bot size={10} className="mr-1" />
-                        Doodle
+                        Fanspark
                       </Badge>
                       {chatSessions[agent.id] && chatSessions[agent.id].messageCount > 0 && (
                         <Badge variant="outline" className="text-xs ml-1">

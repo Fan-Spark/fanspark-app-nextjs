@@ -4,6 +4,48 @@ const API_BASE_URL = 'https://agents-api.doodles.app';
 const APP_ID = process.env.AGENTS_APP_ID;
 const APP_SECRET = process.env.AGENTS_APP_SECRET;
 
+// Mapping from original agent IDs to new Fanspark agent data
+const AGENT_MAPPING = {
+  'af5504a3-406e-0064-8ebb-22b7c1fca166': {
+    name: 'Kai',
+    avatar: '/character/Kai.png'
+  },
+  'b91b282c-b14a-0c3b-89da-bc535285117a': {
+    name: 'Aqualis',
+    avatar: '/character/Aqualis.png'
+  },
+  'c31ed031-8e65-0d9f-9c4c-fa22bf3ac89a': {
+    name: 'Soluna',
+    avatar: '/character/Soluna.png'
+  },
+  '89b30336-e318-00ba-89d5-392b23085f7b': {
+    name: 'Terranox',
+    avatar: '/character/Terranox.png'
+  }
+};
+
+function transformAgentData(agents) {
+  return agents.map(agent => {
+    const mappedAgent = AGENT_MAPPING[agent.id];
+    if (mappedAgent) {
+      return {
+        ...agent,
+        name: mappedAgent.name,
+        avatar: mappedAgent.avatar,
+        // Update bio to remove doodleverse references and use new names
+        bio: agent.bio
+          .replace(/Doodleverse/gi, 'Fanspark Universe')
+          .replace(/doodle/gi, 'Fanspark')
+          .replace(/Deysi the Verdant Vibe/gi, 'Kai')
+          .replace(/Doug Hermlin/gi, 'Aqualis')
+          .replace(/Maxine Klintz/gi, 'Soluna')
+          .replace(/Kyle the Keeper/gi, 'Terranox')
+      };
+    }
+    return agent;
+  });
+}
+
 export async function GET() {
   try {
     if (!APP_ID || !APP_SECRET) {
@@ -26,7 +68,14 @@ export async function GET() {
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    
+    // Transform the agent data with new names and avatars
+    const transformedData = {
+      ...data,
+      agents: transformAgentData(data.agents || [])
+    };
+    
+    return NextResponse.json(transformedData);
   } catch (error) {
     console.error('Error fetching agents:', error);
     return NextResponse.json({ 

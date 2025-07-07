@@ -38,8 +38,8 @@ export const CookieManager = {
 
 // Session management
 export const SessionManager = {
-  SESSION_KEY: 'doodle_chat_session',
-  USER_KEY: 'doodle_chat_user',
+  SESSION_KEY: 'fanspark_chat_session',
+  USER_KEY: 'fanspark_chat_user',
 
   // Get or create user session
   getOrCreateSession: () => {
@@ -76,7 +76,7 @@ export const SessionManager = {
 export const ChatHistoryManager = {
   // Get storage key for agent chat
   getStorageKey: (agentId, userId) => {
-    return `doodle_chat_${userId}_${agentId}`;
+    return `fanspark_chat_${userId}_${agentId}`;
   },
 
   // Save chat messages to localStorage
@@ -134,8 +134,8 @@ export const ChatHistoryManager = {
     try {
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith(`doodle_chat_${userId}_`)) {
-          const agentId = key.replace(`doodle_chat_${userId}_`, '');
+        if (key && key.startsWith(`fanspark_chat_${userId}_`)) {
+          const agentId = key.replace(`fanspark_chat_${userId}_`, '');
           const stored = localStorage.getItem(key);
           if (stored) {
             const chatData = JSON.parse(stored);
@@ -161,7 +161,7 @@ export const ChatHistoryManager = {
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith(`doodle_chat_${userId}_`)) {
+        if (key && key.startsWith(`fanspark_chat_${userId}_`)) {
           keysToRemove.push(key);
         }
       }
