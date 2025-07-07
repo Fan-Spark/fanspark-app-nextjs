@@ -51,26 +51,20 @@ export default function Template({ children }) {
       <div className="fixed left-6 top-6 h-[calc(100vh-3rem)] w-80 bg-background/80 backdrop-blur-xl border border-border/50 shadow-2xl rounded-2xl transition-all duration-500 z-50 hidden lg:block">
         <div className="flex flex-col h-full p-4">
           {/* Sidebar Header with Logo */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="h-12 w-auto flex items-center justify-center">
-                  <Image 
-                    src="/fanspark.png" 
-                    alt="FanSpark Logo" 
-                    width={220} 
-                    height={68}
-                    className="object-contain"
-                  />
-                </div>
-                <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
-              </div>
-
+          <div className="flex items-center justify-center mb-6">
+            <div className="h-12 w-auto flex items-center justify-center">
+              <Image 
+                src="/fanspark.png" 
+                alt="FanSpark Logo" 
+                width={220} 
+                height={68}
+                className="object-contain"
+              />
             </div>
           </div>
 
           {/* Wallet Connection Section */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30">
+          <div className="mb-6 flex justify-center">
             <DynamicWalletButton />
           </div>
 
@@ -109,21 +103,15 @@ export default function Template({ children }) {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border/60 backdrop-blur-sm">
         <div className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="h-10 w-auto flex items-center justify-center">
-                <Image 
-                  src="/fanspark.png" 
-                  alt="FanSpark Logo" 
-                  width={100} 
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium">NFT Collections</p>
+          <div className="flex items-center justify-center flex-1">
+            <div className="h-10 w-auto flex items-center justify-center">
+              <Image 
+                src="/fanspark.png" 
+                alt="FanSpark Logo" 
+                width={100} 
+                height={40}
+                className="object-contain"
+              />
             </div>
           </div>
           
@@ -154,30 +142,20 @@ export default function Template({ children }) {
               <SheetContent side="left" className="w-[320px] p-0 bg-background/95 shadow-2xl border-r border-border/60">
                 <div className="flex flex-col h-full p-4">
                   {/* Mobile Sidebar Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="relative">
-                        <div className="h-12 w-auto flex items-center justify-center">
-                          <Image 
-                            src="/fanspark.png" 
-                            alt="FanSpark Logo" 
-                            width={120} 
-                            height={48}
-                            className="object-contain"
-                          />
-                        </div>
-                        <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-background animate-pulse"></div>
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                          Collections
-                        </h2>
-                      </div>
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="h-12 w-auto flex items-center justify-center">
+                      <Image 
+                        src="/fanspark.png" 
+                        alt="FanSpark Logo" 
+                        width={120} 
+                        height={48}
+                        className="object-contain"
+                      />
                     </div>
                   </div>
 
                   {/* Mobile Wallet Connection */}
-                  <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30">
+                  <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30 flex justify-center">
                     <NoSSR fallback={
                       <div className="h-10 w-full bg-muted animate-pulse rounded-md"></div>
                     }>

@@ -532,7 +532,7 @@ export default function HomeComponent() {
             lastUpdated: Date.now()
           };
           
-          console.log(`✅ Token ${tokenId}: ${minted}/${unlimited ? '∞' : maxSupply} minted (${unlimited ? 'unlimited' : unminted} left)`);
+          console.log(`✅ Token ${tokenId}: ${minted}/${unlimited ? '∞' : maxSupply} minted (${unlimited ? 'unlimited' : `${unminted}`})`);
         } catch (error) {
           console.error(`❌ Failed to fetch data for token ${tokenId}:`, error);
         }

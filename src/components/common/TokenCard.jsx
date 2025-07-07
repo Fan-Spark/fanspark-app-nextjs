@@ -287,7 +287,7 @@ export default function TokenCard({
               {isRefreshingCounts ? (
                 <Skeleton className="h-4 w-14" />
               ) : (
-                <span>{token.unlimited ? "Unlimited" : token.unminted} left</span>
+                <span>{token.unlimited ? "Unlimited" : `${token.unminted} left`}</span>
               )}
             </div>
           </div>

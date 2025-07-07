@@ -359,7 +359,7 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
                       <h4 className="font-semibold text-base">{agent.name}</h4>
                       <Badge variant="secondary" className="text-xs">
                         <Bot size={10} className="mr-1" />
-                        Fanspark
+                        Stellar Ardent
                       </Badge>
                       {chatSessions[agent.id] && chatSessions[agent.id].messageCount > 0 && (
                         <Badge variant="outline" className="text-xs ml-1">
