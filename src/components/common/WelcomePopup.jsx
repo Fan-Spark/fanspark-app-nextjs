@@ -24,7 +24,7 @@ const WelcomePopup = () => {
 
   const handleVisitMainPage = () => {
     // You can update this URL to your actual main webpage
-    window.open('https://www.fanspark.xyz', '_blank');
+    window.open('https://www.fanspark.xyz/dreamnet-hackathon', '_blank');
     handleClose();
   };
 
