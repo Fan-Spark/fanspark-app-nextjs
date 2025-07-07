@@ -877,6 +877,12 @@ export default function HomeComponent() {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
+  // Helper function to get token name by ID
+  const getTokenName = (tokenId) => {
+    const token = tokensWithLiveData.find(t => t.id === tokenId);
+    return token?.name || `Token #${tokenId}`;
+  };
+
   const getCollectionInfo = (collectionId) => {
     const collectionConfigs = {
       "sticker-collection": {
@@ -1239,7 +1245,7 @@ export default function HomeComponent() {
                             <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:border-border transition-colors">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1">
-                                  <h4 className="font-medium truncate">Token #{item.tokenId}</h4>
+                                  <h4 className="font-medium truncate">{getTokenName(item.tokenId)}</h4>
                                   {item.useWhitelist && (
                                     <Badge variant="outline" size="sm" className="text-xs">
                                       WL
