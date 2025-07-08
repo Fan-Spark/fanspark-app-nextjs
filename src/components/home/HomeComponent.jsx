@@ -21,6 +21,7 @@ import ComingSoonPage from "@/components/common/ComingSoonPage";
 import SyncIndicator from "@/components/common/SyncIndicator";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import WelcomePopup from "@/components/common/WelcomePopup";
+import MintSuccessPopup from "@/components/common/MintSuccessPopup";
 
 // Import shadcn components
 import { Button } from "@/components/ui/button";
@@ -117,6 +118,7 @@ export default function HomeComponent() {
   const [whitelistStatus, setWhitelistStatus] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState("reward-crate");
+  const [showMintSuccessPopup, setShowMintSuccessPopup] = useState(false);
   
   // Minting state management
   const [mintingStates, setMintingStates] = useState({}); // Track loading per token
@@ -768,6 +770,9 @@ export default function HomeComponent() {
         tokenId
       );
       
+      // Show mint success popup
+      setShowMintSuccessPopup(true);
+      
       // Show immediate feedback that counts are being updated
       toast.info("🔄 Updating token counts...", {
         autoClose: 2000,
@@ -1355,6 +1360,7 @@ export default function HomeComponent() {
         walletConnected={hasWallet}
         isCorrectNetwork={isCorrectNetwork}
         wallet={primaryWallet}
+        onBatchComplete={() => setShowMintSuccessPopup(true)}
       />
 
       <NetworkModal
@@ -1373,6 +1379,11 @@ export default function HomeComponent() {
           name: network.name,
           explorerUrl: CURRENT_NETWORK.blockExplorerUrl
         } : null}
+      />
+
+      <MintSuccessPopup
+        isVisible={showMintSuccessPopup}
+        onClose={() => setShowMintSuccessPopup(false)}
       />
 
       {/* Footer */}

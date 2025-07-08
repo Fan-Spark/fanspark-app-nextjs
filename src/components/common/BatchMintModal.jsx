@@ -22,7 +22,8 @@ export default function BatchMintModal({
   cart, 
   onBatchMint, 
   walletConnected,
-  address 
+  address,
+  onBatchComplete 
 }) {
   const [mintStatus, setMintStatus] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
@@ -105,6 +106,12 @@ export default function BatchMintModal({
       setError(error.message || 'An error occurred during batch minting');
     } finally {
       setIsProcessing(false);
+      
+      // Check if we have any successful mints and call the completion callback
+      const successfulMints = Object.values(mintStatus).filter(status => status.status === 'success').length;
+      if (successfulMints > 0 && onBatchComplete) {
+        onBatchComplete();
+      }
     }
   };
 
