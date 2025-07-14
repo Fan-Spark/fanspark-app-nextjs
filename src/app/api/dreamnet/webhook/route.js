@@ -1,7 +1,18 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 export async function POST(request) {
   try {
+    // Get webhook secret from environment
+    const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+    
+    if (!WEBHOOK_SECRET) {
+      console.error('WEBHOOK_SECRET not configured');
+      return NextResponse.json({ 
+        error: 'Webhook secret not configured' 
+      }, { status: 500 });
+    }
+
     // Get the request body
     const body = await request.text();
     let parsedBody;
@@ -12,6 +23,27 @@ export async function POST(request) {
       return NextResponse.json({ 
         error: 'Invalid JSON payload' 
       }, { status: 400 });
+    }
+
+    // Verify webhook signature if provided
+    const signature = request.headers.get('x-signature');
+    if (signature) {
+      const expectedSignature = crypto
+        .createHmac('sha256', WEBHOOK_SECRET)
+        .update(body)
+        .digest('hex');
+      
+      // Handle both formats: raw signature and sha256= prefix
+      const receivedSignature = signature.startsWith('sha256=') 
+        ? signature.substring(7) 
+        : signature;
+      
+      if (receivedSignature !== expectedSignature) {
+        console.error('Invalid webhook signature');
+        return NextResponse.json({ 
+          error: 'Invalid signature' 
+        }, { status: 401 });
+      }
     }
 
     // Validate required fields

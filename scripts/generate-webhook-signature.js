@@ -5,8 +5,17 @@ const crypto = require('crypto');
  * Usage: node scripts/generate-webhook-signature.js
  */
 
-// Example webhook secret (you should use your actual secret from .env)
-const WEBHOOK_SECRET = 'yXdew/orNwPBOP7jMLu6oWhUPFOIpnXsX4aMevJ1knU=';
+// Load environment variables
+require('dotenv').config({ path: '.env.local' });
+
+// Get webhook secret from environment variables
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+
+if (!WEBHOOK_SECRET) {
+  console.error('❌ WEBHOOK_SECRET not found in environment variables');
+  console.log('Please add WEBHOOK_SECRET to your .env.local file');
+  process.exit(1);
+}
 
 // Example payload
 const payload = JSON.stringify({"eventType": "request"});

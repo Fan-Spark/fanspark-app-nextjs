@@ -16,6 +16,19 @@ NEXT_PUBLIC_CONTRACT_ADDRESS=your_contract_address_here
 NEXT_PUBLIC_NETWORK_CHAIN_ID=8453
 ```
 
+### Webhook Configuration
+```bash
+# Webhook secret for signature verification (required for webhook endpoints)
+WEBHOOK_SECRET=your_webhook_secret_here
+```
+
+### Agents API Configuration
+```bash
+# Agents API credentials (required for chat functionality)
+AGENTS_APP_ID=your_agents_app_id_here
+AGENTS_APP_SECRET=your_agents_app_secret_here
+```
+
 ## Optional Variables
 
 ### Card Payment Feature (Crossmint Integration)
@@ -27,12 +40,6 @@ NEXT_PUBLIC_ENABLE_CARD_PAYMENTS=true
 # Crossmint configuration (required if card payments are enabled)
 NEXT_PUBLIC_CROSSMINT_PROJECT_ID=your_crossmint_project_id_here
 NEXT_PUBLIC_CROSSMINT_BASE_URL=https://staging.crossmint.com
-```
-
-### Webhook Configuration
-```bash
-# Webhook secret for signature verification (required for webhook endpoints)
-WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
 ### Other Configuration
@@ -80,6 +87,10 @@ NEXT_PUBLIC_CROSSMINT_BASE_URL=https://staging.crossmint.com
 
 # Webhook
 WEBHOOK_SECRET=your_secure_webhook_secret_key
+
+# Agents API
+AGENTS_APP_ID=your_agents_app_id_here
+AGENTS_APP_SECRET=your_agents_app_secret_here
 
 # Network
 NEXT_PUBLIC_NETWORK_NAME=Base

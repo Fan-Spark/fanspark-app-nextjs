@@ -1,6 +1,23 @@
+// Load environment variables
+require('dotenv').config({ path: '.env.local' });
+
 const API_BASE_URL = 'https://agents-api.doodles.app';
-const APP_ID = '10e616f3-12b3-4fa2-aa96-dad28678c43c';
-const APP_SECRET = 'N3WFaxTLyOQupEKv+TM7D9wtPhgryoFSo3V1Yy/AY90=';
+
+// Get app credentials from environment variables
+const APP_ID = process.env.AGENTS_APP_ID;
+const APP_SECRET = process.env.AGENTS_APP_SECRET;
+
+if (!APP_ID) {
+  console.error('❌ AGENTS_APP_ID not found in environment variables');
+  console.log('Please add AGENTS_APP_ID to your .env.local file');
+  process.exit(1);
+}
+
+if (!APP_SECRET) {
+  console.error('❌ AGENTS_APP_SECRET not found in environment variables');
+  console.log('Please add AGENTS_APP_SECRET to your .env.local file');
+  process.exit(1);
+}
 
 // Test function to get all agents (public endpoint)
 async function getAllAgents() {

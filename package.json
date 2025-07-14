@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "fetch-contract-data": "node scripts/fetch-contract-data.js",
-    "fetch-data": "npm run fetch-contract-data"
+    "fetch-data": "npm run fetch-contract-data",
+    "setup-env": "node scripts/setup-env.js",
+    "generate-webhook": "node scripts/generate-webhook-signature.js",
+    "test-agents": "node scripts/test-agents-api.js",
+    "test-whitelist": "node scripts/test-whitelist.js"
   },
   "dependencies": {
     "@dynamic-labs/ethereum": "^4.20.6",
