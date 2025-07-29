@@ -194,7 +194,7 @@ export default function TokenCard({
   const rarityInfo = getRarityInfo();
 
   return (
-    <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.01] h-[680px] flex flex-col">
+    <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.01] h-[720px] flex flex-col">
       {/* Token Header with Image - Fixed Height */}
       <div className="relative h-48 bg-gradient-to-br from-slate-900 to-slate-800 group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden flex-shrink-0">
         {token.image ? (
@@ -293,6 +293,26 @@ export default function TokenCard({
           </div>
         </div>
 
+        {/* Always Visible Stats */}
+        <div className="grid grid-cols-2 gap-2 mb-3 flex-shrink-0">
+          <div className="bg-muted/50 rounded-lg p-2">
+            <Label className="text-xs text-muted-foreground">Max per TX</Label>
+            {isRefreshingCounts ? (
+              <Skeleton className="h-4 w-8 mt-1" />
+            ) : (
+              <div className="text-sm font-medium">{token.maxMintPerTx}</div>
+            )}
+          </div>
+          <div className="bg-muted/50 rounded-lg p-2">
+            <Label className="text-xs text-muted-foreground">Progress</Label>
+            {isRefreshingCounts ? (
+              <Skeleton className="h-4 w-10 mt-1" />
+            ) : (
+              <div className="text-sm font-medium">{token.mintedPercentage}%</div>
+            )}
+          </div>
+        </div>
+
         {/* Tabs for organized content - Takes available space */}
         <div className="flex-1 flex flex-col min-h-0 mb-4">
           <Tabs defaultValue="overview" className="flex-1 flex flex-col min-h-0">
@@ -314,26 +334,6 @@ export default function TokenCard({
                       </p>
                     </div>
                   )}
-                  
-                  {/* Key Stats */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-muted/50 rounded-lg p-2">
-                      <Label className="text-xs text-muted-foreground">Max per TX</Label>
-                      {isRefreshingCounts ? (
-                        <Skeleton className="h-4 w-8 mt-1" />
-                      ) : (
-                        <div className="text-sm font-medium">{token.maxMintPerTx}</div>
-                      )}
-                    </div>
-                    <div className="bg-muted/50 rounded-lg p-2">
-                      <Label className="text-xs text-muted-foreground">Progress</Label>
-                      {isRefreshingCounts ? (
-                        <Skeleton className="h-4 w-10 mt-1" />
-                      ) : (
-                        <div className="text-sm font-medium">{token.mintedPercentage}%</div>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </ScrollArea>
             </TabsContent>
@@ -467,7 +467,7 @@ export default function TokenCard({
                   ) : (
                     <>
                       <Zap className="w-4 h-4 mr-2" />
-                      Quick Mint
+                      Fast Checkout
                     </>
                   )}
                 </Button>

@@ -12,7 +12,8 @@ import {
   StickyNote,
   Trophy,
   Star,
-  Sparkles
+  Sparkles,
+  Compass
 } from "lucide-react";
 
 export default function Sidebar({ 
@@ -44,15 +45,6 @@ export default function Sidebar({
       gradient: "from-green-500 to-teal-600"
     },
     {
-      id: "chain-competition",
-      name: "Chain Spark",
-      description: "Choose The Winner Chain",
-      icon: Trophy,
-      status: "coming-soon",
-      href: "#chain-competition",
-      gradient: "from-yellow-500 to-orange-600"
-    },
-    {
       id: "featured-fs",
       name: "Featured Collectibles",
       description: "Grab it before it's gone!",
@@ -60,6 +52,15 @@ export default function Sidebar({
       status: "coming-soon",
       href: "#featured-fs",
       gradient: "from-pink-500 to-rose-600"
+    },
+    {
+      id: "explore-campaigns",
+      name: "Explore other Campaigns",
+      description: "Check them out now!",
+      icon: Compass,
+      status: "coming-soon",
+      href: "#explore-campaigns",
+      gradient: "from-indigo-500 to-purple-600"
     }
   ];
 
@@ -111,7 +112,7 @@ export default function Sidebar({
         <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
           <div className="flex items-center space-x-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-primary">Collections</h2>
+            <h2 className="text-sm font-semibold text-primary">Campaign Items</h2>
           </div>
           <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
             {collections.length}
@@ -215,11 +216,6 @@ export default function Sidebar({
       {!isMobile && (
         <div className="mt-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
           <div className="space-y-3">
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground font-medium">More Collections</p>
-              <p className="text-[10px] text-muted-foreground/60 mt-1">Coming Soon</p>
-            </div>
-            
             {/* Testing Indicator */}
             <div className="flex items-center justify-center">
               <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">

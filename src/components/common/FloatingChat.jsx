@@ -315,6 +315,26 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
   // Get chat sessions for indicators
   const chatSessions = userSession ? ChatHistoryManager.getAllChatSessions(userSession.userId) : {};
 
+  // Fallback FanSpark characters when agents are not available
+  const fansparkCharacters = [
+    {
+      id: 'hikari-fanspark',
+      name: 'Hikari',
+      bio: 'Coming Soon - A mysterious character from the FanSpark universe awaiting her debut.',
+      avatar: '/character/hikari_pfp.png',
+      isComingSoon: true,
+      universe: 'FanSpark'
+    },
+    {
+      id: 'sparky-fanspark', 
+      name: 'Sparky',
+      bio: 'Coming Soon - An energetic character from the FanSpark universe ready to spark new adventures.',
+      avatar: '/character/sparky_pfp.png',
+      isComingSoon: true,
+      universe: 'FanSpark'
+    }
+  ];
+
   if (isLoading) {
     return (
       <div className="flex-1 p-6">
@@ -333,18 +353,36 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
     );
   }
 
-      return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="p-4 border-b flex-shrink-0">
-          <h4 className="text-sm font-medium text-muted-foreground">Choose a Fanspark Agent to chat with</h4>
-        </div>
-              <ScrollArea className="flex-1 overflow-y-auto">
+  // Determine which agents to show - API agents or fallback FanSpark characters
+  const agentsToShow = agents.length > 0 ? agents : fansparkCharacters;
+  const showingFallback = agents.length === 0;
+
+  return (
+    <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="p-4 border-b flex-shrink-0">
+        <h4 className="text-sm font-medium text-muted-foreground">
+          {showingFallback 
+            ? "FanSpark Characters (Coming Soon)" 
+            : "Choose a Fanspark Agent to chat with"
+          }
+        </h4>
+        {/* {showingFallback && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Doodle agents are currently unavailable. Check out these FanSpark characters!
+          </p>
+        )} */}
+      </div>
+      <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-4 pb-6 space-y-3">
-          {agents.map((agent) => (
+          {agentsToShow.map((agent) => (
             <Card
               key={agent.id}
-              onClick={() => onSelectAgent(agent)}
-              className="cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] border-border/50 hover:border-primary/50"
+              onClick={() => agent.isComingSoon ? null : onSelectAgent(agent)}
+              className={`transition-all duration-200 border-border/50 ${
+                agent.isComingSoon 
+                  ? 'opacity-75 cursor-not-allowed' 
+                  : 'cursor-pointer hover:shadow-md hover:scale-[1.02] hover:border-primary/50'
+              }`}
             >
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
@@ -359,9 +397,14 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
                       <h4 className="font-semibold text-base">{agent.name}</h4>
                       <Badge variant="secondary" className="text-xs">
                         <Bot size={10} className="mr-1" />
-                        Stellar Ardent
+                        {agent.universe || 'Stellar Ardent'}
                       </Badge>
-                      {chatSessions[agent.id] && chatSessions[agent.id].messageCount > 0 && (
+                      {agent.isComingSoon && (
+                        <Badge variant="outline" className="text-xs bg-orange-500/10 text-orange-600 border-orange-500/20">
+                          Coming Soon
+                        </Badge>
+                      )}
+                      {!agent.isComingSoon && chatSessions[agent.id] && chatSessions[agent.id].messageCount > 0 && (
                         <Badge variant="outline" className="text-xs ml-1">
                           {chatSessions[agent.id].messageCount} msgs
                         </Badge>
@@ -373,10 +416,10 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
                   </div>
                 </div>
               </CardContent>
-                          </Card>
-            ))}
-          </div>
-        </ScrollArea>
+            </Card>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   );
 }

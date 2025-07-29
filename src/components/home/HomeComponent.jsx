@@ -964,12 +964,12 @@ export default function HomeComponent() {
             Verified on-chain authenticity
           </Badge>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
-            Spark This Story Today!
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
+            Spark This Campaign Today!
           </h1>
           
           <p className="text-lg text-muted-foreground mb-8">
-            Get exclusive access to digital collectibles, in-game items, and special rewards within the FanSpark ecosystem of creators. Each tier contains core and bonus rewards from a different universe that's claimable at the end of the campaign.
+            The Stellar Comet is the first issue in a brand-new sci-fi fantasy comic series set on a reimagined Mars: a lush, mysterious world where ancient magic collides with cosmic destiny
           </p>
           
           <div className="text-center">
@@ -1022,21 +1022,38 @@ export default function HomeComponent() {
                   );
                 }
               })()}
-              
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-border/30 hover:bg-accent/20 px-6 py-2 text-base font-semibold"
-                onClick={() => window.open(getContractUrl(CONTRACT_ADDRESS), '_blank')}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View on {CURRENT_NETWORK.blockExplorerName}
-              </Button>
             </div>
             
             <p className="text-xs text-muted-foreground">
               Join our growing community of collectors in the FanSpark ecosystem
             </p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Full Width Progress Bar */}
+      <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
+        <div className="container mx-auto">
+          <div className="w-full bg-black/20 backdrop-blur-sm rounded-full h-2 mb-2">
+            <div 
+              className="h-full bg-primary rounded-full transition-all duration-700 ease-out shadow-sm"
+              style={{
+                width: `${(() => {
+                  const totalMinted = tokensWithLiveData.reduce((sum, token) => sum + (token.minted || 0), 0);
+                  const totalSupply = tokensWithLiveData.reduce((sum, token) => sum + (token.unlimited ? 1000 : token.maxSupply || 0), 0);
+                  return totalSupply > 0 ? Math.floor((totalMinted / totalSupply) * 100) : 0;
+                })()}%`
+              }}
+            />
+          </div>
+          
+          <div className="flex justify-between text-xs text-white/70">
+            <span>
+              {tokensWithLiveData.reduce((sum, token) => sum + (token.minted || 0), 0)} minted
+            </span>
+            <span>
+              {tokensWithLiveData.reduce((sum, token) => sum + (token.unlimited ? 1000 : token.maxSupply || 0), 0)} goal
+            </span>
           </div>
         </div>
       </div>
@@ -1093,14 +1110,6 @@ export default function HomeComponent() {
                 cartItemCount={getTotalCartItems()}
                 onClick={() => setIsCartOpen(true)}
               />
-              <Button
-                variant="outline"
-                onClick={() => setShowBatchMintModal(true)}
-                disabled={cart.length === 0}
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                Batch Mint
-              </Button>
             </div>
           </div>
 
@@ -1329,7 +1338,7 @@ export default function HomeComponent() {
                             size="lg"
                           >
                             <Zap className="w-4 h-4 mr-2" />
-                            {!hasWallet ? "Connect Wallet" : !isCorrectNetwork ? "Wrong Network" : "Batch Mint"}
+                            {!hasWallet ? "Connect Wallet" : !isCorrectNetwork ? "Wrong Network" : "Pay with Crypto"}
                           </Button>
 
                           <Button 
