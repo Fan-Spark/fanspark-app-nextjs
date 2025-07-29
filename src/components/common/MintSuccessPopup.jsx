@@ -51,10 +51,10 @@ const MintSuccessPopup = ({ isVisible, onClose }) => {
               <div className="space-y-3 text-center lg:text-left">
                 <div className="flex items-center justify-center lg:justify-start space-x-2 mb-2">
                   <Sparkles size={24} className="text-purple-600 dark:text-purple-400 animate-pulse" />
-                  <span className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">Yoohoo!</span>
+                  <span className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider">Success!</span>
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
-                  Now the fun starts!
+                  You're In!
                 </h2>
                 <div className="h-1 w-24 bg-gradient-to-r from-purple-500 via-blue-500 to-pink-500 rounded-full mx-auto lg:mx-0 shadow-lg"></div>
               </div>
@@ -63,15 +63,21 @@ const MintSuccessPopup = ({ isVisible, onClose }) => {
               <div className="space-y-4 text-gray-700 dark:text-gray-200 text-center lg:text-left">
                 <div className="p-4 rounded-lg bg-white/30 dark:bg-black/30 backdrop-blur-sm border border-white/40 dark:border-gray-600/30">
                   <p className="text-lg leading-relaxed">
-                    Go create and interact with your own <span className="font-semibold text-purple-600 dark:text-purple-400 px-2 py-1 rounded-md bg-purple-50/50 dark:bg-purple-900/20">Stellar Ardent characters</span>!
+                    Thanks for sparking this campaign to life with your support. <span className="text-red-500">♡</span>
                   </p>
                 </div>
                 
                 <div className="p-4 rounded-lg bg-blue-50/30 dark:bg-blue-900/20 backdrop-blur-sm border border-blue-200/40 dark:border-blue-600/30">
+                  <p className="text-base leading-relaxed">
+                    While we await its next exciting phase, stay tuned for updates, or discover more collectibles and live campaigns waiting for you to explore!
+                  </p>
+                </div>
+                
+                <div className="p-4 rounded-lg bg-green-50/30 dark:bg-green-900/20 backdrop-blur-sm border border-green-200/40 dark:border-green-600/30">
                   <p className="text-base leading-relaxed flex items-center justify-center lg:justify-start space-x-2">
-                    <span>Click on this icon</span>
-                    <MessageCircle size={20} className="text-blue-600 dark:text-blue-400" />
-                    <span>in the bottom-right corner to get started!</span>
+                    <span>Chat with AI agents</span>
+                    <MessageCircle size={20} className="text-green-600 dark:text-green-400" />
+                    <span>in the bottom-right corner!</span>
                   </p>
                 </div>
               </div>
