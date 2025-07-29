@@ -955,7 +955,13 @@ export default function HomeComponent() {
   // Hero Section Component
   const HeroSection = () => (
     <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-border/50 bg-gradient-to-br from-accent/10 to-accent/5">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
+      {/* Campaign Banner Background */}
+      <div className="absolute inset-0 bg-[url('/first_campaign_banner.png')] bg-cover bg-center opacity-30"></div>
+      
+      {/* Black Overlay for Text Readability */}
+      <div className="absolute inset-0 bg-black/40"></div>
+      
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20"></div>
       
       <div className="relative container mx-auto px-4 py-12 text-center">
         <div className="max-w-3xl mx-auto">
@@ -1024,7 +1030,7 @@ export default function HomeComponent() {
               })()}
             </div>
             
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground mb-4">
               Join our growing community of collectors in the FanSpark ecosystem
             </p>
           </div>
