@@ -73,13 +73,13 @@ const MintSuccessPopup = ({ isVisible, onClose }) => {
                   </p>
                 </div>
                 
-                <div className="p-4 rounded-lg bg-green-50/30 dark:bg-green-900/20 backdrop-blur-sm border border-green-200/40 dark:border-green-600/30">
+                {/* <div className="p-4 rounded-lg bg-green-50/30 dark:bg-green-900/20 backdrop-blur-sm border border-green-200/40 dark:border-green-600/30">
                   <p className="text-base leading-relaxed flex items-center justify-center lg:justify-start space-x-2">
                     <span>Chat with AI agents</span>
                     <MessageCircle size={20} className="text-green-600 dark:text-green-400" />
                     <span>in the bottom-right corner!</span>
                   </p>
-                </div>
+                </div> */}
               </div>
 
               {/* Action buttons */}
