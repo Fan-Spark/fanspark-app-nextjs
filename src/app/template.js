@@ -7,6 +7,7 @@ import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import Sidebar from '@/components/common/Sidebar';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
+import DonationModal from '@/components/common/DonationModal';
 import NoSSR from '@/components/common/NoSSR';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,8 +65,13 @@ export default function Template({ children }) {
           </div>
 
           {/* Wallet Connection Section */}
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 flex justify-center">
             <DynamicWalletButton />
+          </div>
+
+          {/* Donation Section */}
+          <div className="mb-6 flex justify-center">
+            <DonationModal />
           </div>
 
           {/* Collections Navigation */}
@@ -116,6 +122,11 @@ export default function Template({ children }) {
           </div>
           
           <div className="flex items-center space-x-2">
+            {/* Donation Button for Mobile */}
+            <div className="hidden sm:block">
+              <DonationModal />
+            </div>
+            
             <Button
               variant="ghost"
               size="sm"
@@ -155,12 +166,17 @@ export default function Template({ children }) {
                   </div>
 
                   {/* Mobile Wallet Connection */}
-                  <div className="mb-6 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30 flex justify-center">
+                  <div className="mb-4 p-4 bg-gradient-to-r from-accent/20 to-accent/10 rounded-xl border border-border/30 flex justify-center">
                     <NoSSR fallback={
                       <div className="h-10 w-full bg-muted animate-pulse rounded-md"></div>
                     }>
                       <DynamicWidget />
                     </NoSSR>
+                  </div>
+
+                  {/* Mobile Donation Section */}
+                  <div className="mb-6 flex justify-center">
+                    <DonationModal />
                   </div>
 
                   {/* Mobile Collections List */}

@@ -1,25 +1,20 @@
 {
   "metadata": {
     "contractAddress": "0x87238F9D7da480f268DeaB34906A2235a520593D",
-    "fetchedAt": "2025-08-31T07:59:34.245Z",
-    "fetchedTimestamp": 1756627174246,
+    "fetchedAt": "2025-08-31T07:56:11.445Z",
+    "fetchedTimestamp": 1756626971446,
     "rpcUrl": "https://mainnet.evm.nodes.onflow.org",
     "collection": "reward-crate",
     "metadataDirectory": "/Users/knightorbit/Documents/ssd/fanspark-ui-minter-app/public/metadata/reward-crate",
-    "version": "1.0.0",
-    "priceFormat": "USDC"
+    "version": "1.0.0"
   },
   "tokens": [
     {
       "id": 0,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": null,
       "maxSupplyDisplay": "∞",
       "minted": 0,
@@ -132,18 +127,14 @@
       "isAvailable": true,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627174607
+      "lastUpdated": 1756626971750
     },
     {
       "id": 1,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 200,
       "maxSupplyDisplay": "200",
       "minted": 0,
@@ -286,18 +277,14 @@
       "isAvailable": true,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627175015
+      "lastUpdated": 1756626972159
     },
     {
       "id": 2,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 20,
       "maxSupplyDisplay": "20",
       "minted": 0,
@@ -450,18 +437,14 @@
       "isAvailable": true,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627175432
+      "lastUpdated": 1756626972567
     },
     {
       "id": 3,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -481,18 +464,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627175838
+      "lastUpdated": 1756626972975
     },
     {
       "id": 4,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -512,18 +491,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627176250
+      "lastUpdated": 1756626973384
     },
     {
       "id": 5,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -543,18 +518,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627176657
+      "lastUpdated": 1756626973791
     },
     {
       "id": 6,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -574,18 +545,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627177061
+      "lastUpdated": 1756626974218
     },
     {
       "id": 7,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -605,18 +572,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627177466
+      "lastUpdated": 1756626974632
     },
     {
       "id": 8,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -636,18 +599,14 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627177870
+      "lastUpdated": 1756626975051
     },
     {
       "id": 9,
-      "price": "0.005000",
+      "price": "0.000000000000005",
       "priceWei": "5000",
-      "priceRaw": 5000,
-      "whitelistPrice": "0.002000",
+      "whitelistPrice": "0.000000000000002",
       "whitelistPriceWei": "2000",
-      "whitelistPriceRaw": 2000,
-      "priceETH": "0.000000000000005",
-      "whitelistPriceETH": "0.000000000000002",
       "maxSupply": 100,
       "maxSupplyDisplay": "100",
       "minted": 0,
@@ -667,7 +626,7 @@
       "isAvailable": false,
       "isSoldOut": false,
       "mintedPercentage": 0,
-      "lastUpdated": 1756627178531
+      "lastUpdated": 1756626975532
     }
   ],
   "summary": {

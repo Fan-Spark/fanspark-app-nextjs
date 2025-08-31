@@ -117,7 +117,7 @@ export default function Cart({
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {(item.useWhitelist ? item.whitelistPrice : item.price)} ETH each
+                      {(item.useWhitelist ? item.whitelistPrice : item.price)} USDC each
                     </p>
                   </div>
 
@@ -173,7 +173,7 @@ export default function Cart({
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Total Price:</span>
             <span className="font-medium font-mono">
-              {calculateTotalPrice().toFixed(6)} ETH
+              {calculateTotalPrice().toFixed(6)} USDC
             </span>
           </div>
 
