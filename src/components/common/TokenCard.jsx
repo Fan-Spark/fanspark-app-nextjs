@@ -151,7 +151,8 @@ export default function TokenCard({
         mintAmount, 
         canUseWhitelist,
         token.price,
-        token.whitelistPrice
+        token.whitelistPrice,
+        token.name
       );
     } catch (error) {
       console.error('Error adding to cart:', error);

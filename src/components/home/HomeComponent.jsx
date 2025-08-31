@@ -842,8 +842,8 @@ export default function HomeComponent() {
         tokenId
       );
       
-      // Remove from cart after successful mint
-      removeFromCart(tokenId);
+      // Remove from cart after successful mint (silent - success toast already shown)
+      removeFromCart(tokenId, getTokenName(tokenId), false);
       
       // Show immediate feedback that counts are being updated
       toast.info("🔄 Updating token counts...", {
@@ -1331,7 +1331,7 @@ export default function HomeComponent() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => removeFromCart(item.tokenId)}
+                                  onClick={() => removeFromCart(item.tokenId, getTokenName(item.tokenId))}
                                   className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                                 >
                                   <X className="h-3 w-3" />
