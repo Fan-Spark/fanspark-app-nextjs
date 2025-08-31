@@ -38,6 +38,13 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
   }
 };
 
+// Function to convert raw USDC price to formatted USDC string
+function formatUSDCPrice(rawPrice) {
+  // USDC has 6 decimal places, so divide by 1,000,000
+  const usdcPrice = rawPrice / 1000000;
+  return usdcPrice.toFixed(6);
+}
+
 // Function to load metadata for a specific token
 async function loadTokenMetadata(tokenId) {
   try {
@@ -93,7 +100,8 @@ async function fetchContractData() {
       rpcUrl: RPC_URL,
       collection: COLLECTION,
       metadataDirectory: METADATA_DIR,
-      version: "1.0.0"
+      version: "1.0.0",
+      priceFormat: "USDC" // Indicate that prices are in USDC
     },
     tokens: [],
     summary: {
@@ -131,13 +139,25 @@ async function fetchContractData() {
         ]);
       });
 
+      // Convert raw prices to USDC format
+      const rawPrice = parseInt(config.price.toString());
+      const rawWhitelistPrice = parseInt(config.whitelistPrice.toString());
+      
+      const usdcPrice = formatUSDCPrice(rawPrice);
+      const usdcWhitelistPrice = formatUSDCPrice(rawWhitelistPrice);
+
       const tokenInfo = {
         id: tokenId,
-        // Contract data
-        price: formatEther(config.price),
+        // Contract data - USDC prices
+        price: usdcPrice,
         priceWei: config.price.toString(),
-        whitelistPrice: formatEther(config.whitelistPrice),
+        priceRaw: rawPrice,
+        whitelistPrice: usdcWhitelistPrice,
         whitelistPriceWei: config.whitelistPrice.toString(),
+        whitelistPriceRaw: rawWhitelistPrice,
+        // Legacy ETH fields for backward compatibility (deprecated)
+        priceETH: formatEther(config.price),
+        whitelistPriceETH: formatEther(config.whitelistPrice),
         maxSupply: config.unlimited ? null : parseInt(config.maxSupply.toString()),
         maxSupplyDisplay: config.unlimited ? "∞" : config.maxSupply.toString(),
         minted: parseInt(config.minted.toString()),
@@ -172,7 +192,7 @@ async function fetchContractData() {
       if (tokenInfo.mintingActive) activeTokens++;
       if (tokenInfo.isWhitelistActive) whitelistActiveTokens++;
 
-      console.log(`✅ Token #${tokenId} (${tokenInfo.name}): ${tokenInfo.price} ETH, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
+      console.log(`✅ Token #${tokenId} (${tokenInfo.name}): ${usdcPrice} USDC, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
 
     } catch (error) {
       console.error(`❌ Failed to fetch Token #${tokenId}:`, error.message);
@@ -183,8 +203,13 @@ async function fetchContractData() {
         // Contract data (default/error values)
         price: "0",
         priceWei: "0",
+        priceRaw: 0,
         whitelistPrice: "0",
         whitelistPriceWei: "0",
+        whitelistPriceRaw: 0,
+        // Legacy ETH fields
+        priceETH: "0",
+        whitelistPriceETH: "0",
         maxSupply: 0,
         maxSupplyDisplay: "0",
         minted: 0,

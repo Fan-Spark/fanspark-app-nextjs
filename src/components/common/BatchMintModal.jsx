@@ -200,7 +200,7 @@ export default function BatchMintModal({
               </div>
               <div>
                 <span className="text-sm text-muted-foreground">Total Price:</span>
-                <div className="font-medium font-mono">{calculateTotalPrice().toFixed(6)} ETH</div>
+                <div className="font-medium font-mono">{calculateTotalPrice().toFixed(6)} USDC</div>
               </div>
             </div>
           </div>

@@ -16,6 +16,12 @@ NEXT_PUBLIC_CONTRACT_ADDRESS=your_contract_address_here
 NEXT_PUBLIC_NETWORK_CHAIN_ID=8453
 ```
 
+### Donation Configuration
+```bash
+# Wallet address to receive donations
+NEXT_PUBLIC_DONATION_WALLET_ADDRESS=your_donation_wallet_address_here
+```
+
 ### Webhook Configuration
 ```bash
 # Webhook secret for signature verification (required for webhook endpoints)
@@ -51,6 +57,13 @@ NEXT_PUBLIC_NETWORK_CURRENCY=ETH
 
 ## Environment Variable Details
 
+### `NEXT_PUBLIC_DONATION_WALLET_ADDRESS`
+- **Type**: String (Ethereum address)
+- **Required**: Yes
+- **Description**: The wallet address that will receive all donations
+- **Format**: Must be a valid Ethereum address (0x...)
+- **Example**: `0x1234567890123456789012345678901234567890`
+
 ### `NEXT_PUBLIC_ENABLE_CARD_PAYMENTS`
 - **Type**: Boolean string ('true' or 'false')
 - **Default**: false (if not set)
@@ -79,6 +92,9 @@ NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=dc644cce-6fae-4142-873a-93d867c8a2c6
 NEXT_PUBLIC_RPC_URL=https://mainnet.base.org
 NEXT_PUBLIC_CONTRACT_ADDRESS=0x1234567890123456789012345678901234567890
 NEXT_PUBLIC_NETWORK_CHAIN_ID=8453
+
+# Donation
+NEXT_PUBLIC_DONATION_WALLET_ADDRESS=0x1234567890123456789012345678901234567890
 
 # Card Payments (Optional)
 NEXT_PUBLIC_ENABLE_CARD_PAYMENTS=true

@@ -262,8 +262,8 @@ export default function TokenCard({
         <div className="absolute bottom-3 right-3">
           <Badge variant="secondary" className="bg-black/40 text-white/90 border-white/20 font-mono text-xs">
             {isWhitelisted && token.isWhitelistActive 
-              ? `${token.whitelistPrice} ETH` 
-              : `${token.price} ETH`}
+              ? `${token.whitelistPrice} USDC` 
+              : `${token.price} USDC`}
           </Badge>
         </div>
       </div>
@@ -483,7 +483,7 @@ export default function TokenCard({
           {/* Price display */}
           {isMintingAvailable && walletConnected && (
             <div className="text-center text-sm text-muted-foreground">
-              Total: <span className="font-medium text-foreground">{getTotalPrice()} ETH</span>
+              Total: <span className="font-medium text-foreground">{getTotalPrice()} USDC</span>
             </div>
           )}
         </div>

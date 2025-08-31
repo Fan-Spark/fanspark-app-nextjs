@@ -162,7 +162,7 @@ export default function HomeComponent() {
         toast.error("💸 Insufficient Funds", {
           autoClose: 7000,
           onClose: () => {
-            toast.info("💡 Try: Add more ETH, mint fewer tokens, or wait for lower gas fees", {
+            toast.info("💡 Try: Add more USDC, mint fewer tokens, or wait for lower gas fees", {
               autoClose: 5000,
             });
           }
@@ -297,11 +297,13 @@ export default function HomeComponent() {
       throw new Error(`Price information for token #${tokenId} is not available`);
     }
 
+    // Convert USDC price to wei format for transaction
+    // USDC prices are in decimal format (e.g., "0.005"), so we need to convert to wei
     const price = ethers.utils.parseEther(priceStr);
     const amountBN = ethers.BigNumber.from(amount);
     const totalPrice = price.mul(amountBN);
 
-    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} ETH, total: ${totalPrice.toString()}`);
+    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} USDC, total: ${totalPrice.toString()}`);
 
     // Create contract interface for encoding function calls
     const contractInterface = new ethers.utils.Interface(contractABI);
@@ -365,7 +367,7 @@ export default function HomeComponent() {
         
         // Insufficient funds
         if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
-          friendlyMessage = "Insufficient funds - you don't have enough ETH to cover the transaction cost and gas fees";
+          friendlyMessage = "Insufficient funds - you don't have enough USDC to cover the transaction cost and gas fees";
         }
         // User rejected transaction
         else if (msg.includes('user rejected') || msg.includes('user denied')) {
@@ -999,7 +1001,7 @@ export default function HomeComponent() {
                       onClick={openConnectionModal}
                     >
                       <Wallet className="h-4 w-4 mr-2" />
-                      Connect to Start
+                      Connect to Spark
                     </Button>
                   );
                 } else if (hasWallet && network && network.chainId && network.chainId !== CURRENT_NETWORK.chainId) {
@@ -1031,8 +1033,9 @@ export default function HomeComponent() {
             </div>
             
             <p className="text-xs text-muted-foreground mb-4">
-              Join our growing community of collectors in the FanSpark ecosystem
+              Join our growing community of fans in the FanSpark ecosystem
             </p>
+            
           </div>
         </div>
       </div>
@@ -1045,9 +1048,17 @@ export default function HomeComponent() {
               className="h-full bg-primary rounded-full transition-all duration-700 ease-out shadow-sm"
               style={{
                 width: `${(() => {
-                  const totalMinted = tokensWithLiveData.reduce((sum, token) => sum + (token.minted || 0), 0);
-                  const totalSupply = tokensWithLiveData.reduce((sum, token) => sum + (token.unlimited ? 1000 : token.maxSupply || 0), 0);
-                  return totalSupply > 0 ? Math.floor((totalMinted / totalSupply) * 100) : 0;
+                  const totalRaised = tokensWithLiveData.reduce((sum, token) => {
+                    const price = parseFloat(token.price) || 0;
+                    const minted = token.minted || 0;
+                    return sum + (price * minted);
+                  }, 0);
+                  const totalGoal = tokensWithLiveData.reduce((sum, token) => {
+                    const price = parseFloat(token.price) || 0;
+                    const supply = token.unlimited ? 1000 : token.maxSupply || 0;
+                    return sum + (price * supply);
+                  }, 0);
+                  return totalGoal > 0 ? Math.floor((totalRaised / totalGoal) * 100) : 0;
                 })()}%`
               }}
             />
@@ -1055,10 +1066,24 @@ export default function HomeComponent() {
           
           <div className="flex justify-between text-xs text-white/70">
             <span>
-              {tokensWithLiveData.reduce((sum, token) => sum + (token.minted || 0), 0)} minted
+              {(() => {
+                const totalRaised = tokensWithLiveData.reduce((sum, token) => {
+                  const price = parseFloat(token.price) || 0;
+                  const minted = token.minted || 0;
+                  return sum + (price * minted);
+                }, 0);
+                return totalRaised.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              })()} USDC raised
             </span>
             <span>
-              {tokensWithLiveData.reduce((sum, token) => sum + (token.unlimited ? 1000 : token.maxSupply || 0), 0)} goal
+              {(() => {
+                const totalGoal = tokensWithLiveData.reduce((sum, token) => {
+                  const price = parseFloat(token.price) || 0;
+                  const supply = token.unlimited ? 1000 : token.maxSupply || 0;
+                  return sum + (price * supply);
+                }, 0);
+                return totalGoal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              })()} USDC goal
             </span>
           </div>
         </div>
@@ -1111,6 +1136,7 @@ export default function HomeComponent() {
                 pendingRefresh={isRefreshingCounts}
                 onManualSync={handleManualRefresh}
               />
+              
               
               <CartButton 
                 cartItemCount={getTotalCartItems()}
@@ -1273,7 +1299,7 @@ export default function HomeComponent() {
                                   )}
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                  {(item.useWhitelist ? item.whitelistPrice : item.price)} ETH each
+                                  {(item.useWhitelist ? item.whitelistPrice : item.price)} USDC each
                                 </p>
                               </div>
 
@@ -1331,7 +1357,7 @@ export default function HomeComponent() {
                             {cart.reduce((total, item) => {
                               const price = item.useWhitelist ? item.whitelistPrice : item.price;
                               return total + (parseFloat(price) * item.quantity);
-                            }, 0).toFixed(6)} ETH
+                            }, 0).toFixed(6)} USDC
                           </span>
                         </div>
 
