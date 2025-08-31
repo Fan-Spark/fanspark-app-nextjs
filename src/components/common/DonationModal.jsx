@@ -46,6 +46,45 @@ const DonationModal = () => {
     return num.toString();
   };
 
+  // Check USDC balance
+  const checkUSDCBalance = async (userAddress, requiredAmount) => {
+    try {
+      // USDC contract address on Base
+      const usdcContractAddress = '0x7f27352d5f83db87a5a3e00f4b07cc2138d8ee52';
+      
+      // Get the wallet client from Dynamic.xyz
+      const walletClient = await primaryWallet.getWalletClient();
+      
+      // Create balanceOf function call data
+      const balanceOfSignature = '0x70a08231'; // balanceOf(address)
+      const addressParam = userAddress.slice(2).padStart(64, '0'); // Remove 0x and pad to 32 bytes
+      const data = balanceOfSignature + addressParam;
+      
+      // Call the contract to get balance
+      const result = await walletClient.call({
+        to: usdcContractAddress,
+        data: data,
+      });
+      
+      // Parse the result to get balance
+      const balance = ethers.BigNumber.from(result.data);
+      const requiredAmountBN = ethers.utils.parseUnits(requiredAmount, 6);
+      
+      return {
+        balance: balance,
+        hasEnoughBalance: balance.gte(requiredAmountBN),
+        balanceFormatted: ethers.utils.formatUnits(balance, 6)
+      };
+    } catch (error) {
+      console.error('Error checking USDC balance:', error);
+      return {
+        balance: ethers.BigNumber.from(0),
+        hasEnoughBalance: false,
+        balanceFormatted: '0'
+      };
+    }
+  };
+
   // Handle donation
   const handleDonate = async () => {
     if (!isValidAmount() || !isConnected || !donationWalletAddress) {
@@ -59,6 +98,16 @@ const DonationModal = () => {
     try {
       // USDC contract address on Base
       const usdcContractAddress = '0x7f27352d5f83db87a5a3e00f4b07cc2138d8ee52';
+      
+      // Check USDC balance first
+      console.log('Checking USDC balance...');
+      const balanceCheck = await checkUSDCBalance(walletAddress, amount);
+      
+      if (!balanceCheck.hasEnoughBalance) {
+        throw new Error(`Insufficient USDC balance. You have $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USDC, but need $${amount} USDC for this donation.`);
+      }
+      
+      console.log(`USDC balance check passed. User has $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USDC`);
       
       // Convert USDC amount to wei (6 decimal places for USDC)
       const amountInWei = ethers.utils.parseUnits(amount, 6);
@@ -107,7 +156,10 @@ const DonationModal = () => {
       if (error.message) {
         const msg = error.message.toLowerCase();
         
-        if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
+        if (msg.includes('insufficient usdc balance')) {
+          // Use our custom balance check error message
+          friendlyMessage = error.message;
+        } else if (msg.includes('insufficient funds') || msg.includes('exceeds the balance') || msg.includes('transfer amount exceeds balance')) {
           friendlyMessage = "Insufficient USDC balance - you don't have enough USDC tokens to complete this donation";
         } else if (msg.includes('user rejected') || msg.includes('user denied')) {
           friendlyMessage = "Donation was cancelled by user";
@@ -115,6 +167,8 @@ const DonationModal = () => {
           friendlyMessage = "Transaction would fail due to gas limit";
         } else if (msg.includes('network') || msg.includes('connection')) {
           friendlyMessage = "Network connection issue - please check your internet and try again";
+        } else if (msg.includes('execution reverted')) {
+          friendlyMessage = "Transaction failed - please ensure you have enough USDC and try again";
         } else {
           friendlyMessage = error.message;
         }
