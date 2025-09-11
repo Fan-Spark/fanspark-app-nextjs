@@ -12,6 +12,18 @@ function DynamicPortalContent() {
     setMounted(true);
   }, []);
 
+  // Move the hook call outside of try-catch to ensure it's always called
+  let user, isLoggedIn;
+  try {
+    const context = useDynamicContext();
+    user = context.user;
+    isLoggedIn = context.isLoggedIn;
+  } catch (error) {
+    console.error("Error accessing Dynamic context:", error);
+    user = null;
+    isLoggedIn = false;
+  }
+
   if (!mounted) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -23,27 +35,13 @@ function DynamicPortalContent() {
     );
   }
 
-  try {
-    const { user, isLoggedIn } = useDynamicContext();
-
-    if (!isLoggedIn || !user) {
-      return <DynamicEmbeddedWidget background="default" />;
-    }
-
-    // If user is logged in, you can show other profile information here
-    // For now, we will show the same embedded widget which will now show the user profile
+  if (!isLoggedIn || !user) {
     return <DynamicEmbeddedWidget background="default" />;
-  } catch (error) {
-    console.error("Error in DynamicPortal:", error);
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-muted-foreground">Unable to load portal</p>
-          <p className="text-sm text-muted-foreground mt-2">Please refresh the page</p>
-        </div>
-      </div>
-    );
   }
+
+  // If user is logged in, you can show other profile information here
+  // For now, we will show the same embedded widget which will now show the user profile
+  return <DynamicEmbeddedWidget background="default" />;
 }
 
 export default function DynamicPortal() {
