@@ -22,6 +22,7 @@ import SyncIndicator from "@/components/common/SyncIndicator";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import WelcomePopup from "@/components/common/WelcomePopup";
 import MintSuccessPopup from "@/components/common/MintSuccessPopup";
+import DonationModal from "@/components/common/DonationModal";
 
 // Import shadcn components
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,8 @@ import {
   Minus,
   Plus,
   Trash2,
-  X
+  X,
+  Heart
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from 'react-toastify';
@@ -162,7 +164,7 @@ export default function HomeComponent() {
         toast.error("💸 Insufficient Funds", {
           autoClose: 7000,
           onClose: () => {
-            toast.info("💡 Try: Add more USDC, mint fewer tokens, or wait for lower gas fees", {
+            toast.info("💡 Try: Add more USD, mint fewer tokens, or wait for lower gas fees", {
               autoClose: 5000,
             });
           }
@@ -297,13 +299,13 @@ export default function HomeComponent() {
       throw new Error(`Price information for token #${tokenId} is not available`);
     }
 
-    // Convert USDC price to wei format for transaction
-    // USDC prices are in decimal format (e.g., "0.005"), so we need to convert to wei
+    // Convert USD price to wei format for transaction
+    // USD prices are in decimal format (e.g., "0.005"), so we need to convert to wei
     const price = ethers.utils.parseEther(priceStr);
     const amountBN = ethers.BigNumber.from(amount);
     const totalPrice = price.mul(amountBN);
 
-    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} USDC, total: ${totalPrice.toString()}`);
+    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} USD, total: ${totalPrice.toString()}`);
 
     // Create contract interface for encoding function calls
     const contractInterface = new ethers.utils.Interface(contractABI);
@@ -367,7 +369,7 @@ export default function HomeComponent() {
         
         // Insufficient funds
         if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
-          friendlyMessage = "Insufficient funds - you don't have enough USDC to cover the transaction cost and gas fees";
+          friendlyMessage = "Insufficient funds - you don't have enough USD to cover the transaction cost and gas fees";
         }
         // User rejected transaction
         else if (msg.includes('user rejected') || msg.includes('user denied')) {
@@ -995,38 +997,47 @@ export default function HomeComponent() {
                 
                 if (!isConnected) {
                   return (
-                    <Button 
-                      size="lg" 
-                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
-                      onClick={openConnectionModal}
-                    >
-                      <Wallet className="h-4 w-4 mr-2" />
-                      Connect to Spark
-                    </Button>
+                    <>
+                      <Button 
+                        size="lg" 
+                        className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
+                        onClick={openConnectionModal}
+                      >
+                        <Wallet className="h-4 w-4 mr-2" />
+                        Connect to Spark
+                      </Button>
+                      <DonationModal />
+                    </>
                   );
                 } else if (hasWallet && network && network.chainId && network.chainId !== CURRENT_NETWORK.chainId) {
                   return (
-                    <Button 
-                      size="lg" 
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg px-6 py-2 text-base font-semibold"
-                      onClick={switchToCurrentNetwork}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Switch to {CURRENT_NETWORK.displayName}
-                    </Button>
+                    <>
+                      <Button 
+                        size="lg" 
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg px-6 py-2 text-base font-semibold"
+                        onClick={switchToCurrentNetwork}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Switch to {CURRENT_NETWORK.displayName}
+                      </Button>
+                      <DonationModal />
+                    </>
                   );
                 } else {
                   return (
-                    <Button 
-                      size="lg" 
-                      className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
-                      onClick={() => {
-                        document.getElementById('tokens-section')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                    >
-                      <Package className="h-4 w-4 mr-2" />
-                      Start Collecting
-                    </Button>
+                    <>
+                      <Button 
+                        size="lg" 
+                        className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg px-6 py-2 text-base font-semibold"
+                        onClick={() => {
+                          document.getElementById('tokens-section')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                      >
+                        <Package className="h-4 w-4 mr-2" />
+                        Start Collecting
+                      </Button>
+                      <DonationModal />
+                    </>
                   );
                 }
               })()}
@@ -1073,7 +1084,7 @@ export default function HomeComponent() {
                   return sum + (price * minted);
                 }, 0);
                 return totalRaised.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              })()} USDC raised
+              })()} USD raised
             </span>
             <span>
               {(() => {
@@ -1083,7 +1094,7 @@ export default function HomeComponent() {
                   return sum + (price * supply);
                 }, 0);
                 return totalGoal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-              })()} USDC goal
+              })()} USD goal
             </span>
           </div>
         </div>
@@ -1299,7 +1310,7 @@ export default function HomeComponent() {
                                   )}
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                  {(item.useWhitelist ? item.whitelistPrice : item.price)} USDC each
+                                  {(item.useWhitelist ? item.whitelistPrice : item.price)} USD each
                                 </p>
                               </div>
 
@@ -1357,7 +1368,7 @@ export default function HomeComponent() {
                             {cart.reduce((total, item) => {
                               const price = item.useWhitelist ? item.whitelistPrice : item.price;
                               return total + (parseFloat(price) * item.quantity);
-                            }, 0).toFixed(6)} USDC
+                            }, 0).toFixed(6)} USD
                           </span>
                         </div>
 
@@ -1429,8 +1440,10 @@ export default function HomeComponent() {
 
       {/* Footer */}
       <footer className="border-t py-6 mt-16">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>{BRAND_CONFIG.name} · {CURRENT_NETWORK.displayName} · {currentYear}</p>
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
+          </p>
         </div>
       </footer>
     </div>
