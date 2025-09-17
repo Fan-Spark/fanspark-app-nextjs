@@ -31,8 +31,8 @@ const WelcomePopup = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-      <Card className="py-0 relative w-full max-w-4xl h-[55vh] max-h-[55vh] mx-4 bg-white/90 dark:bg-black/90 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-gray-800/50 overflow-hidden animate-in zoom-in-95 duration-500 rounded-lg">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-300 p-4">
+      <Card className="py-0 relative w-full max-w-5xl min-h-[60vh] max-h-[90vh] mx-4 bg-white/90 dark:bg-black/90 backdrop-blur-xl shadow-2xl border border-white/20 dark:border-gray-800/50 overflow-auto animate-in zoom-in-95 duration-500 rounded-lg">
         {/* Glassy overlay effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 dark:from-white/5 dark:via-transparent dark:to-white/2 pointer-events-none"></div>
         
@@ -48,30 +48,30 @@ const WelcomePopup = () => {
           </Button>
         </div>
 
-        <div className="h-full flex flex-col lg:flex-row relative z-[1]">
+        <div className="min-h-[60vh] flex flex-col lg:flex-row relative z-[1]">
           {/* Left side - Image */}
-          <div className="lg:w-1/3 h-full relative overflow-hidden rounded-l-lg">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20 dark:to-black/20 z-10"></div>
-            <Image
-              src="/scientist-pose-1.png"
-              alt="FanSpark Scientist"
-              fill
-              className="object-cover"
-              priority
+          <div className="lg:w-1/3 min-h-[60vh] lg:min-h-full relative overflow-hidden rounded-l-lg">
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: 'url(/scientist-pose-1.png)'
+              }}
             />
           </div>
 
           {/* Right side - Content */}
-          <div className="lg:w-2/3 p-8 flex flex-col justify-center h-full bg-gradient-to-br from-white/50 via-white/30 to-white/20 dark:from-black/50 dark:via-black/30 dark:to-black/20 backdrop-blur-sm">
-            <div className="space-y-6">
+          <div className="lg:w-2/3 p-6 lg:p-8 flex flex-col justify-center min-h-[60vh] lg:min-h-full bg-gradient-to-br from-white/50 via-white/30 to-white/20 dark:from-black/50 dark:via-black/30 dark:to-black/20 backdrop-blur-sm overflow-y-auto">
+            <div className="space-y-5">
               {/* Header */}
               <div className="space-y-3 text-center lg:text-left">
                 <div className="flex items-center justify-center lg:justify-start space-x-2 mb-2">
                   <Sparkles size={24} className="text-blue-600 dark:text-blue-400 animate-pulse" />
-                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">Welcome</span>
+                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                    Welcome to FanSpark! (Beta)
+                  </span>
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent">
-                  Hello, Testers!
+                <h2 className="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent mt-2">
+                  Hello Testers!
                 </h2>
                 <div className="h-1 w-24 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mx-auto lg:mx-0 shadow-lg"></div>
               </div>
@@ -79,47 +79,40 @@ const WelcomePopup = () => {
               {/* Main message */}
               <div className="space-y-4 text-gray-700 dark:text-gray-200 text-center lg:text-left">
                 <div className="p-4 rounded-lg bg-white/30 dark:bg-black/30 backdrop-blur-sm border border-white/40 dark:border-gray-600/30">
-                  <p className="text-lg leading-relaxed">
-                    To get the full <span className="font-semibold text-blue-600 dark:text-blue-400 px-2 py-1 rounded-md bg-blue-50/50 dark:bg-blue-900/20">FanSpark experience</span>, please start from our main webpage.
+                  <p className="text-base leading-relaxed mb-4">
+                    You're exploring the beta version of <span className="font-semibold text-blue-600 dark:text-blue-400">FanSpark</span>, a new platform where fans and creators unite to spark bold ideas to life. While we're still polishing things, you can already discover early projects and campaigns!
+                  </p>
+                  <p className="text-base leading-relaxed mb-4">
+                    Soon you'll be able to support creators, and help shape the future of fan-powered storytelling.
+                  </p>
+                  <p className="text-base leading-relaxed font-medium">
+                    Thanks for being part of the journey!
                   </p>
                 </div>
-                
-                <p className="text-base opacity-80">
-                  Don't worry, you'll find your way back to this page soon.
-                </p>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              {/* Action button */}
+              <div>
                 <Button
-                  onClick={handleVisitMainPage}
-                  className="flex-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] backdrop-blur-sm border border-white/20"
-                >
-                  <ExternalLink size={18} className="mr-2" />
-                  Visit Main Page
-                </Button>
-                
-                <Button
-                  variant="outline"
                   onClick={handleClose}
-                  className="flex-1 bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/40 dark:border-gray-600/40 hover:bg-white/30 dark:hover:bg-black/30 font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+                  className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium py-2.5 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] backdrop-blur-sm border border-white/20"
                 >
-                  Continue Here
+                  Continue Testing
                 </Button>
               </div>
 
               {/* Footer signature */}
-              <div className="pt-6 mt-4 border-t border-white/30 dark:border-gray-600/30 text-center lg:text-left">
-                <div className="flex items-center justify-between">
+              <div className="pt-4 mt-3 border-t border-white/30 dark:border-gray-600/30 text-center lg:text-left">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                      <Sparkles size={14} className="text-white" />
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                      <Sparkles size={12} className="text-white" />
                     </div>
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">FanSpark Team</span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">FanSpark Team</span>
                   </div>
-                  <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-green-100/50 dark:bg-green-900/30 backdrop-blur-sm border border-green-200/50 dark:border-green-700/50">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
-                    <span className="text-sm font-medium text-green-700 dark:text-green-300">Live Testing</span>
+                  <div className="flex items-center space-x-2 px-2 py-1 rounded-full bg-orange-100/50 dark:bg-orange-900/30 backdrop-blur-sm border border-orange-200/50 dark:border-orange-700/50">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shadow-lg shadow-orange-500/50"></div>
+                    <span className="text-xs font-medium text-orange-700 dark:text-orange-300">Beta Testing</span>
                   </div>
                 </div>
               </div>

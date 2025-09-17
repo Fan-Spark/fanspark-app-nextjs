@@ -1,36 +1,58 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   
-  const addToCart = (tokenId, quantity, isWhitelist, price, whitelistPrice) => {
+  const addToCart = (tokenId, quantity, isWhitelist, price, whitelistPrice, tokenName = null) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.tokenId === tokenId);
       
       if (existingItem) {
-        return prevCart.map(item =>
+        // Update existing item
+        const updatedCart = prevCart.map(item =>
           item.tokenId === tokenId
             ? { ...item, quantity, price, whitelistPrice }
             : item
         );
+        
+        // Show update notification
+        toast.success(`🛒 Updated ${tokenName || `Token #${tokenId}`} quantity to ${quantity}`);
+        
+        return updatedCart;
       }
       
-      return [...prevCart, { 
+      // Add new item
+      const newCart = [...prevCart, { 
         tokenId, 
         quantity, 
         isWhitelist,
         price,
         whitelistPrice
       }];
+      
+      // Show add notification
+      toast.success(`🎉 Added ${tokenName || `Token #${tokenId}`} to your cart!`);
+      
+      return newCart;
     });
   };
   
-  const removeFromCart = (tokenId) => {
-    setCart(prevCart => prevCart.filter(item => item.tokenId !== tokenId));
+  const removeFromCart = (tokenId, tokenName = null, showNotification = true) => {
+    setCart(prevCart => {
+      const newCart = prevCart.filter(item => item.tokenId !== tokenId);
+      
+      // Show remove notification only if requested
+      if (showNotification) {
+        toast.info(`🗑️ Removed ${tokenName || `Token #${tokenId}`} from your cart`);
+      }
+      
+      return newCart;
+    });
   };
   
   const clearCart = () => {

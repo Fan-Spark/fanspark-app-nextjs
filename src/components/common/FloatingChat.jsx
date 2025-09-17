@@ -397,7 +397,7 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
                       <h4 className="font-semibold text-base">{agent.name}</h4>
                       <Badge variant="secondary" className="text-xs">
                         <Bot size={10} className="mr-1" />
-                        {agent.universe || 'Stellar Ardent'}
+                        {agent.universe || 'Stellar Universe'}
                       </Badge>
                       {agent.isComingSoon && (
                         <Badge variant="outline" className="text-xs bg-orange-500/10 text-orange-600 border-orange-500/20">

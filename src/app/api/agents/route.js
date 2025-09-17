@@ -7,7 +7,7 @@ const APP_SECRET = process.env.AGENTS_APP_SECRET;
 // Mapping from original agent IDs to new Fanspark agent data
 const AGENT_MAPPING = {
   'af5504a3-406e-0064-8ebb-22b7c1fca166': {
-    name: 'Kai Ardent',
+    name: 'Kai Stellar',
     avatar: '/character/Kai.png',
     bio: 'A plucky 12-year-old Martian youth whose boundless curiosity and stubborn optimism drive him forward. Though still growing into his newfound cosmic powers, his fierce determination and loyalty make him a natural leader and friend.'
   },
@@ -52,38 +52,38 @@ function transformAgentData(agents) {
 
 export async function GET() {
   try {
-    if (!APP_ID || !APP_SECRET) {
-      console.error('Missing environment variables: AGENTS_APP_ID or AGENTS_APP_SECRET');
-      return NextResponse.json({ 
-        error: 'Server configuration error' 
-      }, { status: 500 });
-    }
+    // Backend API is not working, using static data instead
+    // const response = await fetch(`${API_BASE_URL}/agents`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   cache: 'no-store'
+    // });
 
-    const response = await fetch(`${API_BASE_URL}/agents`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      cache: 'no-store'
-    });
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
+    // const data = await response.json();
     
-    // Transform the agent data with new names and avatars
-    const transformedData = {
-      ...data,
-      agents: transformAgentData(data.agents || [])
+    // Return static agent data instead of API call
+    const staticData = {
+      agents: Object.values(AGENT_MAPPING).map((agent, index) => ({
+        id: `static-agent-${index}`,
+        name: agent.name,
+        avatar: agent.avatar,
+        bio: agent.bio,
+        universe: 'Stellar Universe',
+        isComingSoon: false
+      }))
     };
     
-    return NextResponse.json(transformedData);
+    return NextResponse.json(staticData);
   } catch (error) {
-    console.error('Error fetching agents:', error);
+    console.error('Error with static agents data:', error);
     return NextResponse.json({ 
-      error: 'Failed to fetch agents' 
+      error: 'Failed to load agents data' 
     }, { status: 500 });
   }
 } 

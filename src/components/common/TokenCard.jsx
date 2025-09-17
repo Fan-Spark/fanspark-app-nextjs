@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from 'react-toastify';
 import { 
   Minus, 
   Plus, 
@@ -41,6 +42,7 @@ export default function TokenCard({
   isRefreshingCounts = false
 }) {
   const [mintAmount, setMintAmount] = useState(1);
+  const [isHovering, setIsHovering] = useState(false);
   const [isWhitelisted, setIsWhitelisted] = useState(false);
   const [whitelistAmount, setWhitelistAmount] = useState(0);
   
@@ -151,10 +153,26 @@ export default function TokenCard({
         mintAmount, 
         canUseWhitelist,
         token.price,
-        token.whitelistPrice
+        token.whitelistPrice,
+        token.name
       );
+      
+      // Show success notification
+      const tierName = token.name || getTierInfo();
+      toast.success(`You've added ${tierName} reward to your cart`, {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } catch (error) {
       console.error('Error adding to cart:', error);
+      toast.error('Failed to add item to cart', {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -194,9 +212,9 @@ export default function TokenCard({
   const rarityInfo = getRarityInfo();
 
   return (
-    <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.01] h-[720px] flex flex-col">
+    <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.01] h-[600px] flex flex-col">
       {/* Token Header with Image - Fixed Height */}
-      <div className="relative h-48 bg-gradient-to-br from-slate-900 to-slate-800 group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden flex-shrink-0">
+      <div className="relative h-36 bg-gradient-to-br from-slate-900 to-slate-800 group-hover:scale-[1.02] transition-transform duration-300 overflow-hidden flex-shrink-0">
         {token.image ? (
           <>
             {/* NFT Image */}
@@ -262,17 +280,17 @@ export default function TokenCard({
         <div className="absolute bottom-3 right-3">
           <Badge variant="secondary" className="bg-black/40 text-white/90 border-white/20 font-mono text-xs">
             {isWhitelisted && token.isWhitelistActive 
-              ? `${token.whitelistPrice} USDC` 
-              : `${token.price} USDC`}
+              ? `${token.whitelistPrice} USD` 
+              : `${token.price} USD`}
           </Badge>
         </div>
       </div>
       
       {/* Card Content - Flexible Height */}
-      <CardContent className="p-4 flex-1 flex flex-col min-h-0">
+      <CardContent className="p-3 flex-1 flex flex-col min-h-0">
         {/* Token Info Header */}
-        <div className="mb-3 flex-shrink-0">
-          <h3 className="text-lg font-semibold mb-1 truncate">{token.name || getTierInfo()}</h3>
+        <div className="mb-2 flex-shrink-0">
+          <h3 className="text-base font-semibold mb-1 truncate">{token.name || getTierInfo()}</h3>
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Trophy className="w-3 h-3" />
@@ -293,30 +311,11 @@ export default function TokenCard({
           </div>
         </div>
 
-        {/* Always Visible Stats */}
-        <div className="grid grid-cols-2 gap-2 mb-3 flex-shrink-0">
-          <div className="bg-muted/50 rounded-lg p-2">
-            <Label className="text-xs text-muted-foreground">Max per TX</Label>
-            {isRefreshingCounts ? (
-              <Skeleton className="h-4 w-8 mt-1" />
-            ) : (
-              <div className="text-sm font-medium">{token.maxMintPerTx}</div>
-            )}
-          </div>
-          <div className="bg-muted/50 rounded-lg p-2">
-            <Label className="text-xs text-muted-foreground">Progress</Label>
-            {isRefreshingCounts ? (
-              <Skeleton className="h-4 w-10 mt-1" />
-            ) : (
-              <div className="text-sm font-medium">{token.mintedPercentage}%</div>
-            )}
-          </div>
-        </div>
 
         {/* Tabs for organized content - Takes available space */}
-        <div className="flex-1 flex flex-col min-h-0 mb-4">
+        <div className="flex-1 flex flex-col min-h-0 mb-3">
           <Tabs defaultValue="overview" className="flex-1 flex flex-col min-h-0">
-            <TabsList className="grid w-full grid-cols-3 h-8 mb-3 flex-shrink-0">
+            <TabsList className="grid w-full grid-cols-3 h-7 mb-2 flex-shrink-0">
               <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
               <TabsTrigger value="rewards" className="text-xs">Rewards</TabsTrigger>
               <TabsTrigger value="attributes" className="text-xs">Details</TabsTrigger>
@@ -325,7 +324,7 @@ export default function TokenCard({
             {/* Overview Tab */}
             <TabsContent value="overview" className="flex-1 min-h-0 mt-0">
               <ScrollArea className="h-full pr-2">
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {/* Description */}
                   {token.description && (
                     <div>
@@ -344,14 +343,14 @@ export default function TokenCard({
                 <div className="space-y-2">
                   {token.properties?.rewards && token.properties.rewards.length > 0 ? (
                     token.properties.rewards.map((reward, index) => (
-                      <div key={index} className="flex items-start gap-2 p-2 bg-muted/30 rounded-lg">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0 mt-2" />
+                      <div key={index} className="flex items-start gap-2 p-1.5 bg-muted/30 rounded-lg">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0 mt-1.5" />
                         <span className="text-sm text-muted-foreground">{reward}</span>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-4">
-                      <Gift className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+                    <div className="text-center py-3">
+                      <Gift className="w-6 h-6 mx-auto mb-1 text-muted-foreground/50" />
                       <p className="text-sm text-muted-foreground">No rewards information available</p>
                     </div>
                   )}
@@ -365,20 +364,19 @@ export default function TokenCard({
                 <div className="space-y-2">
                   {token.attributes && token.attributes.length > 0 ? (
                     token.attributes.map((attr, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-1.5 bg-muted/30 rounded-lg">
                         <div className="flex items-center gap-2">
-                          {attr.trait_type === '$ARDENT Tokens' && <Coins className="w-3 h-3 text-primary" />}
                           {attr.trait_type === 'PFP Collectibles' && <Package className="w-3 h-3 text-primary" />}
                           {attr.trait_type === 'Max Supply' && <Trophy className="w-3 h-3 text-primary" />}
-                          {!['$ARDENT Tokens', 'PFP Collectibles', 'Max Supply'].includes(attr.trait_type) && <Tag className="w-3 h-3 text-primary" />}
+                          {!['PFP Collectibles', 'Max Supply'].includes(attr.trait_type) && <Tag className="w-3 h-3 text-primary" />}
                           <span className="text-xs text-muted-foreground">{attr.trait_type}</span>
                         </div>
                         <span className="text-sm font-medium">{attr.value}</span>
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-4">
-                      <Sparkles className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+                    <div className="text-center py-3">
+                      <Sparkles className="w-6 h-6 mx-auto mb-1 text-muted-foreground/50" />
                       <p className="text-sm text-muted-foreground">No attributes available</p>
                     </div>
                   )}
@@ -389,7 +387,7 @@ export default function TokenCard({
         </div>
         
         {/* Bottom Section - Always Visible */}
-        <div className="flex-shrink-0 space-y-3">
+        <div className="flex-shrink-0 space-y-2">
           {/* Quantity Selector */}
           <div className="flex items-center justify-between">
             <Label className="text-sm">Quantity</Label>
@@ -430,16 +428,18 @@ export default function TokenCard({
           </div>
           
           {/* Action Buttons */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Button 
               onClick={handleAddToCart}
               disabled={!isMintingAvailable || !walletConnected || isMinting}
-              className="w-full h-9"
+              className="w-full h-8"
               variant={isInCart ? "outline" : "default"}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
               {!walletConnected 
-                ? "Add to Cart" 
+                ? (isHovering ? "Connect" : "Add to Cart")
                 : !isMintingAvailable
                   ? "Not Available"
                   : isMinting
@@ -457,7 +457,7 @@ export default function TokenCard({
                   variant="outline"
                   onClick={() => onMint(token.id, mintAmount, canUseWhitelist)}
                   disabled={isMinting}
-                  className="flex-1 h-9"
+                  className="flex-1 h-8"
                 >
                   {isMinting ? (
                     <>
@@ -483,7 +483,7 @@ export default function TokenCard({
           {/* Price display */}
           {isMintingAvailable && walletConnected && (
             <div className="text-center text-sm text-muted-foreground">
-              Total: <span className="font-medium text-foreground">{getTotalPrice()} USDC</span>
+              Total: <span className="font-medium text-foreground">{getTotalPrice()} USD</span>
             </div>
           )}
         </div>

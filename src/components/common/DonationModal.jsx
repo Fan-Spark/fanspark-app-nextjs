@@ -36,7 +36,7 @@ const DonationModal = () => {
   // Validate amount input
   const isValidAmount = () => {
     const numAmount = parseInt(amount);
-    return numAmount >= 1 && numAmount <= 1000000; // Minimum $1 USDC
+    return numAmount >= 1 && numAmount <= 1000000; // Minimum $1 USD
   };
 
   // Format amount for display (whole numbers only)
@@ -46,8 +46,8 @@ const DonationModal = () => {
     return num.toString();
   };
 
-  // Check USDC balance
-  const checkUSDCBalance = async (userAddress, requiredAmount) => {
+  // Check USD balance
+  const checkUSDBalance = async (userAddress, requiredAmount) => {
     try {
       // USDC contract address on Base
       const usdcContractAddress = '0x7f27352d5f83db87a5a3e00f4b07cc2138d8ee52';
@@ -76,7 +76,7 @@ const DonationModal = () => {
         balanceFormatted: ethers.utils.formatUnits(balance, 6)
       };
     } catch (error) {
-      console.error('Error checking USDC balance:', error);
+      console.error('Error checking USD balance:', error);
       return {
         balance: ethers.BigNumber.from(0),
         hasEnoughBalance: false,
@@ -99,17 +99,17 @@ const DonationModal = () => {
       // USDC contract address on Base
       const usdcContractAddress = '0x7f27352d5f83db87a5a3e00f4b07cc2138d8ee52';
       
-      // Check USDC balance first
-      console.log('Checking USDC balance...');
-      const balanceCheck = await checkUSDCBalance(walletAddress, amount);
+      // Check USD balance first
+      console.log('Checking USD balance...');
+      const balanceCheck = await checkUSDBalance(walletAddress, amount);
       
       if (!balanceCheck.hasEnoughBalance) {
-        throw new Error(`Insufficient USDC balance. You have $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USDC, but need $${amount} USDC for this donation.`);
+        throw new Error(`Insufficient USD balance. You have $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USD, but need $${amount} USD for this donation.`);
       }
       
-      console.log(`USDC balance check passed. User has $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USDC`);
+      console.log(`USD balance check passed. User has $${parseFloat(balanceCheck.balanceFormatted).toFixed(2)} USD`);
       
-      // Convert USDC amount to wei (6 decimal places for USDC)
+      // Convert USD amount to wei (6 decimal places for USD)
       const amountInWei = ethers.utils.parseUnits(amount, 6);
       
       // Create ERC-20 transfer function call data
@@ -128,12 +128,12 @@ const DonationModal = () => {
         data: data,
       };
 
-      console.log('Sending USDC donation transaction:', transaction);
-      console.log(`Transferring ${amount} USDC to ${donationWalletAddress}`);
+      console.log('Sending USD donation transaction:', transaction);
+      console.log(`Transferring ${amount} USD to ${donationWalletAddress}`);
       
       // Send the transaction
       const txHash = await walletClient.sendTransaction(transaction);
-      console.log('USDC donation transaction sent, hash:', txHash);
+      console.log('USD donation transaction sent, hash:', txHash);
       
       setStatus('success');
       
@@ -160,7 +160,7 @@ const DonationModal = () => {
           // Use our custom balance check error message
           friendlyMessage = error.message;
         } else if (msg.includes('insufficient funds') || msg.includes('exceeds the balance') || msg.includes('transfer amount exceeds balance')) {
-          friendlyMessage = "Insufficient USDC balance - you don't have enough USDC tokens to complete this donation";
+          friendlyMessage = "Insufficient USD balance - you don't have enough USD tokens to complete this donation";
         } else if (msg.includes('user rejected') || msg.includes('user denied')) {
           friendlyMessage = "Donation was cancelled by user";
         } else if (msg.includes('gas required exceeds allowance') || msg.includes('out of gas')) {
@@ -168,7 +168,7 @@ const DonationModal = () => {
         } else if (msg.includes('network') || msg.includes('connection')) {
           friendlyMessage = "Network connection issue - please check your internet and try again";
         } else if (msg.includes('execution reverted')) {
-          friendlyMessage = "Transaction failed - please ensure you have enough USDC and try again";
+          friendlyMessage = "Transaction failed - please ensure you have enough USD and try again";
         } else {
           friendlyMessage = error.message;
         }
@@ -215,7 +215,7 @@ const DonationModal = () => {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-pink-500" />
-                <h2 className="text-lg font-semibold">Support FanSpark</h2>
+                <h2 className="text-lg font-semibold">Support this campaign</h2>
               </div>
               <Button
                 variant="ghost"
@@ -250,7 +250,7 @@ const DonationModal = () => {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="donation-amount" className="text-sm font-medium">
-                        Donation Amount (USDC)
+                        Donation Amount (USD)
                       </Label>
                       <div className="relative mt-1">
                                               <Input
@@ -266,13 +266,13 @@ const DonationModal = () => {
                       />
                         <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                           <Badge variant="secondary" className="text-xs">
-                            USDC
+                            USD
                           </Badge>
                         </div>
                       </div>
                       {amount && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          You will donate: ${formatAmount(amount)} USDC
+                          You will donate: ${formatAmount(amount)} USD
                         </p>
                       )}
                     </div>
