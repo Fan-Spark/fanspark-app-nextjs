@@ -6,73 +6,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import PortalLink from "@/components/common/PortalLink";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { globalNavigation } from "@/data/globalSystems";
 import { 
-  Package,
-  StickyNote,
-  Trophy,
-  Star,
-  Sparkles,
-  Compass,
-  Battery
+  Sparkles
 } from "lucide-react";
 
 export default function Sidebar({ 
-  activeCollection = "reward-crate",
-  onCollectionChange,
+  activeItem = "collections",
   isMobile = false
 }) {
   const router = useRouter();
-  
-  const collections = [
-    {
-      id: "reward-crate",
-      name: "Stellar Comic",
-      description: "Issue #1 Comic Book",
-      icon: Package,
-      image: "/reward-crate.png",
-      useImage: true,
-      status: "active",
-      href: "/",
-      gradient: "from-blue-500 to-purple-600"
-    },
-    {
-      id: "pre-launch-rewards",
-      name: "Pre-Launch Rewards",
-      description: "Exclusive early access benefits",
-      icon: Sparkles,
-      status: "coming-soon",
-      href: "#pre-launch-rewards",
-      gradient: "from-yellow-500 to-orange-500"
-    },
-    {
-      id: "spark-of-luck",
-      name: "Spark of Luck",
-      description: "Gacha",
-      icon: Star,
-      status: "coming-soon",
-      href: "#spark-of-luck",
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      id: "restore-power",
-      name: "Restore Power!",
-      description: "Battery Game",
-      icon: Battery,
-      status: "coming-soon",
-      href: "#restore-power",
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      id: "quests",
-      name: "Quests",
-      description: "Complete missions for rewards",
-      icon: Trophy,
-      status: "coming-soon",
-      href: "#quests",
-      gradient: "from-orange-500 to-red-500"
-    }
-  ];
+  const pathname = usePathname();
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -122,7 +68,7 @@ export default function Sidebar({
         <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
           <div className="flex items-center space-x-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-primary">Campaign Items</h2>
+            <h2 className="text-sm font-semibold text-primary">Navigation</h2>
           </div>
           <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
             {collections.length}

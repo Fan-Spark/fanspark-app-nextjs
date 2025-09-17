@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useTheme } from '@/components/common/ThemeProvider';
+import { usePathname, useParams } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
-import Sidebar from '@/components/common/Sidebar';
+import GlobalSidebar from '@/components/common/GlobalSidebar';
+import CollectionSidebar from '@/components/collections/CollectionSidebar';
+import { getCollectionBySlug } from '@/data/collections';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import DonationModal from '@/components/common/DonationModal';
@@ -18,7 +21,8 @@ import {
   Sun,
   Menu,
   Sparkles,
-  User
+  User,
+  Heart
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
@@ -33,13 +37,24 @@ export default function Template({ children }) {
     disconnect
   } = useDynamicWallet();
   
-  const [activeCollection, setActiveCollection] = useState("reward-crate");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [currentYear, setCurrentYear] = useState('');
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
+  const params = useParams();
+
+  // Determine if we're in a collection context
+  const isCollectionPage = pathname.startsWith('/collections/');
+  const currentCollection = isCollectionPage && params.slug ? getCollectionBySlug(params.slug) : null;
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
+  // Set current year on client side only to avoid hydration mismatch
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear().toString());
+  }, []);
 
   const formatAddress = (address) => {
     if (!address) return "";
@@ -69,12 +84,18 @@ export default function Template({ children }) {
             <DynamicWalletButton />
           </div>
 
-          {/* Collections Navigation */}
+          {/* Dynamic Navigation */}
           <div className="flex-1 overflow-hidden">
-            <Sidebar 
-              activeCollection={activeCollection}
-              onCollectionChange={setActiveCollection}
-            />
+            {isCollectionPage && currentCollection ? (
+              <CollectionSidebar 
+                collection={currentCollection}
+                activeItem={pathname}
+              />
+            ) : (
+              <GlobalSidebar 
+                activeItem={pathname}
+              />
+            )}
           </div>
 
           {/* Sidebar Footer with Theme Toggle */}
@@ -168,11 +189,18 @@ export default function Template({ children }) {
 
                   {/* Mobile Collections List */}
                   <div className="flex-1 overflow-hidden">
-                    <Sidebar 
-                      activeCollection={activeCollection}
-                      onCollectionChange={setActiveCollection}
-                      isMobile={true}
-                    />
+            {isCollectionPage && currentCollection ? (
+              <CollectionSidebar 
+                collection={currentCollection}
+                activeItem={pathname}
+                isMobile={true}
+              />
+            ) : (
+              <GlobalSidebar 
+                activeItem={pathname}
+                isMobile={true}
+              />
+            )}
                   </div>
 
                   {/* Mobile Sidebar Footer */}
@@ -190,9 +218,18 @@ export default function Template({ children }) {
       </div>
 
       {/* Main Content */}
-      <main className="lg:ml-96 lg:pt-6 pt-16 transition-all duration-500">
+      <main className="lg:ml-96 lg:mr-8 transition-all duration-500 mt-5">
         {children}
       </main>
+
+      {/* Footer */}
+      <footer className="lg:ml-96 lg:mr-8 border-t py-6 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
+          </p>
+        </div>
+      </footer>
     </div>
   );
 } 

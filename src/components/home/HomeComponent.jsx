@@ -52,8 +52,7 @@ import {
   Minus,
   Plus,
   Trash2,
-  X,
-  Heart
+  X
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from 'react-toastify';
@@ -116,7 +115,6 @@ export default function HomeComponent() {
   const [showBatchMintModal, setShowBatchMintModal] = useState(false);
   const [showNetworkModal, setShowNetworkModal] = useState(false);
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
-  const [currentYear, setCurrentYear] = useState('');
   const [whitelistStatus, setWhitelistStatus] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCollection, setActiveCollection] = useState("reward-crate");
@@ -414,11 +412,6 @@ export default function HomeComponent() {
     return null;
   }
 };
-
-  // Set current year on client side only to avoid hydration mismatch
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear().toString());
-  }, []);
 
   // Debug logging for connection state
   useEffect(() => {
@@ -1438,14 +1431,6 @@ export default function HomeComponent() {
         onClose={() => setShowMintSuccessPopup(false)}
       />
 
-      {/* Footer */}
-      <footer className="border-t py-6 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

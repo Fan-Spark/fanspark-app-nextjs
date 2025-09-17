@@ -5,15 +5,26 @@ import {
   Clock,
   Bell,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Dice6,
+  Battery,
+  Trophy
 } from "lucide-react";
 
+const iconMap = {
+  'Dice6': Dice6,
+  'Battery': Battery,
+  'Trophy': Trophy,
+  'Clock': Clock
+};
+
 export default function ComingSoonPage({ 
-  collectionName, 
+  title,
   description, 
-  icon: Icon,
-  expectedDate = "Q1 2024"
+  icon = "Clock",
+  expectedDate = "Coming Soon"
 }) {
+  const Icon = iconMap[icon] || Clock;
   return (
     <div className="min-h-[60vh] flex items-center justify-center p-4">
       <div className="max-w-2xl w-full space-y-6">
@@ -26,7 +37,7 @@ export default function ComingSoonPage({
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">{collectionName}</h1>
+            <h1 className="text-3xl font-bold">{title}</h1>
             <p className="text-muted-foreground text-lg">{description}</p>
           </div>
           
