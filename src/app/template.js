@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useTheme } from '@/components/common/ThemeProvider';
-import { usePathname, useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
-import GlobalSidebar from '@/components/common/GlobalSidebar';
-import CampaignSidebar from '@/components/campaigns/CampaignSidebar';
-import { getCampaignBySlug } from '@/data/campaigns';
+import Sidebar from '@/components/common/Sidebar';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import DonationModal from '@/components/common/DonationModal';
@@ -41,11 +39,8 @@ export default function Template({ children }) {
   const [currentYear, setCurrentYear] = useState('');
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-  const params = useParams();
 
-  // Determine if we're in a campaign context
-  const isCampaignPage = pathname.startsWith('/campaigns/');
-  const currentCampaign = isCampaignPage && params.slug ? getCampaignBySlug(params.slug) : null;
+
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -84,18 +79,11 @@ export default function Template({ children }) {
             <DynamicWalletButton />
           </div>
 
-          {/* Dynamic Navigation */}
-          <div className="flex-1 overflow-hidden">
-            {isCampaignPage && currentCampaign ? (
-              <CampaignSidebar 
-                campaign={currentCampaign}
-                activeItem={pathname}
-              />
-            ) : (
-              <GlobalSidebar 
-                activeItem={pathname}
-              />
-            )}
+          {/* Unified Navigation */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <Sidebar 
+              activeItem={pathname}
+            />
           </div>
 
           {/* Sidebar Footer with Theme Toggle */}
@@ -187,20 +175,12 @@ export default function Template({ children }) {
                     <DonationModal />
                   </div>
 
-                  {/* Mobile Campaigns List */}
-                  <div className="flex-1 overflow-hidden">
-            {isCampaignPage && currentCampaign ? (
-              <CampaignSidebar 
-                campaign={currentCampaign}
-                activeItem={pathname}
-                isMobile={true}
-              />
-            ) : (
-              <GlobalSidebar 
-                activeItem={pathname}
-                isMobile={true}
-              />
-            )}
+                  {/* Mobile Navigation List */}
+                  <div className="flex-1 min-h-0 overflow-hidden">
+                    <Sidebar 
+                      activeItem={pathname}
+                      isMobile={true}
+                    />
                   </div>
 
                   {/* Mobile Sidebar Footer */}

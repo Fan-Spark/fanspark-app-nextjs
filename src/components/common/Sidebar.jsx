@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export default function Sidebar({ 
-  activeItem = "campaigns",
+  activeItem,
   isMobile = false
 }) {
   const router = useRouter();
@@ -50,16 +50,23 @@ export default function Sidebar({
     }
   };
 
-  const handleCampaignChange = (campaign) => {
-    // Navigate to the campaign href
-    if (campaign.href) {
-      router.push(campaign.href);
-    }
+  const handleNavigation = (item) => {
+    if (item.status === "coming-soon") return;
+    
+    // Navigate to the item
+    router.push(item.href);
+  };
+
+  const isActiveItem = (item) => {
+    // Check if this is the active item based on pathname
+    if (item.href === '/' && pathname === '/') return true;
+    if (item.href !== '/' && pathname.startsWith(item.href)) return true;
+    return false;
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Collections Header */}
+      {/* Navigation Header */}
       {!isMobile && (
         <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
           <div className="flex items-center space-x-2">
@@ -87,15 +94,15 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Campaigns List */}
+      {/* Navigation List */}
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-1">
-          {globalNavigation.map((campaign) => {
-            const Icon = campaign.icon;
-            const isActive = activeItem === campaign.id;
+          {globalNavigation.map((item) => {
+            const Icon = item.icon;
+            const isActive = isActiveItem(item);
             
             return (
-              <div key={campaign.id}>
+              <div key={item.id}>
                 <Button
                   variant="ghost"
                   className={`w-full justify-start h-auto p-2 rounded-lg transition-all duration-300 ${
@@ -103,18 +110,18 @@ export default function Sidebar({
                       ? "bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 shadow-lg shadow-primary/10" 
                       : "hover:bg-accent/30 hover:border-accent/20 border border-transparent"
                   } ${
-                    campaign.status === "coming-soon" ? "opacity-60" : ""
+                    item.status === "coming-soon" ? "opacity-60" : ""
                   }`}
-                  onClick={() => handleCampaignChange(campaign)}
-                  disabled={campaign.status === "coming-soon"}
+                  onClick={() => handleNavigation(item)}
+                  disabled={item.status === "coming-soon"}
                 >
                   <div className="flex items-center w-full">
                     <div className="relative mr-2">
-                      {campaign.useImage ? (
+                      {item.useImage ? (
                         <div className="relative">
                           <Image
-                            src={campaign.image}
-                            alt={campaign.name}
+                            src={item.image}
+                            alt={item.name}
                             width={24}
                             height={24}
                             className={`h-6 w-6 object-cover rounded-md ${
@@ -128,15 +135,17 @@ export default function Sidebar({
                       ) : (
                         <div className={`h-6 w-6 rounded-md flex items-center justify-center ${
                           isActive 
-                            ? `bg-gradient-to-br ${campaign.gradient} shadow-lg` 
-                            : "bg-accent/20 border border-border/30"
+                            ? `bg-gradient-to-br ${item.gradient} shadow-lg` 
+                            : item.status === "coming-soon" 
+                              ? `bg-gradient-to-br ${item.gradient} opacity-80`
+                              : "bg-accent/20 border border-border/30"
                         }`}>
                           <Icon className={`h-3 w-3 ${
-                            isActive ? "text-white" : getStatusColor(campaign.status)
+                            isActive || item.status === "coming-soon" ? "text-white" : getStatusColor(item.status)
                           }`} />
                         </div>
                       )}
-                      {!campaign.useImage && isActive && (
+                      {!item.useImage && isActive && (
                         <div className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 bg-green-500 rounded-full border border-background animate-pulse"></div>
                       )}
                     </div>
@@ -146,14 +155,14 @@ export default function Sidebar({
                         <span className={`font-medium text-sm truncate ${
                           isActive ? "text-primary" : "text-foreground"
                         }`}>
-                          {campaign.name}
+                          {item.name}
                         </span>
-                        {getStatusBadge(campaign.status)}
+                        {getStatusBadge(item.status)}
                       </div>
                       <p className={`text-xs mt-0.5 truncate ${
                         isActive ? "text-primary/70" : "text-muted-foreground"
                       }`}>
-                        {campaign.description}
+                        {item.description}
                       </p>
                     </div>
                   </div>
@@ -164,7 +173,7 @@ export default function Sidebar({
         </div>
       </ScrollArea>
 
-      {/* Campaigns Footer */}
+      {/* Navigation Footer */}
       {!isMobile && (
         <div className="mt-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
           <div className="space-y-3">

@@ -32,7 +32,7 @@ export const campaigns = [
         icon: Star, 
         path: '/gacha',
         description: 'Collection-specific gacha system',
-        gradient: 'from-purple-500 to-pink-500',
+        gradient: 'from-red-500 to-orange-600',
         status: 'coming-soon'
       },
       { 
@@ -41,7 +41,7 @@ export const campaigns = [
         icon: Battery, 
         path: '/battery-game',
         description: 'Energy management for this collection',
-        gradient: 'from-green-500 to-emerald-500',
+        gradient: 'from-red-500 to-orange-600',
         status: 'coming-soon'
       },
       { 
@@ -50,7 +50,7 @@ export const campaigns = [
         icon: Trophy, 
         path: '/quests',
         description: 'Collection-specific missions',
-        gradient: 'from-orange-500 to-red-500',
+        gradient: 'from-red-500 to-orange-600',
         status: 'coming-soon'
       }
     ],
@@ -75,7 +75,7 @@ export const campaigns = [
         icon: Package, 
         path: '/campaigns',
         description: 'Defender campaigns and missions',
-        gradient: 'from-red-500 to-orange-600'
+        gradient: 'from-blue-500 to-purple-600'
       },
       { 
         id: 'gacha', 
@@ -83,7 +83,8 @@ export const campaigns = [
         icon: Star, 
         path: '/gacha',
         description: 'Summon powerful defenders',
-        gradient: 'from-purple-500 to-pink-500'
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
       },
       { 
         id: 'quests', 
@@ -91,7 +92,8 @@ export const campaigns = [
         icon: Trophy, 
         path: '/quests',
         description: 'Epic defender missions',
-        gradient: 'from-yellow-500 to-orange-500'
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
       }
     ]
   },
@@ -113,7 +115,7 @@ export const campaigns = [
         icon: Package, 
         path: '/campaigns',
         description: 'Dark mysterious campaigns',
-        gradient: 'from-indigo-500 to-purple-600'
+        gradient: 'from-blue-500 to-purple-600'
       },
       { 
         id: 'battery-game', 
@@ -121,7 +123,8 @@ export const campaigns = [
         icon: Battery, 
         path: '/battery-game',
         description: 'Harness spectral energy',
-        gradient: 'from-cyan-500 to-blue-500'
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
       },
       { 
         id: 'quests', 
@@ -129,7 +132,8 @@ export const campaigns = [
         icon: Trophy, 
         path: '/quests',
         description: 'Journey through shadows',
-        gradient: 'from-pink-500 to-purple-500'
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
       }
     ]
   }

@@ -91,8 +91,8 @@ export default function GlobalSidebar({
       )}
 
       {/* Global Navigation List */}
-      <ScrollArea className="flex-1">
-        <div className="space-y-1 p-1">
+      <ScrollArea className="flex-1 pr-2">
+        <div className="space-y-1 pr-2">
           {globalNavigation.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);

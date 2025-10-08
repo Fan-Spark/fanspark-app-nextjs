@@ -1,21 +1,36 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { 
   ExternalLink,
   Clock,
-  Package
+  Package,
+  Wallet,
+  ShoppingCart
 } from "lucide-react";
 
 export default function CampaignCard({ campaign }) {
   const router = useRouter();
+  const { isConnected, openConnectionModal } = useDynamicWallet();
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleViewCampaign = () => {
     router.push(`/campaigns/${campaign.slug}`);
+  };
+
+  const handleAddToCart = () => {
+    if (!isConnected) {
+      openConnectionModal();
+      return;
+    }
+    // Add to cart logic here - could navigate to campaign or add directly
+    handleViewCampaign();
   };
 
   const getStatusBadge = (status) => {
@@ -39,7 +54,7 @@ export default function CampaignCard({ campaign }) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-gradient-to-br from-background/50 to-background/30 border-0 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
+    <Card className="group relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800/80 to-gray-900 border border-gray-700/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
       <CardContent className="p-0 flex flex-col h-full">
         {/* Campaign Image */}
         <div className="relative aspect-video overflow-hidden">
@@ -109,21 +124,34 @@ export default function CampaignCard({ campaign }) {
           <div className="mt-6">
             {/* Action Button */}
             <Button 
-              onClick={handleViewCampaign}
-              className="w-full bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground font-medium transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20 h-11"
+              onClick={campaign.status === "coming-soon" ? handleViewCampaign : handleAddToCart}
+              onMouseEnter={() => setTimeout(() => setIsHovered(true), 250)}
+              onMouseLeave={() => setIsHovered(false)}
+              className={`w-full font-medium transition-all duration-700 ease-in-out transform h-11 cursor-pointer
+                ${campaign.status === "coming-soon" 
+                  ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
+                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out"
+                }`}
               disabled={campaign.status === "coming-soon"}
             >
-              {campaign.status === "coming-soon" ? (
-                <>
-                  <Clock className="w-4 h-4 mr-2" />
-                  Coming Soon
-                </>
-              ) : (
-                <>
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Explore Campaign
-                </>
-              )}
+              <span className="flex items-center justify-center transition-all duration-400 ease-in-out">
+                {campaign.status === "coming-soon" ? (
+                  <>
+                    <Clock className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    Coming Soon
+                  </>
+                ) : !isConnected && isHovered ? (
+                  <>
+                    <Wallet className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out animate-pulse" />
+                    Connect
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    Add to Cart
+                  </>
+                )}
+              </span>
             </Button>
           </div>
         </div>
