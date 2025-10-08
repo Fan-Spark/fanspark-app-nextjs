@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { globalNavigation } from "@/data/globalSystems";
 import { 
-  Sparkles
+  Sparkles,
+  ArrowLeft
 } from "lucide-react";
 
-export default function GlobalSidebar({ 
-  activeItem = "campaigns",
+export default function CampaignSidebar({ 
+  campaign,
+  activeItem,
   isMobile = false
 }) {
   const router = useRouter();
@@ -50,50 +51,52 @@ export default function GlobalSidebar({
   const handleNavigation = (item) => {
     if (item.status === "coming-soon") return;
     
-    // Navigate to the item
-    router.push(item.href);
+    const url = `/campaigns/${campaign.slug}${item.path}`;
+    router.push(url);
+  };
+
+  const handleBackToCampaigns = () => {
+    router.push('/');
   };
 
   const isActiveItem = (item) => {
-    if (item.href === '/' && pathname === '/') return true;
-    if (item.href !== '/' && pathname.startsWith(item.href)) return true;
-    return false;
+    const itemPath = `/campaigns/${campaign.slug}${item.path}`;
+    if (item.path === '/campaigns' && pathname === `/campaigns/${campaign.slug}`) return true;
+    return pathname === itemPath;
   };
+
+  if (!campaign) return null;
 
   return (
     <div className="flex flex-col h-full">
-      {/* Global Navigation Header */}
+      {/* Campaign Header */}
       {!isMobile && (
-        <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
-          <div className="flex items-center space-x-2">
+        <div className="mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
+          <div className="flex items-center space-x-2 mb-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-primary">Navigation</h2>
+            <h2 className="text-sm font-semibold text-primary truncate">{campaign.name}</h2>
           </div>
-          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
-            {globalNavigation.length}
+          <p className="text-xs text-muted-foreground">{campaign.subtitle}</p>
+          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30 mt-2">
+            {campaign.navigation.length} Features
           </Badge>
         </div>
       )}
 
-      {/* Mobile Testing Indicator */}
+      {/* Mobile Campaign Info */}
       {isMobile && (
         <div className="mb-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
-          <div className="flex items-center justify-center">
-            <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/5 to-blue-500/5 animate-pulse"></div>
-              <div className="relative flex items-center space-x-2">
-                <div className="w-1 h-1 rounded-full bg-cyan-400 animate-ping"></div>
-                <span className="text-[10px] font-medium text-cyan-300 tracking-wider">BETA TESTING</span>
-              </div>
-            </div>
+          <div className="text-center">
+            <h3 className="font-semibold text-sm text-foreground">{campaign.name}</h3>
+            <p className="text-xs text-muted-foreground">{campaign.subtitle}</p>
           </div>
         </div>
       )}
 
-      {/* Global Navigation List */}
+      {/* Campaign Navigation */}
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-1">
-          {globalNavigation.map((item) => {
+          {campaign.navigation.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);
             
@@ -119,7 +122,7 @@ export default function GlobalSidebar({
                           : "bg-accent/20 border border-border/30"
                       }`}>
                         <Icon className={`h-3 w-3 ${
-                          isActive ? "text-white" : getStatusColor(item.status)
+                          isActive ? "text-white" : getStatusColor(item.status || "active")
                         }`} />
                       </div>
                       {isActive && (
@@ -134,7 +137,7 @@ export default function GlobalSidebar({
                         }`}>
                           {item.name}
                         </p>
-                        {getStatusBadge(item.status)}
+                        {getStatusBadge(item.status || "active")}
                       </div>
                       <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                         {item.description}
@@ -147,6 +150,19 @@ export default function GlobalSidebar({
           })}
         </div>
       </ScrollArea>
+
+      {/* Back to Campaigns - Bottom Center */}
+      <div className="mt-4 p-3 border-t border-border/20">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleBackToCampaigns}
+          className="w-full justify-center text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all duration-200"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Campaigns
+        </Button>
+      </div>
     </div>
   );
 }

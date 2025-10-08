@@ -7,11 +7,11 @@ import {
 
 export const globalNavigation = [
   {
-    id: 'collections',
-    name: 'Collections',
+    id: 'campaigns',
+    name: 'Campaigns',
     icon: Package,
     href: '/',
-    description: 'Browse all collections',
+    description: 'Browse all campaigns',
     status: 'active',
     gradient: 'from-blue-500 to-purple-600'
   },

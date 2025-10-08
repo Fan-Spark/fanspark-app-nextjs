@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export default function Sidebar({ 
-  activeItem = "collections",
+  activeItem = "campaigns",
   isMobile = false
 }) {
   const router = useRouter();
@@ -50,15 +50,11 @@ export default function Sidebar({
     }
   };
 
-  const handleCollectionChange = (collection) => {
-    // If it's the reward crate, navigate to home page
-    if (collection.id === "reward-crate") {
-      router.push("/");
-      return;
+  const handleCampaignChange = (campaign) => {
+    // Navigate to the campaign href
+    if (campaign.href) {
+      router.push(campaign.href);
     }
-    
-    // For other collections, use the existing collection change handler
-    onCollectionChange(collection.id);
   };
 
   return (
@@ -71,7 +67,7 @@ export default function Sidebar({
             <h2 className="text-sm font-semibold text-primary">Navigation</h2>
           </div>
           <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
-            {collections.length}
+            {globalNavigation.length}
           </Badge>
         </div>
       )}
@@ -91,15 +87,15 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Collections List */}
+      {/* Campaigns List */}
       <ScrollArea className="flex-1">
         <div className="space-y-1 p-1">
-          {collections.map((collection) => {
-            const Icon = collection.icon;
-            const isActive = activeCollection === collection.id;
+          {globalNavigation.map((campaign) => {
+            const Icon = campaign.icon;
+            const isActive = activeItem === campaign.id;
             
             return (
-              <div key={collection.id}>
+              <div key={campaign.id}>
                 <Button
                   variant="ghost"
                   className={`w-full justify-start h-auto p-2 rounded-lg transition-all duration-300 ${
@@ -107,18 +103,18 @@ export default function Sidebar({
                       ? "bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 shadow-lg shadow-primary/10" 
                       : "hover:bg-accent/30 hover:border-accent/20 border border-transparent"
                   } ${
-                    collection.status === "coming-soon" ? "opacity-60" : ""
+                    campaign.status === "coming-soon" ? "opacity-60" : ""
                   }`}
-                  onClick={() => handleCollectionChange(collection)}
-                  disabled={collection.status === "coming-soon"}
+                  onClick={() => handleCampaignChange(campaign)}
+                  disabled={campaign.status === "coming-soon"}
                 >
                   <div className="flex items-center w-full">
                     <div className="relative mr-2">
-                      {collection.useImage ? (
+                      {campaign.useImage ? (
                         <div className="relative">
                           <Image
-                            src={collection.image}
-                            alt={collection.name}
+                            src={campaign.image}
+                            alt={campaign.name}
                             width={24}
                             height={24}
                             className={`h-6 w-6 object-cover rounded-md ${
@@ -132,15 +128,15 @@ export default function Sidebar({
                       ) : (
                         <div className={`h-6 w-6 rounded-md flex items-center justify-center ${
                           isActive 
-                            ? `bg-gradient-to-br ${collection.gradient} shadow-lg` 
+                            ? `bg-gradient-to-br ${campaign.gradient} shadow-lg` 
                             : "bg-accent/20 border border-border/30"
                         }`}>
                           <Icon className={`h-3 w-3 ${
-                            isActive ? "text-white" : getStatusColor(collection.status)
+                            isActive ? "text-white" : getStatusColor(campaign.status)
                           }`} />
                         </div>
                       )}
-                      {!collection.useImage && isActive && (
+                      {!campaign.useImage && isActive && (
                         <div className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 bg-green-500 rounded-full border border-background animate-pulse"></div>
                       )}
                     </div>
@@ -150,14 +146,14 @@ export default function Sidebar({
                         <span className={`font-medium text-sm truncate ${
                           isActive ? "text-primary" : "text-foreground"
                         }`}>
-                          {collection.name}
+                          {campaign.name}
                         </span>
-                        {getStatusBadge(collection.status)}
+                        {getStatusBadge(campaign.status)}
                       </div>
                       <p className={`text-xs mt-0.5 truncate ${
                         isActive ? "text-primary/70" : "text-muted-foreground"
                       }`}>
-                        {collection.description}
+                        {campaign.description}
                       </p>
                     </div>
                   </div>
@@ -168,7 +164,7 @@ export default function Sidebar({
         </div>
       </ScrollArea>
 
-      {/* Collections Footer */}
+      {/* Campaigns Footer */}
       {!isMobile && (
         <div className="mt-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
           <div className="space-y-3">

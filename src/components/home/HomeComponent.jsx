@@ -20,7 +20,7 @@ import NetworkModal from "@/components/common/NetworkModal";
 import ComingSoonPage from "@/components/common/ComingSoonPage";
 import SyncIndicator from "@/components/common/SyncIndicator";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
-import WelcomePopup from "@/components/common/WelcomePopup";
+
 import MintSuccessPopup from "@/components/common/MintSuccessPopup";
 import DonationModal from "@/components/common/DonationModal";
 
@@ -117,7 +117,7 @@ export default function HomeComponent() {
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(true);
   const [whitelistStatus, setWhitelistStatus] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState("reward-crate");
+  const [activeCampaign, setActiveCampaign] = useState("reward-crate");
   const [showMintSuccessPopup, setShowMintSuccessPopup] = useState(false);
   
   // Minting state management
@@ -885,10 +885,10 @@ export default function HomeComponent() {
     return token?.name || `Token #${tokenId}`;
   };
 
-  const getCollectionInfo = (collectionId) => {
-    const collectionConfigs = {
-      "sticker-collection": {
-        name: "Sticker Collection",
+  const getCampaignInfo = (campaignId) => {
+    const campaignConfigs = {
+      "sticker-campaign": {
+        name: "Sticker Campaign",
         description: "Coming Soon",
         icon: StickyNote,
         expectedDate: "Q1 2025"
@@ -901,15 +901,15 @@ export default function HomeComponent() {
       },
       "featured-fs": {
         name: "Featured FS Collectibles",
-        description: "Premium Collection",
+        description: "Premium Campaign",
         icon: Star,
         expectedDate: "Q4 2024"
       }
     };
     
-    return collectionConfigs[collectionId] || {
+    return campaignConfigs[campaignId] || {
       name: "Coming Soon",
-      description: "This collection is under development",
+      description: "This campaign is under development",
       icon: Package,
       expectedDate: "TBD"
     };
@@ -927,22 +927,22 @@ export default function HomeComponent() {
     explorerUrl: SUPPORTED_NETWORKS[network.chainId]?.blockExplorerUrl
   } : null;
 
-  // Collection configurations
-  const collectionConfigs = {
-    "sticker-collection": {
-      name: "Sticker Collection",
+  // Campaign configurations
+  const campaignConfigs = {
+    "sticker-campaign": {
+      name: "Sticker Campaign",
                       description: "Exclusive digital stickers for the FanSpark's community",
       icon: StickyNote,
       expectedDate: "Q2 2024"
     },
     "chain-competition": {
-      name: "Chain Competition",
+      name: "Chain Competition Campaign",
       description: "Soulbound tokens for competitive achievements",
       icon: Trophy,
       expectedDate: "Q3 2024"
     },
     "featured-fs": {
-      name: "Featured FS Collectibles",
+      name: "Featured FS Campaign",
       description: "Premium collectibles with special utilities",
       icon: Star,
       expectedDate: "Q4 2024"
@@ -1097,9 +1097,6 @@ export default function HomeComponent() {
 
   return (
     <div className="pr-6 lg:pr-8">
-      {/* Welcome Popup */}
-      <WelcomePopup />
-      
       {dataError ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
@@ -1117,7 +1114,7 @@ export default function HomeComponent() {
             </Button>
           </AlertDescription>
         </Alert>
-      ) : activeCollection === "reward-crate" ? (
+      ) : activeCampaign === "reward-crate" ? (
         <div className="space-y-6">
           {/* Hero Section */}
           <HeroSection />
@@ -1239,7 +1236,7 @@ export default function HomeComponent() {
           )}
         </div>
       ) : (
-        <ComingSoonPage collection={getCollectionInfo(activeCollection)} />
+        <ComingSoonPage campaign={getCampaignInfo(activeCampaign)} />
       )}
 
       {/* Cart Sidebar */}

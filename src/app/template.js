@@ -6,8 +6,8 @@ import { useTheme } from '@/components/common/ThemeProvider';
 import { usePathname, useParams } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import GlobalSidebar from '@/components/common/GlobalSidebar';
-import CollectionSidebar from '@/components/collections/CollectionSidebar';
-import { getCollectionBySlug } from '@/data/collections';
+import CampaignSidebar from '@/components/campaigns/CampaignSidebar';
+import { getCampaignBySlug } from '@/data/campaigns';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import DonationModal from '@/components/common/DonationModal';
@@ -43,9 +43,9 @@ export default function Template({ children }) {
   const pathname = usePathname();
   const params = useParams();
 
-  // Determine if we're in a collection context
-  const isCollectionPage = pathname.startsWith('/collections/');
-  const currentCollection = isCollectionPage && params.slug ? getCollectionBySlug(params.slug) : null;
+  // Determine if we're in a campaign context
+  const isCampaignPage = pathname.startsWith('/campaigns/');
+  const currentCampaign = isCampaignPage && params.slug ? getCampaignBySlug(params.slug) : null;
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -86,9 +86,9 @@ export default function Template({ children }) {
 
           {/* Dynamic Navigation */}
           <div className="flex-1 overflow-hidden">
-            {isCollectionPage && currentCollection ? (
-              <CollectionSidebar 
-                collection={currentCollection}
+            {isCampaignPage && currentCampaign ? (
+              <CampaignSidebar 
+                campaign={currentCampaign}
                 activeItem={pathname}
               />
             ) : (
@@ -187,11 +187,11 @@ export default function Template({ children }) {
                     <DonationModal />
                   </div>
 
-                  {/* Mobile Collections List */}
+                  {/* Mobile Campaigns List */}
                   <div className="flex-1 overflow-hidden">
-            {isCollectionPage && currentCollection ? (
-              <CollectionSidebar 
-                collection={currentCollection}
+            {isCampaignPage && currentCampaign ? (
+              <CampaignSidebar 
+                campaign={currentCampaign}
                 activeItem={pathname}
                 isMobile={true}
               />

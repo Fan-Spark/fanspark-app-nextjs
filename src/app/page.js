@@ -5,18 +5,18 @@ import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Wallet } from "lucide-react";
-import CollectionCard from "@/components/collections/CollectionCard";
-import { getAllCollections } from "@/data/collections";
+import CampaignCard from "@/components/campaigns/CampaignCard";
+import { getAllCampaigns } from "@/data/campaigns";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 export default function Home() {
   const { isConnected, openConnectionModal } = useDynamicWallet();
-  const [collections, setCollections] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
-    // Get all collections and limit to 3
-    const allCollections = getAllCollections();
-    setCollections(allCollections.slice(0, 3));
+    // Get all campaigns and limit to 3
+    const allCampaigns = getAllCampaigns();
+    setCampaigns(allCampaigns.slice(0, 3));
   }, []);
 
   return (
@@ -67,10 +67,10 @@ export default function Home() {
               <h2 className="text-3xl font-bold">Available Campaigns</h2>
             </div>
             
-            {/* Collections Grid */}
+            {/* Campaigns Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {collections.map((collection) => (
-                <CollectionCard key={collection.id} collection={collection} />
+              {campaigns.map((campaign) => (
+                <CampaignCard key={campaign.id} campaign={campaign} />
               ))}
             </div>
           </div>
