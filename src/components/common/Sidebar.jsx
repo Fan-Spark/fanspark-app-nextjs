@@ -42,11 +42,11 @@ export default function Sidebar({
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
-        return "text-green-600";
+        return "text-green-600 dark:text-green-400";
       case "coming-soon":
-        return "text-muted-foreground/60";
+        return "text-muted-foreground/60 dark:text-muted-foreground/60";
       default:
-        return "text-muted-foreground/60";
+        return "text-muted-foreground/60 dark:text-muted-foreground/60";
     }
   };
 
@@ -141,7 +141,9 @@ export default function Sidebar({
                               : "bg-accent/20 border border-border/30"
                         }`}>
                           <Icon className={`h-3 w-3 ${
-                            isActive || item.status === "coming-soon" ? "text-white" : getStatusColor(item.status)
+                            isActive || item.status === "coming-soon" 
+                              ? "text-black dark:text-white" 
+                              : getStatusColor(item.status)
                           }`} />
                         </div>
                       )}

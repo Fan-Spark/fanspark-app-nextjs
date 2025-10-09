@@ -54,7 +54,7 @@ export default function CampaignCard({ campaign }) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800/80 to-gray-900 border border-gray-700/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
+  <Card className="group relative overflow-hidden bg-gradient-to-br from-background/50 to-background/30 border-0 dark:border dark:border-border/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
       <CardContent className="p-0 flex flex-col h-full">
         {/* Campaign Image */}
         <div className="relative aspect-video overflow-hidden">

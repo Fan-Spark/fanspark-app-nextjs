@@ -20,7 +20,7 @@ export const globalNavigation = [
     href: '/',
     description: 'Welcome to FanSpark',
     status: 'active',
-    gradient: 'from-blue-500 to-cyan-600'
+    // gradient: 'from-blue-500 to-cyan-600'
   },
   {
     id: 'campaigns',
@@ -29,7 +29,7 @@ export const globalNavigation = [
     href: '/',
     description: 'Browse all campaigns',
     status: 'active',
-    gradient: 'from-blue-500 to-purple-600'
+    
   },
   {
     id: 'universes',
@@ -38,7 +38,7 @@ export const globalNavigation = [
     href: '/universes',
     description: 'Explore different worlds',
     status: 'coming-soon',
-    gradient: 'from-purple-500 to-indigo-600'
+
   },
   {
     id: 'collectibles',
@@ -47,7 +47,7 @@ export const globalNavigation = [
     href: '/collectibles',
     description: 'Digital collectibles & NFTs',
     status: 'coming-soon',
-    gradient: 'from-pink-500 to-rose-600'
+    
   },
   {
     id: 'spark-of-luck',
@@ -56,7 +56,7 @@ export const globalNavigation = [
     href: '/spark-of-luck',
     description: 'Try your luck today',
     status: 'coming-soon',
-    gradient: 'from-yellow-500 to-orange-500'
+    
   },
   {
     id: 'restore-power',
@@ -65,7 +65,7 @@ export const globalNavigation = [
     href: '/restore-power',
     description: 'Recharge your energy',
     status: 'coming-soon',
-    gradient: 'from-green-500 to-emerald-600'
+   
   },
   {
     id: 'shop',
@@ -74,7 +74,7 @@ export const globalNavigation = [
     href: '/shop',
     description: 'Browse exclusive items',
     status: 'coming-soon',
-    gradient: 'from-orange-500 to-red-600'
+    
   },
   
   
@@ -85,7 +85,7 @@ export const globalNavigation = [
     href: '/daily-gacha',
     description: 'Platform-wide gacha rewards',
     status: 'coming-soon',
-    gradient: 'from-purple-500 to-pink-500'
+    
   },
   {
     id: 'battery-game',
@@ -94,7 +94,7 @@ export const globalNavigation = [
     href: '/battery-game', 
     description: 'Global energy management',
     status: 'coming-soon',
-    gradient: 'from-green-500 to-emerald-500'
+    
   },
   {
     id: 'quest-system',
@@ -103,7 +103,7 @@ export const globalNavigation = [
     href: '/quest-system',
     description: 'Platform-wide missions',
     status: 'coming-soon',
-    gradient: 'from-orange-500 to-red-500'
+    
   },{
     id: 'about',
     name: 'About',
@@ -111,6 +111,6 @@ export const globalNavigation = [
     href: '/about',
     description: 'Learn more about us',
     status: 'coming-soon',
-    gradient: 'from-orange-500 to-red-500'
+    
   },
 ];
