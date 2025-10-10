@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,7 +11,9 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { globalNavigation } from "@/data/globalSystems";
 import { 
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 export default function Sidebar({ 
@@ -19,6 +22,7 @@ export default function Sidebar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [showAll, setShowAll] = useState(false);
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -97,7 +101,7 @@ export default function Sidebar({
       {/* Navigation List */}
       <ScrollArea className="flex-1 pr-1">
         <div className="space-y-0 p-1">
-          {globalNavigation.map((item) => {
+          {(showAll ? globalNavigation : globalNavigation.slice(0, 7)).map((item) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);
             
@@ -168,6 +172,30 @@ export default function Sidebar({
               </div>
             );
           })}
+          
+          {/* View More/Less Button */}
+          {globalNavigation.length > 7 && (
+            <div className="px-1 py-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAll(!showAll)}
+                className="w-full h-8 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {showAll ? (
+                  <>
+                    <ChevronUp className="h-3 w-3 mr-1" />
+                    Show Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-3 w-3 mr-1" />
+                    View More ({globalNavigation.length - 6})
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
