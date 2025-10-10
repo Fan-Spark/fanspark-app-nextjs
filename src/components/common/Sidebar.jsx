@@ -28,13 +28,13 @@ export default function Sidebar({
     switch (status) {
       case "active":
         return (
-          <Badge className="text-xs bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm">
-            Testing
+          <Badge className="text-[10px] bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-sm px-1.5 py-0.5">
+            Active
           </Badge>
         );
       case "coming-soon":
         return (
-          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
+          <Badge variant="outline" className="text-[10px] bg-background/50 backdrop-blur-sm border-border/30 px-1.5 py-0.5">
             Soon
           </Badge>
         );
@@ -101,7 +101,7 @@ export default function Sidebar({
       {/* Navigation List */}
       <ScrollArea className="flex-1 pr-1">
         <div className="space-y-0 p-1">
-          {(showAll ? globalNavigation : globalNavigation.slice(0, 7)).map((item) => {
+          {(showAll ? globalNavigation : globalNavigation.slice(0, 6)).map((item) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);
             
@@ -109,7 +109,7 @@ export default function Sidebar({
               <div key={item.id}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start h-auto p-1 rounded-md transition-all duration-300 ${
+                  className={`w-full justify-start h-auto p-2 rounded-md transition-all duration-300 ${
                     isActive 
                       ? "bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 shadow-lg shadow-primary/10" 
                       : "hover:bg-accent/30 hover:border-accent/20 border border-transparent"
@@ -155,17 +155,21 @@ export default function Sidebar({
                     </div>
                     
                     <div className="flex-1 text-left min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className={`text-[12px] font-medium truncate ${
-                          isActive ? "text-primary" : "text-foreground"
-                        }`}>
-                          {item.name}
-                        </p>
-                        {getStatusBadge(item.status)}
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className={`text-[12px] font-medium truncate ${
+                            isActive ? "text-primary" : "text-foreground"
+                          }`}>
+                            {item.name}
+                          </p>
+                          <p className="text-[10px] leading-tight text-muted-foreground truncate mt-0">
+                            {item.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center h-full pt-1">
+                          {getStatusBadge(item.status)}
+                        </div>
                       </div>
-                      <p className="text-[10px] leading-tight text-muted-foreground truncate mt-0">
-                        {item.description}
-                      </p>
                     </div>
                   </div>
                 </Button>
@@ -174,7 +178,7 @@ export default function Sidebar({
           })}
           
           {/* View More/Less Button */}
-          {globalNavigation.length > 7 && (
+          {globalNavigation.length > 6 && (
             <div className="px-1 py-2">
               <Button
                 variant="ghost"
