@@ -8,11 +8,17 @@ import Image from "next/image";
 import { 
   ExternalLink,
   Clock,
-  Package
+  Package,
+  Wallet,
+  ShoppingCart
 } from "lucide-react";
+import { useState } from "react";
+import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 
 export default function CollectionCard({ collection }) {
   const router = useRouter();
+  const { isConnected, openConnectionModal } = useDynamicWallet();
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleViewCollection = () => {
     router.push(`/collections/${collection.slug}`);
@@ -109,8 +115,21 @@ export default function CollectionCard({ collection }) {
           <div className="mt-6">
             {/* Action Button */}
             <Button 
-              onClick={handleViewCollection}
-              className="w-full bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground font-medium transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/20 h-11"
+              onClick={() => {
+                if (collection.status === "coming-soon") return;
+                if (!isConnected && isHovered) {
+                  openConnectionModal();
+                  return;
+                }
+                handleViewCollection();
+              }}
+              onMouseEnter={() => setTimeout(() => setIsHovered(true), 200)}
+              onMouseLeave={() => setIsHovered(false)}
+              className={`w-full font-medium transition-all duration-500 ease-in-out h-11
+                ${collection.status === "coming-soon" 
+                  ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed" 
+                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20"}
+              `}
               disabled={collection.status === "coming-soon"}
             >
               {collection.status === "coming-soon" ? (
@@ -118,10 +137,15 @@ export default function CollectionCard({ collection }) {
                   <Clock className="w-4 h-4 mr-2" />
                   Coming Soon
                 </>
+              ) : !isConnected && isHovered ? (
+                <>
+                  <Wallet className="w-4 h-4 mr-2 animate-pulse" />
+                  Connect
+                </>
               ) : (
                 <>
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Explore Collection
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
                 </>
               )}
             </Button>

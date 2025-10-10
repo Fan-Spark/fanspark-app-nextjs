@@ -68,12 +68,12 @@ export default function Sidebar({
     <div className="flex flex-col h-full">
       {/* Navigation Header */}
       {!isMobile && (
-        <div className="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
+        <div className="flex items-center justify-between mb-0.5 p-0.5 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl border border-border/20">
           <div className="flex items-center space-x-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold text-primary">Navigation</h2>
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <h2 className="text-[12px] font-semibold text-primary">Navigation</h2>
           </div>
-          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm border-border/30">
+          <Badge variant="outline" className="text-[10px] bg-background/50 backdrop-blur-sm border-border/30 px-1.5 py-0">
             {globalNavigation.length}
           </Badge>
         </div>
@@ -81,9 +81,9 @@ export default function Sidebar({
 
       {/* Mobile Testing Indicator */}
       {isMobile && (
-        <div className="mb-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
+        <div className="mb-2 p-2 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
           <div className="flex items-center justify-center">
-            <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
+            <div className="relative inline-flex items-center px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/5 to-blue-500/5 animate-pulse"></div>
               <div className="relative flex items-center space-x-2">
                 <div className="w-1 h-1 rounded-full bg-cyan-400 animate-ping"></div>
@@ -95,8 +95,8 @@ export default function Sidebar({
       )}
 
       {/* Navigation List */}
-      <ScrollArea className="flex-1">
-        <div className="space-y-1 p-1">
+      <ScrollArea className="flex-1 pr-1">
+        <div className="space-y-0 p-1">
           {globalNavigation.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveItem(item);
@@ -105,13 +105,11 @@ export default function Sidebar({
               <div key={item.id}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start h-auto p-2 rounded-lg transition-all duration-300 ${
+                  className={`w-full justify-start h-auto p-1 rounded-md transition-all duration-300 ${
                     isActive 
                       ? "bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 shadow-lg shadow-primary/10" 
                       : "hover:bg-accent/30 hover:border-accent/20 border border-transparent"
-                  } ${
-                    item.status === "coming-soon" ? "opacity-60" : ""
-                  }`}
+                  } ${item.status === "coming-soon" ? "opacity-60" : ""}`}
                   onClick={() => handleNavigation(item)}
                   disabled={item.status === "coming-soon"}
                 >
@@ -122,9 +120,9 @@ export default function Sidebar({
                           <Image
                             src={item.image}
                             alt={item.name}
-                            width={24}
-                            height={24}
-                            className={`h-6 w-6 object-cover rounded-md ${
+                            width={20}
+                            height={20}
+                            className={`h-5 w-5 object-cover rounded-md ${
                               isActive ? "ring-2 ring-primary shadow-lg" : "border border-border/30"
                             }`}
                           />
@@ -133,11 +131,11 @@ export default function Sidebar({
                           )}
                         </div>
                       ) : (
-                        <div className={`h-6 w-6 rounded-md flex items-center justify-center ${
-                          isActive 
-                            ? `bg-gradient-to-br ${item.gradient} shadow-lg` 
-                            : item.status === "coming-soon" 
-                              ? `bg-gradient-to-br ${item.gradient} opacity-80`
+                        <div className={`h-5 w-5 rounded-md flex items-center justify-center ${
+                          isActive
+                            ? (item.gradient ? `bg-gradient-to-br ${item.gradient} shadow-lg` : "bg-accent/20 border border-border/30")
+                            : item.status === "coming-soon"
+                              ? (item.gradient ? `bg-gradient-to-br ${item.gradient} opacity-80` : "bg-accent/20 border border-border/30")
                               : "bg-accent/20 border border-border/30"
                         }`}>
                           <Icon className={`h-3 w-3 ${
@@ -154,16 +152,14 @@ export default function Sidebar({
                     
                     <div className="flex-1 text-left min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className={`font-medium text-sm truncate ${
+                        <p className={`text-[12px] font-medium truncate ${
                           isActive ? "text-primary" : "text-foreground"
                         }`}>
                           {item.name}
-                        </span>
+                        </p>
                         {getStatusBadge(item.status)}
                       </div>
-                      <p className={`text-xs mt-0.5 truncate ${
-                        isActive ? "text-primary/70" : "text-muted-foreground"
-                      }`}>
+                      <p className="text-[10px] leading-tight text-muted-foreground truncate mt-0">
                         {item.description}
                       </p>
                     </div>
@@ -177,11 +173,11 @@ export default function Sidebar({
 
       {/* Navigation Footer */}
       {!isMobile && (
-        <div className="mt-4 p-3 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
+        <div className="mt-2 p-1.5 bg-gradient-to-r from-accent/5 to-accent/10 rounded-xl border border-border/20">
           <div className="space-y-3">
             {/* Testing Indicator */}
             <div className="flex items-center justify-center">
-              <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
+              <div className="relative inline-flex items-center px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 backdrop-blur-sm">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/5 to-blue-500/5 animate-pulse"></div>
                 <div className="relative flex items-center space-x-2">
                   <div className="w-1 h-1 rounded-full bg-cyan-400 animate-ping"></div>

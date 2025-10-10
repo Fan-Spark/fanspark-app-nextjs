@@ -6,32 +6,21 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { 
   ExternalLink,
   Clock,
-  Package,
-  Wallet,
-  ShoppingCart
+  Package
 } from "lucide-react";
 
 export default function CampaignCard({ campaign }) {
   const router = useRouter();
-  const { isConnected, openConnectionModal } = useDynamicWallet();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleViewCampaign = () => {
     router.push(`/campaigns/${campaign.slug}`);
   };
 
-  const handleAddToCart = () => {
-    if (!isConnected) {
-      openConnectionModal();
-      return;
-    }
-    // Add to cart logic here - could navigate to campaign or add directly
-    handleViewCampaign();
-  };
+  // No add-to-cart here; campaign cards navigate to View Collection
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -124,9 +113,7 @@ export default function CampaignCard({ campaign }) {
           <div className="mt-6">
             {/* Action Button */}
             <Button 
-              onClick={campaign.status === "coming-soon" ? handleViewCampaign : handleAddToCart}
-              onMouseEnter={() => setTimeout(() => setIsHovered(true), 250)}
-              onMouseLeave={() => setIsHovered(false)}
+              onClick={handleViewCampaign}
               className={`w-full font-medium transition-all duration-700 ease-in-out transform h-11 cursor-pointer
                 ${campaign.status === "coming-soon" 
                   ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
@@ -140,15 +127,10 @@ export default function CampaignCard({ campaign }) {
                     <Clock className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
                     Coming Soon
                   </>
-                ) : !isConnected && isHovered ? (
-                  <>
-                    <Wallet className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out animate-pulse" />
-                    Connect
-                  </>
                 ) : (
                   <>
-                    <ShoppingCart className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
-                    Add to Cart
+                    <ExternalLink className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    View Collection
                   </>
                 )}
               </span>

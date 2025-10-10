@@ -1162,6 +1162,7 @@ export default function HomeComponent() {
                   whitelistStatus={whitelistStatus}
                   onMint={handleMint}
                   walletConnected={isConnected}
+                  openConnectionModal={openConnectionModal}
                   hasWallet={hasWallet}
                   isCorrectNetwork={isCorrectNetwork}
                   wallet={primaryWallet}

@@ -13,15 +13,15 @@ import {
 } from "lucide-react";
 
 export const globalNavigation = [
-  {
-    id: 'home',
-    name: 'Home',
-    icon: Home,
-    href: '/',
-    description: 'Welcome to FanSpark',
-    status: 'active',
-    // gradient: 'from-blue-500 to-cyan-600'
-  },
+  // {
+  //   id: 'home',
+  //   name: 'Home',
+  //   icon: Home,
+  //   href: '/',
+  //   description: 'Welcome to FanSpark',
+  //   status: 'active',
+  //   // gradient: 'from-blue-500 to-cyan-600'
+  // },
   {
     id: 'campaigns',
     name: 'Campaigns',

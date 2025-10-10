@@ -36,6 +36,7 @@ export default function TokenCard({
   address, 
   whitelistStatus,
   onAddToCart,
+  openConnectionModal,
   isInCart,
   cartQuantity,
   isMinting = false,
@@ -145,7 +146,13 @@ export default function TokenCard({
   const canUseWhitelist = walletConnected && isWhitelisted && token.isWhitelistActive;
 
   const handleAddToCart = () => {
-    if (!walletConnected || !isMintingAvailable) return;
+    if (!isMintingAvailable) return;
+    if (!walletConnected) {
+      if (typeof openConnectionModal === 'function') {
+        openConnectionModal();
+      }
+      return;
+    }
     
     try {
       onAddToCart(
@@ -420,7 +427,7 @@ export default function TokenCard({
           <div className="space-y-1.5">
             <Button 
               onClick={handleAddToCart}
-              disabled={!isMintingAvailable || !walletConnected || isMinting}
+              disabled={!isMintingAvailable || isMinting}
               className="w-full h-8"
               variant={isInCart ? "outline" : "default"}
               onMouseEnter={() => setIsHovering(true)}
