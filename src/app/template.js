@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useTheme } from '@/components/common/ThemeProvider';
-import { usePathname, useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
-import GlobalSidebar from '@/components/common/GlobalSidebar';
-import CollectionSidebar from '@/components/collections/CollectionSidebar';
-import { getCollectionBySlug } from '@/data/collections';
+import Sidebar from '@/components/common/Sidebar';
 import DynamicWalletButton from '@/components/common/DynamicWalletButton';
 import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import DonationModal from '@/components/common/DonationModal';
@@ -41,11 +39,8 @@ export default function Template({ children }) {
   const [currentYear, setCurrentYear] = useState('');
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-  const params = useParams();
 
-  // Determine if we're in a collection context
-  const isCollectionPage = pathname.startsWith('/collections/');
-  const currentCollection = isCollectionPage && params.slug ? getCollectionBySlug(params.slug) : null;
+
 
   const handleToggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -84,18 +79,11 @@ export default function Template({ children }) {
             <DynamicWalletButton />
           </div>
 
-          {/* Dynamic Navigation */}
-          <div className="flex-1 overflow-hidden">
-            {isCollectionPage && currentCollection ? (
-              <CollectionSidebar 
-                collection={currentCollection}
-                activeItem={pathname}
-              />
-            ) : (
-              <GlobalSidebar 
-                activeItem={pathname}
-              />
-            )}
+          {/* Unified Navigation */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <Sidebar 
+              activeItem={pathname}
+            />
           </div>
 
           {/* Sidebar Footer with Theme Toggle */}
@@ -187,20 +175,12 @@ export default function Template({ children }) {
                     <DonationModal />
                   </div>
 
-                  {/* Mobile Collections List */}
-                  <div className="flex-1 overflow-hidden">
-            {isCollectionPage && currentCollection ? (
-              <CollectionSidebar 
-                collection={currentCollection}
-                activeItem={pathname}
-                isMobile={true}
-              />
-            ) : (
-              <GlobalSidebar 
-                activeItem={pathname}
-                isMobile={true}
-              />
-            )}
+                  {/* Mobile Navigation List */}
+                  <div className="flex-1 min-h-0 overflow-hidden">
+                    <Sidebar 
+                      activeItem={pathname}
+                      isMobile={true}
+                    />
                   </div>
 
                   {/* Mobile Sidebar Footer */}

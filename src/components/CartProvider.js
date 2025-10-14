@@ -67,7 +67,33 @@ export function CartProvider({ children }) {
   const isInCart = (tokenId) => {
     return cart.some(item => item.tokenId === tokenId);
   };
-  
+
+  const updateQuantity = (tokenId, newQuantity, tokenName = null) => {
+    if (newQuantity <= 0) {
+      removeFromCart(tokenId, tokenName);
+      return;
+    }
+    
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.tokenId === tokenId);
+      
+      if (existingItem) {
+        const updatedCart = prevCart.map(item =>
+          item.tokenId === tokenId
+            ? { ...item, quantity: newQuantity }
+            : item
+        );
+        
+        // Show update notification
+        toast.success(`🛒 Updated ${tokenName || `Token #${tokenId}`} quantity to ${newQuantity}`);
+        
+        return updatedCart;
+      }
+      
+      return prevCart;
+    });
+  };
+
   return (
     <CartContext.Provider value={{
       cart,
@@ -76,6 +102,7 @@ export function CartProvider({ children }) {
       clearCart,
       getCartQuantity,
       isInCart,
+      updateQuantity,
     }}>
       {children}
     </CartContext.Provider>

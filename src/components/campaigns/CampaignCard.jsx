@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,21 +9,18 @@ import Image from "next/image";
 import { 
   ExternalLink,
   Clock,
-  Package,
-  Wallet,
-  ShoppingCart
+  Package
 } from "lucide-react";
-import { useState } from "react";
-import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 
-export default function CollectionCard({ collection }) {
+export default function CampaignCard({ campaign }) {
   const router = useRouter();
-  const { isConnected, openConnectionModal } = useDynamicWallet();
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleViewCollection = () => {
-    router.push(`/collections/${collection.slug}`);
+  const handleViewCampaign = () => {
+    router.push(`/campaigns/${campaign.slug}`);
   };
+
+  // No add-to-cart here; campaign cards navigate to View Collection
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -45,13 +43,13 @@ export default function CollectionCard({ collection }) {
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-gradient-to-br from-background/50 to-background/30 border-0 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
+  <Card className="group relative overflow-hidden bg-gradient-to-br from-background/50 to-background/30 border-0 dark:border dark:border-border/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
       <CardContent className="p-0 flex flex-col h-full">
-        {/* Collection Image */}
+        {/* Campaign Image */}
         <div className="relative aspect-video overflow-hidden">
           <Image
-            src={collection.image}
-            alt={collection.name}
+            src={campaign.image}
+            alt={campaign.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -60,7 +58,7 @@ export default function CollectionCard({ collection }) {
           
           {/* Status Badge - Top Right */}
           <div className="absolute top-3 right-3">
-            {getStatusBadge(collection.status)}
+            {getStatusBadge(campaign.status)}
           </div>
           
           {/* Stats Overlay */}
@@ -69,32 +67,32 @@ export default function CollectionCard({ collection }) {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-1">
                   <Package className="w-3 h-3" />
-                  <span className="text-xs font-medium">{collection.totalItems} Items</span>
+                  <span className="text-xs font-medium">{campaign.totalItems} Items</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Collection Info */}
+        {/* Campaign Info */}
         <div className="p-6 flex flex-col flex-1">
           <div className="flex-1 space-y-4">
             <div>
               <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
-                {collection.name}
+                {campaign.name}
               </h3>
               <p className="text-sm text-muted-foreground font-medium mt-1">
-                {collection.subtitle}
+                {campaign.subtitle}
               </p>
             </div>
             
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {collection.description}
+              {campaign.description}
             </p>
 
             {/* Features */}
             <div className="flex flex-wrap gap-2">
-              {collection.features.slice(0, 3).map((feature) => (
+              {campaign.features.slice(0, 3).map((feature) => (
                 <Badge 
                   key={feature} 
                   variant="secondary" 
@@ -103,9 +101,9 @@ export default function CollectionCard({ collection }) {
                   {feature.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </Badge>
               ))}
-              {collection.features.length > 3 && (
+              {campaign.features.length > 3 && (
                 <Badge variant="outline" className="text-xs">
-                  +{collection.features.length - 3} more
+                  +{campaign.features.length - 3} more
                 </Badge>
               )}
             </div>
@@ -115,39 +113,27 @@ export default function CollectionCard({ collection }) {
           <div className="mt-6">
             {/* Action Button */}
             <Button 
-              onClick={() => {
-                if (collection.status === "coming-soon") return;
-                if (!isConnected && isHovered) {
-                  openConnectionModal();
-                  return;
-                }
-                handleViewCollection();
-              }}
-              onMouseEnter={() => setTimeout(() => setIsHovered(true), 200)}
-              onMouseLeave={() => setIsHovered(false)}
-              className={`w-full font-medium transition-all duration-500 ease-in-out h-11
-                ${collection.status === "coming-soon" 
-                  ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed" 
-                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20"}
-              `}
-              disabled={collection.status === "coming-soon"}
+              onClick={handleViewCampaign}
+              className={`w-full font-medium transition-all duration-700 ease-in-out transform h-11 cursor-pointer
+                ${campaign.status === "coming-soon" 
+                  ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
+                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out"
+                }`}
+              disabled={campaign.status === "coming-soon"}
             >
-              {collection.status === "coming-soon" ? (
-                <>
-                  <Clock className="w-4 h-4 mr-2" />
-                  Coming Soon
-                </>
-              ) : !isConnected && isHovered ? (
-                <>
-                  <Wallet className="w-4 h-4 mr-2 animate-pulse" />
-                  Connect
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add to Cart
-                </>
-              )}
+              <span className="flex items-center justify-center transition-all duration-400 ease-in-out">
+                {campaign.status === "coming-soon" ? (
+                  <>
+                    <Clock className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    Coming Soon
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    View Collection
+                  </>
+                )}
+              </span>
             </Button>
           </div>
         </div>
