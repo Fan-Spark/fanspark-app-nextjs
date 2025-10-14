@@ -78,7 +78,7 @@ export default function CampaignCard({ campaign }) {
         </div>
 
         {/* Campaign Info */}
-        <div className="p-6 flex flex-col flex-1">
+        <div className="px-6 pt-6 pb-4 flex flex-col flex-1">
           <div className="flex-1 space-y-4">
             <div>
               <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
@@ -113,31 +113,32 @@ export default function CampaignCard({ campaign }) {
           </div>
 
           {/* Bottom Section - Button */}
-          <div className="mt-6">
+          <div className="mt-4">
             {/* Action Button */}
             <Button 
               onClick={handleViewCampaign}
-              className={`w-full font-medium transition-all duration-700 ease-in-out transform h-11 cursor-pointer
+              size="lg"
+              className={`w-full font-semibold transition-all duration-700 ease-in-out transform cursor-pointer text-base shadow-md
                 ${campaign.status === "coming-soon" 
                   ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
-                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out"
+                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-xl group-hover:shadow-primary/25 hover:scale-[1.02] transition-all duration-400 ease-in-out"
                 }`}
               disabled={campaign.status === "coming-soon" || isNavigating}
             >
               <span className="flex items-center justify-center transition-all duration-400 ease-in-out">
                 {campaign.status === "coming-soon" ? (
                   <>
-                    <Clock className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    <Clock className="w-5 h-5 mr-2 transition-all duration-400 ease-in-out" />
                     Coming Soon
                   </>
                 ) : isNavigating ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin transition-all duration-400 ease-in-out" />
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin transition-all duration-400 ease-in-out" />
                     Loading...
                   </>
                 ) : (
                   <>
-                    <ExternalLink className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
+                    <ExternalLink className="w-5 h-5 mr-2 transition-all duration-400 ease-in-out" />
                     View Collection
                   </>
                 )}

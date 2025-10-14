@@ -80,7 +80,7 @@ export default function CollectionCard({ collection }) {
         </div>
 
         {/* Collection Info */}
-        <div className="p-6 flex flex-col flex-1">
+        <div className="px-6 pt-6 pb-4 flex flex-col flex-1">
           <div className="flex-1 space-y-4">
             <div>
               <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
@@ -115,7 +115,7 @@ export default function CollectionCard({ collection }) {
           </div>
 
           {/* Bottom Section - Button */}
-          <div className="mt-6">
+          <div className="mt-4">
             {/* Action Button */}
             <Button 
               onClick={() => {
@@ -128,31 +128,32 @@ export default function CollectionCard({ collection }) {
               }}
               onMouseEnter={() => setTimeout(() => setIsHovered(true), 200)}
               onMouseLeave={() => setIsHovered(false)}
-              className={`w-full font-medium transition-all duration-500 ease-in-out h-11
+              size="lg"
+              className={`w-full font-semibold transition-all duration-500 ease-in-out text-base shadow-md
                 ${collection.status === "coming-soon" 
                   ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed" 
-                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20"}
+                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-xl group-hover:shadow-primary/25 hover:scale-[1.02]"}
               `}
               disabled={collection.status === "coming-soon" || isNavigating}
             >
               {collection.status === "coming-soon" ? (
                 <>
-                  <Clock className="w-4 h-4 mr-2" />
+                  <Clock className="w-5 h-5 mr-2" />
                   Coming Soon
                 </>
               ) : !isConnected && isHovered ? (
                 <>
-                  <Wallet className="w-4 h-4 mr-2 animate-pulse" />
+                  <Wallet className="w-5 h-5 mr-2 animate-pulse" />
                   Connect
                 </>
               ) : isNavigating ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                   Loading...
                 </>
               ) : (
                 <>
-                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  <ShoppingCart className="w-5 h-5 mr-2" />
                   Add to Cart
                 </>
               )}
