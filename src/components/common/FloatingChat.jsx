@@ -75,11 +75,12 @@ export default function FloatingChat() {
   }, []);
 
   // Load agents when component mounts
-  useEffect(() => {
-    if (isOpen && agents.length === 0) {
-      loadAgents();
-    }
-  }, [isOpen]);
+  // Disabled - Backend API not available, showing FanSpark characters instead
+  // useEffect(() => {
+  //   if (isOpen && agents.length === 0) {
+  //     loadAgents();
+  //   }
+  // }, [isOpen]);
 
   const loadAgents = async () => {
     try {
@@ -253,7 +254,7 @@ export default function FloatingChat() {
                 <div className="flex items-center space-x-2 flex-1 justify-center">
                   <Sparkles size={20} />
                   <h3 className="font-semibold text-lg">
-                    {currentView === 'agents' ? 'Fanspark Agents' : selectedAgent?.name}
+                    {currentView === 'agents' ? 'FanSpark\'s Agent' : selectedAgent?.name}
                   </h3>
                 </div>
                 {currentView === 'chat' && (
@@ -362,15 +363,15 @@ function AgentsList({ agents, isLoading, onSelectAgent, userSession }) {
       <div className="p-4 border-b flex-shrink-0">
         <h4 className="text-sm font-medium text-muted-foreground">
           {showingFallback 
-            ? "FanSpark Characters (Coming Soon)" 
-            : "Choose a Fanspark Agent to chat with"
+            ? "Meet our FanSpark Characters - Coming Soon!" 
+            : "Choose a FanSpark Agent to chat with"
           }
         </h4>
-        {/* {showingFallback && (
+        {showingFallback && (
           <p className="text-xs text-muted-foreground mt-1">
-            Doodle agents are currently unavailable. Check out these FanSpark characters!
+            Chat with Sparky and Hikari - Available soon in the FanSpark universe!
           </p>
-        )} */}
+        )}
       </div>
       <ScrollArea className="flex-1 overflow-y-auto">
         <div className="p-4 pb-6 space-y-3">

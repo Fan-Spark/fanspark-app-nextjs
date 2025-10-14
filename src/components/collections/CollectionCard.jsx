@@ -10,7 +10,8 @@ import {
   Clock,
   Package,
   Wallet,
-  ShoppingCart
+  ShoppingCart,
+  Loader2
 } from "lucide-react";
 import { useState } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
@@ -19,8 +20,10 @@ export default function CollectionCard({ collection }) {
   const router = useRouter();
   const { isConnected, openConnectionModal } = useDynamicWallet();
   const [isHovered, setIsHovered] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const handleViewCollection = () => {
+    setIsNavigating(true);
     router.push(`/collections/${collection.slug}`);
   };
 
@@ -130,7 +133,7 @@ export default function CollectionCard({ collection }) {
                   ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed" 
                   : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20"}
               `}
-              disabled={collection.status === "coming-soon"}
+              disabled={collection.status === "coming-soon" || isNavigating}
             >
               {collection.status === "coming-soon" ? (
                 <>
@@ -141,6 +144,11 @@ export default function CollectionCard({ collection }) {
                 <>
                   <Wallet className="w-4 h-4 mr-2 animate-pulse" />
                   Connect
+                </>
+              ) : isNavigating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
                 </>
               ) : (
                 <>

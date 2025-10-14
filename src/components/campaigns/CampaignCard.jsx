@@ -9,14 +9,17 @@ import Image from "next/image";
 import { 
   ExternalLink,
   Clock,
-  Package
+  Package,
+  Loader2
 } from "lucide-react";
 
 export default function CampaignCard({ campaign }) {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const handleViewCampaign = () => {
+    setIsNavigating(true);
     router.push(`/campaigns/${campaign.slug}`);
   };
 
@@ -119,13 +122,18 @@ export default function CampaignCard({ campaign }) {
                   ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
                   : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out"
                 }`}
-              disabled={campaign.status === "coming-soon"}
+              disabled={campaign.status === "coming-soon" || isNavigating}
             >
               <span className="flex items-center justify-center transition-all duration-400 ease-in-out">
                 {campaign.status === "coming-soon" ? (
                   <>
                     <Clock className="w-4 h-4 mr-2 transition-all duration-400 ease-in-out" />
                     Coming Soon
+                  </>
+                ) : isNavigating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin transition-all duration-400 ease-in-out" />
+                    Loading...
                   </>
                 ) : (
                   <>
