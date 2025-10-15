@@ -17,7 +17,14 @@ export default function CampaignCard({ campaign }) {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleViewCampaign = () => {
-    router.push(`/campaigns/${campaign.slug}`);
+    if (campaign.status === "coming-soon") {
+      window.open(
+        campaign.wordpressUrl || "https://www.fanspark.xyz/campaigns/coming-soon/gongora-the-sacred-trial-grounds-graphic-novel-volume-one-pre-launch/",
+        "_blank"
+      );
+    } else {
+      router.push(`/campaigns/${campaign.slug}`);
+    }
   };
 
   // No add-to-cart here; campaign cards navigate to View Collection
@@ -115,11 +122,8 @@ export default function CampaignCard({ campaign }) {
             <Button 
               onClick={handleViewCampaign}
               className={`w-full font-medium transition-all duration-700 ease-in-out transform h-11 cursor-pointer
-                ${campaign.status === "coming-soon" 
-                  ? "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed transition-all duration-400 ease-in-out" 
-                  : "bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out"
-                }`}
-              disabled={campaign.status === "coming-soon"}
+                bg-gradient-to-r from-primary/90 to-primary hover:from-primary hover:to-primary/90 text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-400 ease-in-out
+              `}
             >
               <span className="flex items-center justify-center transition-all duration-400 ease-in-out">
                 {campaign.status === "coming-soon" ? (

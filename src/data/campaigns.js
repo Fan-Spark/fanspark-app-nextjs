@@ -54,9 +54,10 @@ export const campaigns = [
         status: 'coming-soon'
       }
     ],
+  // No wordpressUrl for active campaign
     contractAddress: '0x...',
     network: 'ethereum'
-  },
+    },
   {
     id: 'super-space-defenders',
     slug: 'super-space-defenders',
@@ -95,7 +96,8 @@ export const campaigns = [
         gradient: 'from-red-500 to-orange-600',
         status: 'coming-soon'
       }
-    ]
+    ],
+    wordpressUrl: 'https://www.fanspark.xyz/universes/super-space-defenders/'
   },
   {
     id: 'the-spectre',
@@ -135,7 +137,8 @@ export const campaigns = [
         gradient: 'from-red-500 to-orange-600',
         status: 'coming-soon'
       }
-    ]
+    ],
+    wordpressUrl: 'https://www.fanspark.xyz/universes/spectre/'
   }
 ];
 
