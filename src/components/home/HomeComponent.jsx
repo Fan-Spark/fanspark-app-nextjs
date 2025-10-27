@@ -1097,7 +1097,7 @@ export default function HomeComponent() {
   );
 
   return (
-    <div className="pr-6 lg:pr-8">
+    <div className="pr-6 lg:pr-8 bg-black min-h-screen">
       {dataError ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
@@ -1123,7 +1123,7 @@ export default function HomeComponent() {
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" id="tokens-section">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold">Available Rewards</h1>
+              <h1 className="text-2xl font-bold text-white">Available Rewards</h1>
               {whitelistStatus && whitelistStatus.isWhitelisted && (
                 <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
                   <Crown className="w-3 h-3 mr-1" />

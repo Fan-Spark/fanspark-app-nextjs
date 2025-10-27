@@ -11,7 +11,10 @@ import {
   Clock,
   Package,
   Loader2,
-  Timer
+  Timer,
+  Star,
+  Battery,
+  Trophy
 } from "lucide-react";
 
 export default function CampaignCard({ campaign }) {
@@ -44,6 +47,26 @@ export default function CampaignCard({ campaign }) {
       default:
         return null;
     }
+  };
+
+  const getFeatureIcon = (feature) => {
+    const featureMap = {
+      'campaigns': Package,
+      'gacha': Star,
+      'battery-game': Battery,
+      'quests': Trophy
+    };
+    return featureMap[feature] || Package;
+  };
+
+  const getFeatureName = (feature) => {
+    const nameMap = {
+      'campaigns': 'Campaigns',
+      'gacha': 'Gacha',
+      'battery-game': 'Battery Game',
+      'quests': 'Quests'
+    };
+    return nameMap[feature] || feature;
   };
 
   return (
@@ -93,6 +116,11 @@ export default function CampaignCard({ campaign }) {
               <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
                 {campaign.name}
               </h3>
+              {campaign.subtitle && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {campaign.subtitle}
+                </p>
+              )}
             </div>
              {/* Remaining Time */}
              {campaign.remainingTime && (
@@ -109,7 +137,25 @@ export default function CampaignCard({ campaign }) {
               </p>
             )}
             
-           
+            {/* Features */}
+            {campaign.features && campaign.features.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {campaign.features.map((feature, index) => {
+                  const IconComponent = getFeatureIcon(feature);
+                  const featureName = getFeatureName(feature);
+                  return (
+                    <Badge 
+                      key={index}
+                      variant="outline" 
+                      className="text-xs flex items-center gap-1.5"
+                    >
+                      <IconComponent className="w-3 h-3" />
+                      {featureName}
+                    </Badge>
+                  );
+                })}
+              </div>
+            )}
             
             {/* Product Type and Location */}
             <div className="flex flex-wrap gap-2">

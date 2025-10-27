@@ -61,6 +61,7 @@ export default function Template({ children }) {
                 width={160} 
                 height={50}
                 className="object-contain"
+                style={{ width: "auto", height: "100%" }}
               />
             </div>
           </div>
@@ -92,6 +93,7 @@ export default function Template({ children }) {
                 width={100} 
                 height={40}
                 className="object-contain"
+                style={{ width: "auto", height: "100%" }}
               />
             </div>
           </div>
@@ -118,6 +120,7 @@ export default function Template({ children }) {
                         width={120} 
                         height={48}
                         className="object-contain"
+                        style={{ width: "auto", height: "100%" }}
                       />
                     </div>
                   </div>
@@ -164,11 +167,32 @@ export default function Template({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="lg:ml-96 lg:mr-8 border-t py-6 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
-          </p>
+      <footer className="lg:ml-96 lg:mr-8 border-t border-border/50 py-6 mt-16">
+      
+        <div className="container mx-auto px-4">
+           {/* Original "Made with Heart" line */}
+          
+          <div className="space-y-4">
+          <div className="text-center">
+              <p className="text-xs text-muted-foreground">
+                Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
+              </p>
+            </div>
+            {/* Copyright and Links */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+              <span>© {currentYear} Super Nifty Megacorp. All rights reserved.</span>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Privacy Policy</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Cookie Policy</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Terms of Use</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Community Guidelines</a>
+            </div>
+            
+           
+          </div>
         </div>
       </footer>
     </div>
