@@ -9,7 +9,7 @@ import contractABI from "@/utils/contractABI.json";
 import { formatEther } from "ethers/lib/utils";
 import { SUPPORTED_NETWORKS, DEFAULT_NETWORK, getNetworkById, CURRENT_NETWORK, getTransactionUrl, getContractUrl, BRAND_CONFIG } from "@/utils/networkConfig";
 import { useCart } from '@/components/CartProvider';
-import { useTheme } from '@/components/common/ThemeProvider';
+
 
 // Import our new professional components
 import TokenCard from "@/components/common/TokenCard";
@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
   Wallet, 
   Loader2, 
@@ -119,11 +120,11 @@ export default function HomeComponent() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCampaign, setActiveCampaign] = useState("reward-crate");
   const [showMintSuccessPopup, setShowMintSuccessPopup] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
   
   // Minting state management
   const [mintingStates, setMintingStates] = useState({}); // Track loading per token
   
-  const { theme, setTheme } = useTheme();
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart, getCartQuantity, isInCart } = useCart();
 
   const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
@@ -1148,31 +1149,105 @@ export default function HomeComponent() {
 
           <Separator />
 
-          {/* Tokens Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tokensWithLiveData.filter(token => token.mintingActive).map(token => (
-              <ErrorBoundary key={token.id}>
-                <TokenCard 
-                  token={token}
-                  onAddToCart={addToCart}
-                  onRemoveFromCart={removeFromCart}
-                  onUpdateQuantity={updateQuantity}
-                  isInCart={isInCart(token.id)}
-                  cartQuantity={getCartQuantity(token.id)}
-                  whitelistStatus={whitelistStatus}
-                  onMint={handleMint}
-                  walletConnected={isConnected}
-                  openConnectionModal={openConnectionModal}
-                  hasWallet={hasWallet}
-                  isCorrectNetwork={isCorrectNetwork}
-                  wallet={primaryWallet}
-                  network={network}
-                  isMinting={isTokenMinting(token.id)}
-                  isRefreshingCounts={isRefreshingCounts}
-                />
-              </ErrorBoundary>
-            ))}
-          </div>
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="bg-transparent w-full justify-start border-none gap-6">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="rewards"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Rewards
+              </TabsTrigger>
+              <TabsTrigger 
+                value="unlocks"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Unlocks
+              </TabsTrigger>
+              <TabsTrigger 
+                value="collectibles"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Collectibles
+              </TabsTrigger>
+              <TabsTrigger 
+                value="updates"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Updates
+              </TabsTrigger>
+              <TabsTrigger 
+                value="store"
+                className="data-[state=active]:bg-transparent data-[state=active]:text-[#f0eb01] border-none shadow-none"
+              >
+                Store
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="mt-6">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Overview content coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="rewards" className="mt-6">
+              {/* Tokens Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {tokensWithLiveData.filter(token => token.mintingActive).map(token => (
+                  <ErrorBoundary key={token.id}>
+                    <TokenCard 
+                      token={token}
+                      onAddToCart={addToCart}
+                      onRemoveFromCart={removeFromCart}
+                      onUpdateQuantity={updateQuantity}
+                      isInCart={isInCart(token.id)}
+                      cartQuantity={getCartQuantity(token.id)}
+                      whitelistStatus={whitelistStatus}
+                      onMint={handleMint}
+                      walletConnected={isConnected}
+                      openConnectionModal={openConnectionModal}
+                      hasWallet={hasWallet}
+                      isCorrectNetwork={isCorrectNetwork}
+                      wallet={primaryWallet}
+                      network={network}
+                      isMinting={isTokenMinting(token.id)}
+                      isRefreshingCounts={isRefreshingCounts}
+                    />
+                  </ErrorBoundary>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="unlocks" className="mt-6">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Unlocks content coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="collectibles" className="mt-6">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Collectibles content coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="updates" className="mt-6">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Updates content coming soon</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="store" className="mt-6">
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Store content coming soon</p>
+              </div>
+            </TabsContent>
+          </Tabs>
 
           {/* Data Age Warning
           {isDataStale() && (

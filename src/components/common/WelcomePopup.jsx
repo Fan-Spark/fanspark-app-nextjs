@@ -10,16 +10,23 @@ const WelcomePopup = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Show popup after a short delay for better UX
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 1000);
+    // Check if user has already seen the popup
+    const hasSeenPopup = localStorage.getItem('fanspark-welcome-popup-seen');
     
-    return () => clearTimeout(timer);
+    if (!hasSeenPopup) {
+      // Show popup after a short delay for better UX
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
+    // Mark that user has seen the popup
+    localStorage.setItem('fanspark-welcome-popup-seen', 'true');
   };
 
   const handleVisitMainPage = () => {

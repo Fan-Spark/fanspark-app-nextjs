@@ -9,13 +9,17 @@ export const campaigns = [
   {
     id: 'stellar-ardent-issue-1',
     slug: 'stellar-ardent-issue-1-comic-book-stellar-comet',
-    name: 'Stellar Ardent',
-    subtitle: 'Comic Book: Stellar Comet',
-    description: 'First issue of the Stellar Ardent comic series featuring epic space adventures',
+    name: 'The Stellar Collection - Series 1 The Fallen Star',
+    subtitle: 'Digital Collectibles',
+    description: 'The Stellar Collection – Series 1 The Fallen Star is a free drop of 2,222 AI-generated digital collectible profile pictures, kickstarting the Stellar Ardent universe. Get in early before everyone else!',
     image: '/first_campaign_banner.png',
     status: 'active',
     totalItems: 3,
     mintedItems: 156,
+    creator: 'Super Nifty Megacorp',
+    remainingTime: '8 days left',
+    productType: 'Digital Collectibles',
+    location: 'Los Angeles, CA',
     features: ['campaigns', 'gacha', 'battery-game', 'quests'],
     navigation: [
       { 
@@ -58,16 +62,20 @@ export const campaigns = [
     network: 'ethereum'
   },
   {
-    id: 'super-space-defenders',
-    slug: 'super-space-defenders',
-    name: 'Super Space Defenders',
-    subtitle: 'Coming Soon',
-    description: 'Epic space defenders ready to protect the universe',
-    image: '/reward-crate.png',
+    id: 'ratti-entertainment',
+    slug: 'ratti-entertainment',
+    name: 'The Legend of New Shaolin Issue #1 Comic Book - Ten Thousand',
+    subtitle: 'Comic Books',
+    description: 'Issue #1 of a Black Salt spin-off, agent Sam Tharp accidentally kills a crime lord\'s son and must flee to New Shaolin to protect his kids from deadly revenge.',
+    image: '/the-legend-of-new-shaolin-featured-image-01-new.png',
     status: 'coming-soon',
     totalItems: 5,
     mintedItems: 0,
-    features: ['campaigns', 'gacha', 'quests'],
+    creator: 'Ratti Entertainment',
+    remainingTime: '9 days left',
+    productType: 'Comic Books',
+    location: 'Las Vegas, NV',
+    features: ['Comic Books', 'Las Vegas, NV'],
     navigation: [
       { 
         id: 'campaigns', 
@@ -98,16 +106,20 @@ export const campaigns = [
     ]
   },
   {
-    id: 'the-spectre',
-    slug: 'the-spectre',
-    name: 'The Spectre',
-    subtitle: 'Coming Soon',
-    description: 'Mysterious spectre collection with dark powers',
-    image: '/reward-crate.png',
+    id: 'flamewrite-entertainment',
+    slug: 'flamewrite-entertainment',
+    name: 'The Sacred Trial Grounds Graphic Novel Volume One',
+    subtitle: 'Graphic Novels',
+    description: 'Volume one of a new epic graphic novel series. Princess Shofara strives to unite warring tribes as her planet faces rising tensions and the arrival of an unknown race.',
+    image: '/gongora-featured-image-01-new.png',
     status: 'coming-soon',
     totalItems: 10,
     mintedItems: 0,
-    features: ['campaigns', 'battery-game', 'quests'],
+    creator: 'Flamewrite Entertainment',
+    remainingTime: '9 days left',
+    productType: 'Graphic Novels',
+    location: 'Miami, FL',
+    features: ['Graphic Novels', 'Miami, FL'],
     navigation: [
       { 
         id: 'campaigns', 
@@ -136,7 +148,53 @@ export const campaigns = [
         status: 'coming-soon'
       }
     ]
-  }
+  },
+  {
+    id: 'super-space-defenders',
+    slug: 'super-space-defenders',
+    name: 'The Aurora Evolution Episode 01 Motion Comic',
+    subtitle: 'Motion Comics',
+    description: 'The Aurora Evolution Episode 01 is the first chapter of an epic space opera trilogy, a customizable and interactive motion comic series.',
+    image: '/the-aurora-evolution-banner-new-01.png',
+    status: 'coming-soon',
+    totalItems: 5,
+    mintedItems: 0,
+    creator: 'Space Labs',
+    remainingTime: '11 days left',
+    productType: 'Motion Comics',
+    location: 'Los Angeles, CA',
+    features: ['campaigns', 'gacha', 'quests'],
+    navigation: [
+      { 
+        id: 'campaigns', 
+        name: 'Campaigns', 
+        icon: Package, 
+        path: '/campaigns',
+        description: 'Defender campaigns and missions',
+        gradient: 'from-blue-500 to-purple-600'
+      },
+      { 
+        id: 'gacha', 
+        name: 'Defender Gacha', 
+        icon: Star, 
+        path: '/gacha',
+        description: 'Summon powerful defenders',
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
+      },
+      { 
+        id: 'quests', 
+        name: 'Battle Quests', 
+        icon: Trophy, 
+        path: '/quests',
+        description: 'Epic defender missions',
+        gradient: 'from-red-500 to-orange-600',
+        status: 'coming-soon'
+      }
+    ]
+  },
+ 
+  
 ];
 
 export const getCampaignBySlug = (slug) => {

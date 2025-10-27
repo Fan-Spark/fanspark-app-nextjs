@@ -7,33 +7,17 @@ const ThemeContext = createContext({
   setTheme: () => null,
 });
 
-export function ThemeProvider({ children, defaultTheme = "system", storageKey = "ui-theme" }) {
-  const [theme, setTheme] = useState(defaultTheme);
+export function ThemeProvider({ children, defaultTheme = "dark", storageKey = "ui-theme" }) {
+  const [theme, setTheme] = useState("dark");
   const [mounted, setMounted] = useState(false);
 
-  // Load theme from localStorage after component mounts
+  // Always set to dark mode
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem(storageKey);
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    
     const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      root.classList.add(systemTheme);
-      return;
-    }
-
-    root.classList.add(theme);
-  }, [theme, mounted]);
+    root.classList.remove("light");
+    root.classList.add("dark");
+  }, []);
 
   const value = {
     theme,

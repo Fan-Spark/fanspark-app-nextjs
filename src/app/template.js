@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
-import { useTheme } from '@/components/common/ThemeProvider';
+
 import { usePathname } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import Sidebar from '@/components/common/Sidebar';
@@ -15,8 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import Image from 'next/image';
 import { 
   Wallet, 
-  Moon, 
-  Sun,
   Menu,
   Sparkles,
   User,
@@ -37,14 +35,7 @@ export default function Template({ children }) {
   
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [currentYear, setCurrentYear] = useState('');
-  const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-
-
-
-  const handleToggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
 
   // Set current year on client side only to avoid hydration mismatch
   useEffect(() => {
@@ -86,23 +77,7 @@ export default function Template({ children }) {
             />
           </div>
 
-          {/* Sidebar Footer with Theme Toggle */}
-          <div className="mt-4 p-2 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-border/20">
-            <div className="flex items-center justify-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleToggleTheme}
-                className="h-7 w-7 p-0 hover:bg-accent/50 rounded-lg transition-all"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-3 w-3" />
-                ) : (
-                  <Moon className="h-3 w-3" />
-                )}
-              </Button>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -122,20 +97,6 @@ export default function Template({ children }) {
           </div>
           
           <div className="flex items-center space-x-2">
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleToggleTheme}
-              className="h-8 w-8 p-0 hover:bg-accent/50 rounded-lg"
-            >
-              {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </Button>
-            
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
               <SheetTrigger asChild>
                 <Button

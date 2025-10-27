@@ -13,15 +13,15 @@ import {
 } from "lucide-react";
 
 export const globalNavigation = [
-  // {
-  //   id: 'home',
-  //   name: 'Home',
-  //   icon: Home,
-  //   href: '/',
-  //   description: 'Welcome to FanSpark',
-  //   status: 'active',
-  //   // gradient: 'from-blue-500 to-cyan-600'
-  // },
+  {
+    id: 'home',
+    name: 'Home',
+    icon: Home,
+    href: '/home',
+    description: 'Welcome to FanSpark',
+    status: 'active',
+    // gradient: 'from-blue-500 to-cyan-600'
+  },
   {
     id: 'campaigns',
     name: 'Campaigns',
@@ -78,24 +78,24 @@ export const globalNavigation = [
   },
   
   
-  {
-    id: 'daily-gacha',
-    name: 'Daily Gacha System', 
-    icon: Dice6,
-    href: '/daily-gacha',
-    description: 'Platform-wide gacha rewards',
-    status: 'coming-soon',
+  // {
+  //   id: 'daily-gacha',
+  //   name: 'Daily Gacha System', 
+  //   icon: Dice6,
+  //   href: '/daily-gacha',
+  //   description: 'Platform-wide gacha rewards',
+  //   status: 'coming-soon',
     
-  },
-  {
-    id: 'battery-game',
-    name: 'Battery Game',
-    icon: Battery,
-    href: '/battery-game', 
-    description: 'Global energy management',
-    status: 'coming-soon',
+  // },
+  // {
+  //   id: 'battery-game',
+  //   name: 'Battery Game',
+  //   icon: Battery,
+  //   href: '/battery-game', 
+  //   description: 'Global energy management',
+  //   status: 'coming-soon',
     
-  },
+  // },
   {
     id: 'quest-system',
     name: 'Quest System',
