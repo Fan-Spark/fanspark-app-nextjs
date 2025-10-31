@@ -5,6 +5,7 @@ import { CartProvider } from '@/components/CartProvider';
 import { ThemeProvider } from '@/components/common/ThemeProvider';
 import { ToastProvider } from '@/components/common/ToastProvider';
 import FloatingChat from '@/components/common/FloatingChat';
+import WelcomePopup from '@/components/common/WelcomePopup';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,7 +63,22 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-GB" suppressHydrationWarning>
+    <html lang="en-GB" suppressHydrationWarning className="dark">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const root = document.documentElement;
+                  root.classList.remove('light');
+                  root.classList.add('dark');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <ThemeProvider defaultTheme="dark" storageKey="fanspark-theme">
           <CartProvider>
@@ -71,6 +87,7 @@ export default function RootLayout({ children }) {
             </Providers>
             <ToastProvider />
             <FloatingChat />
+            <WelcomePopup />
           </CartProvider>
         </ThemeProvider>
       </body>

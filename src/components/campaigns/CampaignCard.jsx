@@ -10,7 +10,11 @@ import {
   ExternalLink,
   Clock,
   Package,
-  Loader2
+  Loader2,
+  Timer,
+  Star,
+  Battery,
+  Trophy
 } from "lucide-react";
 
 export default function CampaignCard({ campaign }) {
@@ -45,8 +49,28 @@ export default function CampaignCard({ campaign }) {
     }
   };
 
+  const getFeatureIcon = (feature) => {
+    const featureMap = {
+      'campaigns': Package,
+      'gacha': Star,
+      'battery-game': Battery,
+      'quests': Trophy
+    };
+    return featureMap[feature] || Package;
+  };
+
+  const getFeatureName = (feature) => {
+    const nameMap = {
+      'campaigns': 'Campaigns',
+      'gacha': 'Gacha',
+      'battery-game': 'Battery Game',
+      'quests': 'Quests'
+    };
+    return nameMap[feature] || feature;
+  };
+
   return (
-  <Card className="group relative overflow-hidden bg-gradient-to-br from-background/50 to-background/30 border-0 dark:border dark:border-border/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col">
+  <Card className="group relative overflow-hidden border-0 dark:border dark:border-border/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 h-full flex flex-col" style={{ backgroundColor: '#171717' }}>
       <CardContent className="p-0 flex flex-col h-full">
         {/* Campaign Image */}
         <div className="relative aspect-video overflow-hidden">
@@ -79,34 +103,76 @@ export default function CampaignCard({ campaign }) {
 
         {/* Campaign Info */}
         <div className="px-6 pt-6 pb-4 flex flex-col flex-1">
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-3">
+            {/* Creator */}
+            {campaign.creator && (
+              <p className="text-xs text-muted-foreground font-medium">
+                {campaign.creator}
+              </p>
+            )}
+            
+            {/* Title */}
             <div>
               <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
                 {campaign.name}
               </h3>
-              <p className="text-sm text-muted-foreground font-medium mt-1">
-                {campaign.subtitle}
-              </p>
+              {campaign.subtitle && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  {campaign.subtitle}
+                </p>
+              )}
             </div>
+             {/* Remaining Time */}
+             {campaign.remainingTime && (
+              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <Clock className="w-3 h-3" />
+                <span>{campaign.remainingTime}</span>
+              </div>
+            )}
             
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {campaign.description}
-            </p>
-
+            {/* Description */}
+            {campaign.description && (
+              <p className="text-sm text-muted-foreground">
+                {campaign.description}
+              </p>
+            )}
+            
             {/* Features */}
+            {campaign.features && campaign.features.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {campaign.features.map((feature, index) => {
+                  const IconComponent = getFeatureIcon(feature);
+                  const featureName = getFeatureName(feature);
+                  return (
+                    <Badge 
+                      key={index}
+                      variant="outline" 
+                      className="text-xs flex items-center gap-1.5"
+                    >
+                      <IconComponent className="w-3 h-3" />
+                      {featureName}
+                    </Badge>
+                  );
+                })}
+              </div>
+            )}
+            
+            {/* Product Type and Location */}
             <div className="flex flex-wrap gap-2">
-              {campaign.features.slice(0, 3).map((feature) => (
+              {campaign.productType && (
                 <Badge 
-                  key={feature} 
                   variant="secondary" 
                   className="text-xs bg-accent/50 text-accent-foreground/80"
                 >
-                  {feature.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {campaign.productType}
                 </Badge>
-              ))}
-              {campaign.features.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{campaign.features.length - 3} more
+              )}
+              {campaign.location && (
+                <Badge 
+                  variant="secondary" 
+                  className="text-xs bg-accent/50 text-accent-foreground/80"
+                >
+                  {campaign.location}
                 </Badge>
               )}
             </div>

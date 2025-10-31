@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDynamicWallet } from '@/hooks/useDynamicWallet';
-import { useTheme } from '@/components/common/ThemeProvider';
+
 import { usePathname } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import Sidebar from '@/components/common/Sidebar';
@@ -15,8 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import Image from 'next/image';
 import { 
   Wallet, 
-  Moon, 
-  Sun,
   Menu,
   Sparkles,
   User,
@@ -37,14 +35,7 @@ export default function Template({ children }) {
   
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [currentYear, setCurrentYear] = useState('');
-  const { theme, setTheme } = useTheme();
   const pathname = usePathname();
-
-
-
-  const handleToggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
 
   // Set current year on client side only to avoid hydration mismatch
   useEffect(() => {
@@ -70,6 +61,7 @@ export default function Template({ children }) {
                 width={160} 
                 height={50}
                 className="object-contain"
+                style={{ width: "auto", height: "100%" }}
               />
             </div>
           </div>
@@ -86,23 +78,7 @@ export default function Template({ children }) {
             />
           </div>
 
-          {/* Sidebar Footer with Theme Toggle */}
-          <div className="mt-4 p-2 bg-gradient-to-r from-accent/10 to-accent/5 rounded-lg border border-border/20">
-            <div className="flex items-center justify-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleToggleTheme}
-                className="h-7 w-7 p-0 hover:bg-accent/50 rounded-lg transition-all"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-3 w-3" />
-                ) : (
-                  <Moon className="h-3 w-3" />
-                )}
-              </Button>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -117,25 +93,12 @@ export default function Template({ children }) {
                 width={100} 
                 height={40}
                 className="object-contain"
+                style={{ width: "auto", height: "100%" }}
               />
             </div>
           </div>
           
           <div className="flex items-center space-x-2">
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleToggleTheme}
-              className="h-8 w-8 p-0 hover:bg-accent/50 rounded-lg"
-            >
-              {theme === "dark" ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </Button>
-            
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -157,6 +120,7 @@ export default function Template({ children }) {
                         width={120} 
                         height={48}
                         className="object-contain"
+                        style={{ width: "auto", height: "100%" }}
                       />
                     </div>
                   </div>
@@ -203,11 +167,32 @@ export default function Template({ children }) {
       </main>
 
       {/* Footer */}
-      <footer className="lg:ml-96 lg:mr-8 border-t py-6 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
-          </p>
+      <footer className="lg:ml-96 lg:mr-8 border-t border-border/50 py-6 mt-16">
+      
+        <div className="container mx-auto px-4">
+           {/* Original "Made with Heart" line */}
+          
+          <div className="space-y-4">
+          <div className="text-center">
+              <p className="text-xs text-muted-foreground">
+                Made with <Heart className="w-3 h-3 inline text-red-500 mx-1" /> by the FanSpark team · {currentYear}
+              </p>
+            </div>
+            {/* Copyright and Links */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+              <span>© {currentYear} Super Nifty Megacorp. All rights reserved.</span>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Privacy Policy</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Cookie Policy</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Terms of Use</a>
+              <span className="hidden sm:inline">|</span>
+              <a href="#" className="hover:text-[#f0eb01] transition-colors">Community Guidelines</a>
+            </div>
+            
+           
+          </div>
         </div>
       </footer>
     </div>

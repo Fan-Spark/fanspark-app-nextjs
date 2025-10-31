@@ -2,11 +2,8 @@
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useTheme } from './ThemeProvider';
 
 export function ToastProvider() {
-  const { theme } = useTheme();
-  
   return (
     <ToastContainer
       position="top-right"
@@ -18,13 +15,13 @@ export function ToastProvider() {
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      theme={theme === 'dark' ? 'dark' : 'light'}
+      theme="dark"
       style={{
         fontSize: '14px',
       }}
       toastStyle={{
         borderRadius: '8px',
-        border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     />
   );

@@ -8,10 +8,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   Wallet, 
   Wallet2, 
-  ExternalLink,
-  Settings,
-  Moon,
-  Sun,
   Menu,
   X
 } from "lucide-react";
@@ -21,9 +17,7 @@ export default function Header({
   walletConnected, 
   address, 
   onConnectWallet, 
-  onDisconnectWallet,
-  isDarkMode,
-  onToggleTheme
+  onDisconnectWallet
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -97,25 +91,6 @@ export default function Header({
                 {getNetworkName()}
               </Badge>
             </div>
-
-            {/* Theme Toggle */}
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={onToggleTheme}
-            >
-              {isDarkMode ? (
-                <>
-                  <Sun className="w-4 h-4 mr-2" />
-                  Light Mode
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 mr-2" />
-                  Dark Mode
-                </>
-              )}
-            </Button>
 
             {/* Wallet Connection */}
             {walletConnected ? (
@@ -191,20 +166,6 @@ export default function Header({
                 {getNetworkName()}
               </Badge>
             </div>
-
-            {/* Theme Toggle - Desktop */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggleTheme}
-              className="hidden sm:flex h-9 w-9 p-0 rounded-full hover:bg-accent"
-            >
-              {isDarkMode ? (
-                <Sun className="h-4 w-4" />
-              ) : (
-                <Moon className="h-4 w-4" />
-              )}
-            </Button>
 
             {/* Wallet Connection - Desktop */}
             {walletConnected ? (
@@ -292,25 +253,6 @@ export default function Header({
                         {getNetworkName()}
                       </Badge>
                     </div>
-
-                    {/* Theme Toggle */}
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={onToggleTheme}
-                    >
-                      {isDarkMode ? (
-                        <>
-                          <Sun className="w-4 h-4 mr-2" />
-                          Light Mode
-                        </>
-                      ) : (
-                        <>
-                          <Moon className="w-4 h-4 mr-2" />
-                          Dark Mode
-                        </>
-                      )}
-                    </Button>
 
                     {/* Wallet Connection */}
                     {walletConnected ? (
