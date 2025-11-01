@@ -4,7 +4,7 @@
   
   ![FanSpark](public/fs_logo_spark.png)
   
-  **Empowering creators to launch, mint, and monetize digital collectibles on blockchain**
+  **FanSpark is a next-generation crowdfunding and commerce platform built for creators, publishers, and fans. Powered by Flow Blockchain**
   
   [![Next.js](https://img.shields.io/badge/Next.js-15.2-black?logo=next.js)](https://nextjs.org/)
   [![React](https://img.shields.io/badge/React-19.0-blue?logo=react)](https://reactjs.org/)
@@ -18,19 +18,19 @@
 
 ## About FanSpark
 
-**FanSpark** is a next-generation Web3 platform designed to revolutionize how creators connect with their communities. FanSpark enables creators to launch campaigns, mint digital collectibles (NFTs), and build engaged communities around their creative projects.
+**FanSpark** is a next-generation crowdfunding platform that helps artists, publishers, and creators bring their ideas to life with the support of their fans.
 
 ### Our Mission
 
-To bridge the gap between creators and fans by providing a seamless, user-friendly platform for launching and collecting digital assets that carry real utility and value.
+To bridge the gap between creators and fans through a seamless, user-friendly platform that empowers creators to fund ideas, build communities, and reward supporters with physical and digital collectibles that carry real connection and value.
 
 ### What Makes FanSpark Special
 
-- **Creator-First**: Built specifically for comic creators, artists, and content producers
-- **Multi-Chain**: Support for multiple networks
+- **Creator-First**: Built specifically for creators, artists, old and new IPs
+- **Built on Mainnet Flow EVM**: Powering the next wave of consumer-friendly blockchain apps. Deployed on: https://evm.flowscan.io/address/0x87238F9D7da480f268DeaB34906A2235a520593D
 - **Gamified Experience**: Integrated campaigns, quests, gacha systems, and interactive features
 - **True Ownership**: Digital collectibles with verified on-chain authenticity
-- **Global Community**: Connect fans worldwide with Web3 technology
+- **Global Community**: Connect with fans globaly
 
 ---
 
@@ -45,9 +45,8 @@ To bridge the gap between creators and fans by providing a seamless, user-friend
 ### More Creator Partnerships
 
 - **The Legend of New Shaolin** - Black Salt spin-off by Ratti Entertainment
-- **The Sacred Trial Grounds** - Epic graphic novel by Flamewrite Entertainment  
+- **GONGORA** - Epic graphic novel by Flamewrite Entertainment  
 - **The Aurora Evolution** - Interactive motion comic series by Space Labs
-- **The Stellar Collection Series 1** - AI-generated PFP collectibles (2,222 pieces)
 
 ---
 
@@ -56,10 +55,9 @@ To bridge the gap between creators and fans by providing a seamless, user-friend
 ### **Wallet & Authentication**
 - **Multi-Wallet Support**: MetaMask, WalletConnect, Coinbase Wallet, and more via Dynamic.xyz
 - **Seamless Onboarding**: Easy wallet connection with guided setup
-- **Network Switching**: Automatic network detection and switching
 
 ### **Minting & Commerce**
-- **Individual Minting**: Mint single NFTs with real-time price display
+- **Individual Minting**: Mint single reward tiers with real-time price display
 - **Batch Minting**: Add multiple items to cart and mint in sequence
 - **Whitelist Support**: Priority access with Merkle proof verification
 - **Dynamic Pricing**: Support for public and whitelist pricing tiers
@@ -71,11 +69,6 @@ To bridge the gap between creators and fans by providing a seamless, user-friend
 - **Metadata Display**: High-quality images and detailed NFT information
 - **Progress Tracking**: Visual progress bars for campaign goals
 
-### **Network Configuration**
-- **Multi-Network Support**: Configurable network options
-- **Configurable via Environment**: Easy network switching through `.env`
-- **Explorer Integration**: Direct links to transactions and contracts
-
 ### **User Experience**
 - **Fully Responsive**: Optimized for desktop, tablet, and mobile
 - **Dark Mode**: Modern dark theme with custom accent colors
@@ -86,8 +79,7 @@ To bridge the gap between creators and fans by providing a seamless, user-friend
 ### **Gamification (Coming Soon)**
 - **Gacha System**: "Spark of Luck" - Collection-specific gacha mechanics
 - **Battery Game**: "Restore Power!" - Energy management gameplay
-- **Quest System**: Collection-specific missions and achievements
-- **Reward Tiers**: Progressive rewards based on participation
+- **Quest System**: Missions and achievements
 
 ---
 
@@ -203,11 +195,7 @@ To bridge the gap between creators and fans by providing a seamless, user-friend
 
 ### Network Configuration
 
-FanSpark supports multiple networks. Configure your preferred network in `.env.local`:
-
-#### Network Setup
-
-Configure your network settings using environment variables for chain ID, RPC URL, and explorer URL. The platform is designed to work with any compatible network.
+FanSpark is built on Flow EVM. Smart contract: 0x87238F9D7da480f268DeaB34906A2235a520593D
 
 ### Adding New Collections
 
