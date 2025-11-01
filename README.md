@@ -1,179 +1,399 @@
-# Reward Crate Minter
+# FanSpark - Web3 Creator Economy Platform
 
-A Next.js application for minting RewardCrate ERC1155 tokens on configurable blockchain networks.
+<div align="center">
+  
+  ![FanSpark](public/fs_logo_spark.png)
+  
+  **Empowering creators to launch, mint, and monetize digital collectibles on blockchain**
+  
+  [![Next.js](https://img.shields.io/badge/Next.js-15.2-black?logo=next.js)](https://nextjs.org/)
+  [![React](https://img.shields.io/badge/React-19.0-blue?logo=react)](https://reactjs.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?logo=tailwind-css)](https://tailwindcss.com/)
+  [![Dynamic.xyz](https://img.shields.io/badge/Dynamic.xyz-Wallet-7c3aed)](https://dynamic.xyz/)
+  [![Ethers.js](https://img.shields.io/badge/Ethers.js-5.7-2535a0)](https://docs.ethers.io/)
 
-## Features
+</div>
 
-- 🔗 **Multi-Network Support**: Configurable blockchain networks (Base, Flow, Ethereum, etc.)
-- 💰 **Dynamic Pricing**: Support for public and whitelist pricing
-- 🛒 **Cart System**: Add multiple tokens to cart for batch minting
-- ⚡ **Batch Minting**: Mint multiple tokens in sequence
-- 🎨 **NFT Metadata**: Display actual NFT images and metadata
-- 📱 **Mobile Responsive**: Works on all devices
-- 🔐 **Wallet Integration**: Multiple wallet support via Dynamic.xyz
-- 🌐 **Real-time Updates**: Live contract data synchronization
+---
 
-## Network Configuration
+## About FanSpark
 
-This application supports multiple blockchain networks through environment variables. By default, it's configured for Base Sepolia testnet, but can be easily switched to other networks.
+**FanSpark** is a next-generation Web3 platform designed to revolutionize how creators connect with their communities. FanSpark enables creators to launch campaigns, mint digital collectibles (NFTs), and build engaged communities around their creative projects.
 
-### Supported Networks
+### Our Mission
 
-- **Base Mainnet** (Chain ID: 8453)
-- **Base Sepolia** (Chain ID: 84532) - Default
-- **Ethereum Mainnet** (Chain ID: 1)
-- **Flow EVM** (Chain ID: 747) - Future support
-- **Custom Networks** - Configure any EVM-compatible network
+To bridge the gap between creators and fans by providing a seamless, user-friendly platform for launching and collecting digital assets that carry real utility and value.
 
-### Environment Configuration
+### What Makes FanSpark Special
 
-Copy `.env.local.example` to `.env.local` and configure your network:
+- **Creator-First**: Built specifically for comic creators, artists, and content producers
+- **Multi-Chain**: Support for multiple networks
+- **Gamified Experience**: Integrated campaigns, quests, gacha systems, and interactive features
+- **True Ownership**: Digital collectibles with verified on-chain authenticity
+- **Global Community**: Connect fans worldwide with Web3 technology
 
-```bash
-cp .env.local.example .env.local
-```
+---
 
-Key environment variables:
-- `NEXT_PUBLIC_NETWORK_NAME`: Network identifier
-- `NEXT_PUBLIC_NETWORK_DISPLAY_NAME`: User-friendly network name
-- `NEXT_PUBLIC_CHAIN_ID`: Network chain ID
-- `NEXT_PUBLIC_RPC_URL`: Network RPC endpoint
-- `NEXT_PUBLIC_BLOCK_EXPLORER_URL`: Block explorer URL
-- `NEXT_PUBLIC_CONTRACT_ADDRESS`: Smart contract address
+## Featured Campaigns
+
+### Stellar Ardent - Issue #1: The Stellar Comet
+
+> *"The Stellar Comet is the first issue in a brand-new sci-fi fantasy comic series set on a reimagined Mars: a lush, mysterious world where ancient magic collides with cosmic destiny."*
+
+**Active Campaign** featuring digital comic books and exclusive collectibles from the Stellar Ardent universe.
+
+### More Creator Partnerships
+
+- **The Legend of New Shaolin** - Black Salt spin-off by Ratti Entertainment
+- **The Sacred Trial Grounds** - Epic graphic novel by Flamewrite Entertainment  
+- **The Aurora Evolution** - Interactive motion comic series by Space Labs
+- **The Stellar Collection Series 1** - AI-generated PFP collectibles (2,222 pieces)
+
+---
+
+## Key Features
+
+### **Wallet & Authentication**
+- **Multi-Wallet Support**: MetaMask, WalletConnect, Coinbase Wallet, and more via Dynamic.xyz
+- **Seamless Onboarding**: Easy wallet connection with guided setup
+- **Network Switching**: Automatic network detection and switching
+
+### **Minting & Commerce**
+- **Individual Minting**: Mint single NFTs with real-time price display
+- **Batch Minting**: Add multiple items to cart and mint in sequence
+- **Whitelist Support**: Priority access with Merkle proof verification
+- **Dynamic Pricing**: Support for public and whitelist pricing tiers
+- **Shopping Cart**: Intuitive cart system with quantity management
+
+### **NFT Management**
+- **Multi-token Standard**: Smart contract support for multiple digital collectibles
+- **Real-time Supply Tracking**: Live minted/remaining counts
+- **Metadata Display**: High-quality images and detailed NFT information
+- **Progress Tracking**: Visual progress bars for campaign goals
+
+### **Network Configuration**
+- **Multi-Network Support**: Configurable network options
+- **Configurable via Environment**: Easy network switching through `.env`
+- **Explorer Integration**: Direct links to transactions and contracts
+
+### **User Experience**
+- **Fully Responsive**: Optimized for desktop, tablet, and mobile
+- **Dark Mode**: Modern dark theme with custom accent colors
+- **Real-time Updates**: Live contract data synchronization
+- **Error Handling**: User-friendly error messages and retry logic
+- **Toast Notifications**: Clear feedback for all user actions
+
+### **Gamification (Coming Soon)**
+- **Gacha System**: "Spark of Luck" - Collection-specific gacha mechanics
+- **Battery Game**: "Restore Power!" - Energy management gameplay
+- **Quest System**: Collection-specific missions and achievements
+- **Reward Tiers**: Progressive rewards based on participation
+
+---
+
+## Technical Architecture
+
+### **Frontend Stack**
+- **Framework**: Next.js 15.2 (App Router)
+- **UI Library**: React 19.0 with Hooks
+- **Styling**: Tailwind CSS 4.0 + shadcn/ui components
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+
+### **Web3 Integration**
+- **Web3 Library**: Ethers.js 5.7.2
+- **Wallet Provider**: Dynamic.xyz SDK
+- **Smart Contracts**: Multi-token standard support
+- **Network Layer**: Viem 2.31 for wallet client operations
+
+### **State Management**
+- **Global State**: React Context API
+- **Local Persistence**: LocalForage for cart and preferences
+- **Real-time Sync**: Custom hooks for contract data
+
+### **Development Tools**
+- **TypeScript**: Type-safe development
+- **ESLint**: Code quality and consistency
+- **Environment Variables**: Secure configuration management
+
+---
 
 ## Quick Start
 
-1. **Install dependencies**
+### Prerequisites
+
+- Node.js 18.x or higher
+- npm, yarn, or pnpm package manager
+- Web3 wallet (MetaMask recommended)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-org/fanspark-ui-minter-app.git
+   cd fanspark-ui-minter-app
+   ```
+
+2. **Install dependencies**
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-2. **Configure environment**
+3. **Configure environment variables**
    ```bash
    cp .env.local.example .env.local
-   # Edit .env.local with your configuration
+   ```
+   
+   Edit `.env.local` with your configuration:
+   ```env
+   # Network Configuration
+   NEXT_PUBLIC_CHAIN_ID=your_chain_id
+   NEXT_PUBLIC_NETWORK_NAME=your-network
+   NEXT_PUBLIC_NETWORK_DISPLAY_NAME=Your Network Name
+   NEXT_PUBLIC_RPC_URL=your_rpc_url
+   NEXT_PUBLIC_BLOCK_EXPLORER_URL=your_explorer_url
+   
+   # Contract Configuration
+   NEXT_PUBLIC_CONTRACT_ADDRESS=0x...
+   
+   # Brand Configuration
+   NEXT_PUBLIC_BRAND_NAME=FanSpark
+   NEXT_PUBLIC_BRAND_URL=https://www.fanspark.xyz
+   
+   # Dynamic.xyz Configuration
+   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=your_dynamic_environment_id
    ```
 
-3. **Fetch contract data**
+4. **Fetch contract data** (optional, for live contract data)
    ```bash
    npm run fetch-contract-data
-   # or for specific collection:
-   node scripts/fetch-contract-data.js reward-crate
    ```
 
-4. **Start development server**
+5. **Start development server**
    ```bash
    npm run dev
    ```
 
-5. **Open in browser**
+6. **Open your browser**
    ```
    http://localhost:3000
    ```
 
-## Scripts
+---
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run fetch-contract-data` - Fetch latest contract data from blockchain
-- `npm run test-whitelist` - Test whitelist functionality
-- `npm run test-agents` - Test AI agents API
+## Available Scripts
 
-## Architecture
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with Turbopack |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint for code quality |
+| `npm run fetch-contract-data` | Fetch latest contract data from network |
+| `npm run test-whitelist` | Test whitelist Merkle proof functionality |
+| `npm run test-agents` | Test AI agents API integration |
+| `npm run setup-env` | Interactive environment setup |
+| `npm run generate-webhook` | Generate webhook signatures |
 
-- **Frontend**: Next.js 15 with React 18
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **Wallet**: Dynamic.xyz for multi-wallet support
-- **Blockchain**: Ethers.js for smart contract interaction
-- **State**: React hooks with local storage persistence
+---
 
-## Development
+## Configuration
 
-### Adding New Networks
+### Network Configuration
 
-1. Update `.env.local` with new network configuration
-2. The application will automatically adapt to the new network
-3. Test with the new network's testnet first
+FanSpark supports multiple networks. Configure your preferred network in `.env.local`:
+
+#### Network Setup
+
+Configure your network settings using environment variables for chain ID, RPC URL, and explorer URL. The platform is designed to work with any compatible network.
 
 ### Adding New Collections
 
-1. Create metadata files in `public/metadata/[collection-name]/`
-2. Run the fetch script with the collection name:
+1. **Create metadata directory**
+   ```bash
+   mkdir -p public/metadata/[collection-name]/images
+   ```
+
+2. **Add metadata files**
+   - Create JSON metadata files: `0.json`, `1.json`, etc.
+   - Add corresponding images: `0.png`, `1.png`, etc.
+
+3. **Update campaigns configuration**
+   Edit `src/data/campaigns.js` to add your new collection
+
+4. **Fetch contract data**
    ```bash
    node scripts/fetch-contract-data.js [collection-name]
    ```
 
+---
+
+## Project Structure
+
+```
+fanspark-ui-minter-app/
+├── public/                      # Static assets
+│   ├── metadata/                # NFT metadata and images
+│   ├── character/               # Character assets
+│   └── *.png                    # Campaign banners and logos
+├── src/
+│   ├── app/                     # Next.js app directory
+│   │   ├── api/                 # API routes
+│   │   │   ├── agents/          # AI agents endpoints
+│   │   │   ├── whitelist/       # Whitelist verification
+│   │   │   └── dreamnet/        # Webhook handlers
+│   │   ├── campaigns/           # Campaign pages
+│   │   ├── collections/         # Collection pages
+│   │   ├── home/                # Home page
+│   │   └── portal/              # User portal
+│   ├── components/              # React components
+│   │   ├── common/              # Shared components
+│   │   ├── campaigns/           # Campaign-specific
+│   │   ├── collections/         # Collection-specific
+│   │   └── ui/                  # shadcn/ui components
+│   ├── data/                    # Static data and configs
+│   │   ├── campaigns.js         # Campaign definitions
+│   │   ├── collections.js       # Collection definitions
+│   │   └── globalSystems.js     # Global system configs
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useContractData.js   # Contract data fetching
+│   │   ├── useDynamicWallet.js  # Wallet integration
+│   │   └── useContractDataSync.js # Real-time sync
+│   ├── lib/                     # Utility libraries
+│   │   ├── agents-api.js        # AI agents client
+│   │   ├── dynamic-config.js    # Dynamic.xyz config
+│   │   ├── networks.js          # Network definitions
+│   │   └── utils.js             # General utilities
+│   └── utils/                   # Additional utilities
+│       ├── contractABI.json     # Smart contract ABI
+│       └── networkConfig.js     # Network configuration
+├── scripts/                     # Utility scripts
+│   ├── fetch-contract-data.js   # Contract data fetcher
+│   ├── test-whitelist.js        # Whitelist testing
+│   └── test-agents-api.js       # API testing
+└── docs/                        # Documentation
+    ├── CACHING_SETUP.md         # Caching guide
+    ├── DYNAMIC_SETUP.md         # Dynamic.xyz setup
+    └── ENVIRONMENT_VARIABLES.md # Environment config
+```
+
+---
+
+## Whitelist & Merkle Proofs
+
+FanSpark implements secure, gas-efficient whitelist verification using Merkle trees.
+
+### How It Works
+
+1. **Merkle Tree Generation**: Whitelist addresses are hashed into a Merkle tree
+2. **Root Storage**: The Merkle root is stored on-chain in the smart contract
+3. **Proof Verification**: Users provide a Merkle proof when minting
+4. **On-chain Validation**: Contract verifies proof against stored root
+
+### Smart Contract Integration
+
+The `mintWhitelist` function accepts:
+- `tokenId`: ID of the token to mint
+- `amount`: Quantity to mint
+- `merkleProof`: Array of bytes32 proof values
+- `receiver`: Recipient address
+
+### Testing Whitelist
+
+```bash
+npm run test-whitelist
+```
+
+---
+
 ## Deployment
 
-The application is designed to be deployed on Vercel, Netlify, or any platform supporting Next.js.
+### Vercel (Recommended)
 
-1. **Build the application**
-   ```bash
-   npm run build
-   ```
+1. **Connect your repository** to Vercel
+2. **Configure environment variables** in Vercel dashboard
+3. **Deploy** - Automatic deployments on push to main
 
-2. **Set environment variables** on your hosting platform
+### Alternative Platforms
 
-3. **Deploy** using your preferred method
+FanSpark is compatible with any platform supporting Next.js:
+- **Netlify**: Use `next export` for static export
+- **AWS Amplify**: Deploy via GitHub integration
+- **DigitalOcean App Platform**: Docker-based deployment
+- **Self-hosted**: Use `npm run build` && `npm run start`
+
+### Build for Production
+
+```bash
+npm run build
+npm run start
+```
+
+---
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+We welcome contributions from the community! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Make your changes** and commit
+   ```bash
+   git commit -m "Add amazing feature"
+   ```
+4. **Push to your branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request**
+
+### Development Guidelines
+
+- Follow existing code style and conventions
+- Write clear commit messages
+- Test thoroughly before submitting
+- Update documentation as needed
+- Ensure all linter checks pass
+
+---
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-# RewardCrate Minting dApp
+---
 
-This dApp allows users to mint RewardCrate ERC1155 tokens on the Base network.
+## Links & Resources
 
-## Features
+- **Website**: [https://www.fanspark.xyz](https://www.fanspark.xyz)
+- **Documentation**: [docs/](./docs/)
+- **Support**: [support@fanspark.xyz](mailto:support@fanspark.xyz)
+- **Twitter**: [@FanSparkXYZ](https://twitter.com/FanSparkXYZ)
+- **Discord**: [Join our community](https://discord.gg/fanspark)
 
-- Connect to Web3 wallet (MetaMask, WalletConnect, etc.)
-- View available tokens and their details
-- Mint individual tokens
-- Batch mint multiple tokens in one transaction
-- Whitelist support with Merkle proofs
+---
 
-## Whitelist Implementation
+## Acknowledgments
 
-The whitelist uses Merkle trees for secure, gas-efficient verification:
+Built by the FanSpark team and powered by:
 
-1. A Merkle tree is generated from the whitelist data
-2. The Merkle root is stored in the smart contract
-3. When a whitelisted user mints, they provide a Merkle proof
-4. The contract verifies the proof against the stored root
+- [Next.js](https://nextjs.org/) - React framework
+- [Dynamic.xyz](https://dynamic.xyz/) - Web3 authentication
+- [Ethers.js](https://docs.ethers.io/) - Web3 library
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
 
-### Contract Integration
+---
 
-The smart contract has a `mintWhitelist` function that accepts:
-- `tokenId`: The ID of the token to mint
-- `amount`: The amount to mint
-- `merkleProof`: An array of bytes32 values that prove the user is on the whitelist
-
-The contract will verify the proof by:
-1. Creating a leaf from `msg.sender`, `tokenId`, and `amount`
-2. Verifying the proof against the stored Merkle root
-
-### Generating the Merkle Root and Proofs
-
-To generate the Merkle root and proofs, use the provided script in the `scripts` folder:
-
-```
-node scripts/generate-merkle-tree.js
-```
-
-This will:
-1. Read the whitelist from `whitelist.json`
-2. Generate the Merkle root to be set in the contract
-3. Generate proofs for all whitelist entries and save them
-
-## Integration with WordPress
-
-This app is designed to be embedded in WordPress sites via iframes. See the integration guide in the docs folder.
+<div align="center">
+  
+  **Spark your creativity with FanSpark**
+  
+  Made by creators, for creators
+  
+</div>
