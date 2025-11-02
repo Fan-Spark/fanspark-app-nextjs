@@ -299,16 +299,18 @@ export default function HomeComponent() {
       throw new Error(`Price information for token #${tokenId} is not available`);
     }
 
-    // Convert price to wei format
-    // For USDC: priceStr is in USDC format (e.g., "0.005" USDC = 5000 in USDC wei with 6 decimals)
-    // For ETH: priceStr is in ETH format (e.g., "0.005" ETH)
-    const price = ethers.utils.parseEther(priceStr);
-    const amountBN = ethers.BigNumber.from(amount);
-    const totalPrice = price.mul(amountBN);
-
     // Determine if this contract uses USDC or native ETH
     const usesUSDC = shouldUseUSDC(priceStr);
     const paymentType = usesUSDC ? 'USDC (ERC20)' : 'Native ETH';
+
+    // Convert price to correct format based on payment type
+    // USDC uses 6 decimals, ETH uses 18 decimals
+    const price = usesUSDC 
+      ? ethers.utils.parseUnits(priceStr, 6)  // ✅ USDC: 6 decimals
+      : ethers.utils.parseEther(priceStr);     // ETH: 18 decimals
+    
+    const amountBN = ethers.BigNumber.from(amount);
+    const totalPrice = price.mul(amountBN);
     
     console.log(`Minting token #${tokenId}:`, {
       amount,
@@ -348,7 +350,8 @@ export default function HomeComponent() {
         console.log('✅ USDC payment ready');
         
         // Show info toast about USDC payment
-        toast.info(`Using USDC payment: ${ethers.utils.formatUnits(totalPrice, 6)} USDC`, {
+        const usdcAmount = ethers.utils.formatUnits(totalPrice, 6);
+        toast.info(`Using USDC payment: ${usdcAmount} USDC`, {
           autoClose: 3000,
         });
         
