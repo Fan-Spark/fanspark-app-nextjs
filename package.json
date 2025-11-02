@@ -12,7 +12,9 @@
     "setup-env": "node scripts/setup-env.js",
     "generate-webhook": "node scripts/generate-webhook-signature.js",
     "test-agents": "node scripts/test-agents-api.js",
-    "test-whitelist": "node scripts/test-whitelist.js"
+    "test-whitelist": "node scripts/test-whitelist.js",
+    "diagnose": "node scripts/diagnose-contract.js",
+    "diagnose-dry": "node scripts/diagnose-contract.js --dry-run"
   },
   "dependencies": {
     "@dynamic-labs/ethereum": "^4.20.6",

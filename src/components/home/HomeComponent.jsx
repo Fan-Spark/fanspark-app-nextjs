@@ -57,6 +57,7 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from 'react-toastify';
+import { handleUSDCPayment, shouldUseUSDC } from '@/lib/usdc-payment';
 
 // Utility function to delay execution
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -298,13 +299,64 @@ export default function HomeComponent() {
       throw new Error(`Price information for token #${tokenId} is not available`);
     }
 
-    // Convert USD price to wei format for transaction
-    // USD prices are in decimal format (e.g., "0.005"), so we need to convert to wei
+    // Convert price to wei format
+    // For USDC: priceStr is in USDC format (e.g., "0.005" USDC = 5000 in USDC wei with 6 decimals)
+    // For ETH: priceStr is in ETH format (e.g., "0.005" ETH)
     const price = ethers.utils.parseEther(priceStr);
     const amountBN = ethers.BigNumber.from(amount);
     const totalPrice = price.mul(amountBN);
 
-    console.log(`Minting token #${tokenId}, amount: ${amount}, price: ${priceStr} USD, total: ${totalPrice.toString()}`);
+    // Determine if this contract uses USDC or native ETH
+    const usesUSDC = shouldUseUSDC(priceStr);
+    const paymentType = usesUSDC ? 'USDC (ERC20)' : 'Native ETH';
+    
+    console.log(`Minting token #${tokenId}:`, {
+      amount,
+      pricePerToken: priceStr,
+      totalPrice: totalPrice.toString(),
+      paymentType
+    });
+
+    // Get the wallet client from Dynamic.xyz
+    console.log("Getting wallet client...");
+    const walletClient = await primaryWallet.getWalletClient();
+    console.log("Wallet client obtained:", walletClient);
+
+    // If using USDC, handle approval first
+    if (usesUSDC) {
+      try {
+        console.log('💰 Contract uses USDC payment - checking approval...');
+        
+        // Create a provider from the wallet client's chain
+        const provider = new ethers.providers.JsonRpcProvider(
+          process.env.NEXT_PUBLIC_RPC_URL
+        );
+        
+        // Get current chain ID
+        const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '747');
+        
+        // Handle USDC approval
+        await handleUSDCPayment(
+          provider,
+          walletClient,
+          address,
+          CONTRACT_ADDRESS,
+          totalPrice,
+          chainId
+        );
+        
+        console.log('✅ USDC payment ready');
+        
+        // Show info toast about USDC payment
+        toast.info(`Using USDC payment: ${ethers.utils.formatUnits(totalPrice, 6)} USDC`, {
+          autoClose: 3000,
+        });
+        
+      } catch (usdcError) {
+        console.error('USDC payment setup failed:', usdcError);
+        throw new Error(usdcError.message || 'Failed to setup USDC payment');
+      }
+    }
 
     // Create contract interface for encoding function calls
     const contractInterface = new ethers.utils.Interface(contractABI);
@@ -337,19 +389,19 @@ export default function HomeComponent() {
     }
 
     try {
-      // Get the wallet client from Dynamic.xyz
-      console.log("Getting wallet client...");
-      const walletClient = await primaryWallet.getWalletClient();
-      console.log("Wallet client obtained:", walletClient);
-
       // Create transaction object
       const transaction = {
         to: CONTRACT_ADDRESS,
-        value: totalPrice.toString(), // viem expects string, not hex
         data: txData,
       };
 
-      console.log("Sending transaction with Dynamic wallet client:", transaction);
+      // Only add value if NOT using USDC (native ETH payment)
+      if (!usesUSDC) {
+        transaction.value = totalPrice.toString();
+        console.log('Sending transaction with native ETH:', transaction);
+      } else {
+        console.log('Sending transaction with USDC (no ETH value):', transaction);
+      }
       
       // Use the wallet client's sendTransaction method
       const txHash = await walletClient.sendTransaction(transaction);
@@ -368,7 +420,14 @@ export default function HomeComponent() {
         
         // Insufficient funds
         if (msg.includes('insufficient funds') || msg.includes('exceeds the balance')) {
-          friendlyMessage = "Insufficient funds - you don't have enough USD to cover the transaction cost and gas fees";
+          friendlyMessage = "Insufficient funds - you don't have enough balance to cover the transaction cost and gas fees";
+        }
+        // USDC specific errors
+        else if (msg.includes('insufficient usdc') || msg.includes('erc20')) {
+          friendlyMessage = "Insufficient USDC balance - please add USDC tokens to your wallet";
+        }
+        else if (msg.includes('allowance') || msg.includes('approve')) {
+          friendlyMessage = "USDC approval failed - please try again";
         }
         // User rejected transaction
         else if (msg.includes('user rejected') || msg.includes('user denied')) {
