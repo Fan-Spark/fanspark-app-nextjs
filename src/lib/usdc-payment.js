@@ -32,12 +32,24 @@ export const USDC_ADDRESSES = {
 
 /**
  * Get USDC token address for current chain
+ * Prioritizes environment variable over built-in addresses
  */
 export function getUSDCAddress(chainId) {
+  // ALWAYS check environment variable first
+  const envUSDCAddress = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS || process.env.USDC_TOKEN_ADDRESS;
+  
+  if (envUSDCAddress) {
+    console.log('✅ Using USDC address from environment:', envUSDCAddress);
+    return envUSDCAddress;
+  }
+  
+  // Fall back to built-in addresses only if env var not set
   const address = USDC_ADDRESSES[chainId];
   if (!address) {
-    throw new Error(`USDC address not configured for chain ID ${chainId}`);
+    throw new Error(`USDC address not configured for chain ID ${chainId}. Please set NEXT_PUBLIC_USDC_TOKEN_ADDRESS in your .env file.`);
   }
+  
+  console.log('ℹ️ Using built-in USDC address for chain', chainId, ':', address);
   return address;
 }
 
