@@ -57,53 +57,53 @@ export const campaigns = [
     contractAddress: '0x...',
     network: 'ethereum'
   },
-  {
-    id: 'super-space-defenders',
-    slug: 'super-space-defenders',
-    name: 'Super Space Defenders',
-    subtitle: 'Coming Soon',
-    description: 'Epic space defenders ready to protect the universe',
-    image: '/reward-crate.png',
-    status: 'coming-soon',
-    totalItems: 5,
-    mintedItems: 0,
-    features: ['campaigns', 'gacha', 'quests'],
-    navigation: [
-      { 
-        id: 'campaigns', 
-        name: 'Campaigns', 
-        icon: Package, 
-        path: '/campaigns',
-        description: 'Defender campaigns and missions',
-        gradient: 'from-blue-500 to-purple-600'
-      },
-      { 
-        id: 'gacha', 
-        name: 'Defender Gacha', 
-        icon: Star, 
-        path: '/gacha',
-        description: 'Summon powerful defenders',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      },
-      { 
-        id: 'quests', 
-        name: 'Battle Quests', 
-        icon: Trophy, 
-        path: '/quests',
-        description: 'Epic defender missions',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      }
-    ]
-  },
+  // {
+  //   id: 'super-space-defenders',
+  //   slug: 'super-space-defenders',
+  //   name: 'Super Space Defenders',
+  //   subtitle: 'Coming Soon',
+  //   description: 'Epic space defenders ready to protect the universe',
+  //   image: '/reward-crate.png',
+  //   status: 'coming-soon',
+  //   totalItems: 5,
+  //   mintedItems: 0,
+  //   features: ['campaigns', 'gacha', 'quests'],
+  //   navigation: [
+  //     { 
+  //       id: 'campaigns', 
+  //       name: 'Campaigns', 
+  //       icon: Package, 
+  //       path: '/campaigns',
+  //       description: 'Defender campaigns and missions',
+  //       gradient: 'from-blue-500 to-purple-600'
+  //     },
+  //     { 
+  //       id: 'gacha', 
+  //       name: 'Defender Gacha', 
+  //       icon: Star, 
+  //       path: '/gacha',
+  //       description: 'Summon powerful defenders',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     },
+  //     { 
+  //       id: 'quests', 
+  //       name: 'Battle Quests', 
+  //       icon: Trophy, 
+  //       path: '/quests',
+  //       description: 'Epic defender missions',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     }
+  //   ]
+  // },
   {
     id: 'the-spectre',
     slug: 'the-spectre',
     name: 'The Spectre',
     subtitle: 'Coming Soon',
     description: 'Mysterious spectre collection with dark powers',
-    image: '/reward-crate.png',
+    image: '/spectre-project-bg-01.png',
     status: 'coming-soon',
     totalItems: 10,
     mintedItems: 0,
@@ -138,61 +138,61 @@ export const campaigns = [
     ]
   },
   
-  {
-    id: 'stellar-collection-series-1',
-    slug: 'stellar-collection-series-1',
-    name: 'The Stellar Collection - Series 1 The Fallen Star',
+  // {
+  //   id: 'stellar-collection-series-1',
+  //   slug: 'stellar-collection-series-1',
+  //   name: 'The Stellar Collection - Series 1 The Fallen Star',
  
-    description: 'The Stellar Collection – Series 1 The Fallen Star is a free drop of 2,222 AI-generated digital collectible profile pictures, kickstarting the Stellar Ardent universe. Get in early before everyone else!',
-    image: '/first_campaign_banner.png',
-    status: 'coming-soon',
-    totalItems: 3,
-    mintedItems: 156,
-    creator: 'Super Nifty Megacorp',
-    remainingTime: '8 days left',
-    productType: 'Digital Collectibles',
-    location: 'Los Angeles, CA',
-    // features: ['campaigns', 'gacha', 'battery-game', 'quests'],
-    navigation: [
-      { 
-        id: 'campaigns', 
-        name: 'Campaigns', 
-        icon: Package, 
-        path: '/campaigns',
-        description: 'Collection campaigns and rewards',
-        gradient: 'from-blue-500 to-purple-600'
-      },
-      { 
-        id: 'gacha', 
-        name: 'Spark of Luck (Gacha)', 
-        icon: Star, 
-        path: '/gacha',
-        description: 'Collection-specific gacha system',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      },
-      { 
-        id: 'battery-game', 
-        name: 'Restore Power! (Battery Game)', 
-        icon: Battery, 
-        path: '/battery-game',
-        description: 'Energy management for this collection',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      },
-      { 
-        id: 'quests', 
-        name: 'Quests', 
-        icon: Trophy, 
-        path: '/quests',
-        description: 'Collection-specific missions',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      }
-    ],
-    contractAddress: '0x...',
-    network: 'ethereum'
-  },
+  //   description: 'The Stellar Collection – Series 1 The Fallen Star is a free drop of 2,222 AI-generated digital collectible profile pictures, kickstarting the Stellar Ardent universe. Get in early before everyone else!',
+  //   image: '/first_campaign_banner.png',
+  //   status: 'coming-soon',
+  //   totalItems: 3,
+  //   mintedItems: 156,
+  //   creator: 'Super Nifty Megacorp',
+  //   remainingTime: '8 days left',
+  //   productType: 'Digital Collectibles',
+  //   location: 'Los Angeles, CA',
+  //   // features: ['campaigns', 'gacha', 'battery-game', 'quests'],
+  //   navigation: [
+  //     { 
+  //       id: 'campaigns', 
+  //       name: 'Campaigns', 
+  //       icon: Package, 
+  //       path: '/campaigns',
+  //       description: 'Collection campaigns and rewards',
+  //       gradient: 'from-blue-500 to-purple-600'
+  //     },
+  //     { 
+  //       id: 'gacha', 
+  //       name: 'Spark of Luck (Gacha)', 
+  //       icon: Star, 
+  //       path: '/gacha',
+  //       description: 'Collection-specific gacha system',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     },
+  //     { 
+  //       id: 'battery-game', 
+  //       name: 'Restore Power! (Battery Game)', 
+  //       icon: Battery, 
+  //       path: '/battery-game',
+  //       description: 'Energy management for this collection',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     },
+  //     { 
+  //       id: 'quests', 
+  //       name: 'Quests', 
+  //       icon: Trophy, 
+  //       path: '/quests',
+  //       description: 'Collection-specific missions',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     }
+  //   ],
+  //   contractAddress: '0x...',
+  //   network: 'ethereum'
+  // },
   {
     id: 'ratti-entertainment',
     slug: 'ratti-entertainment',
