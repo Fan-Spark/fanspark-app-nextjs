@@ -64,8 +64,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" suppressHydrationWarning className="dark">
-      <head>
+      <head suppressHydrationWarning>
         <script
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

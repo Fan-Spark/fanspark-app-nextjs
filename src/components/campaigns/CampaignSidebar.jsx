@@ -56,7 +56,7 @@ export default function CampaignSidebar({
   };
 
   const handleBackToCampaigns = () => {
-    router.push('/');
+    router.push('/campaigns');
   };
 
   const isActiveItem = (item) => {
