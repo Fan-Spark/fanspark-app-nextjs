@@ -17,7 +17,7 @@ export const globalNavigation = [
     id: 'home',
     name: 'Home',
     icon: Home,
-    href: '/home',
+    href: '/',
     description: 'Welcome to FanSpark',
     status: 'active',
     // gradient: 'from-blue-500 to-cyan-600'
@@ -26,7 +26,7 @@ export const globalNavigation = [
     id: 'campaigns',
     name: 'Campaigns',
     icon: Package,
-    href: '/',
+    href: '/campaigns',
     description: 'Browse all campaigns',
     status: 'active',
     

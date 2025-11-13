@@ -121,7 +121,7 @@ export default function HomeComponent() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCampaign, setActiveCampaign] = useState("reward-crate");
   const [showMintSuccessPopup, setShowMintSuccessPopup] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("rewards");
   
   // Minting state management
   const [mintingStates, setMintingStates] = useState({}); // Track loading per token
