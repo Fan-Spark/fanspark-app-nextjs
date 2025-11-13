@@ -6,8 +6,6 @@ import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { usePathname } from "next/navigation";
 import { CURRENT_NETWORK } from '@/utils/networkConfig';
 import Sidebar from '@/components/common/Sidebar';
-import DynamicWalletButton from '@/components/common/DynamicWalletButton';
-import DynamicMobileWallet from '@/components/common/DynamicMobileWallet';
 import DonationModal from '@/components/common/DonationModal';
 import NoSSR from '@/components/common/NoSSR';
 import { Button } from "@/components/ui/button";
@@ -53,22 +51,17 @@ export default function Template({ children }) {
       <div className="fixed left-4 top-4 h-[calc(100vh-2rem)] w-80 bg-background/80 backdrop-blur-xl border border-border/50 shadow-2xl rounded-2xl transition-all duration-500 z-50 hidden lg:block">
         <div className="flex flex-col h-full p-3">
           {/* Sidebar Header with Logo */}
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-8 w-auto flex items-center justify-center">
+          <div className="flex items-center justify-center py-6 mb-2">
+            <div className="h-12 w-auto flex items-center justify-center">
               <Image 
                 src="/fanspark.png" 
                 alt="FanSpark Logo" 
-                width={160} 
-                height={50}
+                width={210} 
+                height={210}
                 className="object-contain"
                 style={{ width: "auto", height: "100%" }}
               />
             </div>
-          </div>
-
-          {/* Wallet Connection Section */}
-          <div className="mb-3 flex justify-center">
-            <DynamicWalletButton />
           </div>
 
           {/* Unified Navigation */}
@@ -182,13 +175,41 @@ export default function Template({ children }) {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-muted-foreground">
               <span>© {currentYear} Super Nifty Megacorp. All rights reserved.</span>
               <span className="hidden sm:inline">|</span>
-              <a href="#" className="hover:text-[#f0eb01] transition-colors">Privacy Policy</a>
+              <a 
+                href="https://fanspark.xyz/privacy-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-[#f0eb01] transition-colors"
+              >
+                Privacy Policy
+              </a>
               <span className="hidden sm:inline">|</span>
-              <a href="#" className="hover:text-[#f0eb01] transition-colors">Cookie Policy</a>
+              <a 
+                href="https://www.fanspark.xyz/cookie-policy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-[#f0eb01] transition-colors"
+              >
+                Cookie Policy
+              </a>
               <span className="hidden sm:inline">|</span>
-              <a href="#" className="hover:text-[#f0eb01] transition-colors">Terms of Use</a>
+              <a 
+                href="https://www.fanspark.xyz/terms-of-use/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-[#f0eb01] transition-colors"
+              >
+                Terms of Use
+              </a>
               <span className="hidden sm:inline">|</span>
-              <a href="#" className="hover:text-[#f0eb01] transition-colors">Community Guidelines</a>
+              <a 
+                href="https://www.fanspark.xyz/community-guidelines" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-[#f0eb01] transition-colors"
+              >
+                Community Guidelines
+              </a>
             </div>
             
            

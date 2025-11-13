@@ -122,11 +122,44 @@ export default function CampaignCard({ campaign }) {
                 </p>
               )}
             </div>
-             {/* Remaining Time */}
-             {campaign.remainingTime && (
-              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                <Clock className="w-3 h-3" />
-                <span>{campaign.remainingTime}</span>
+            
+            {/* Backer Count (Sparkers) and Campaign Timer */}
+            {(campaign.mintedItems !== undefined || campaign.campaignEndDate) && (
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                {campaign.mintedItems !== undefined && (
+                  <>
+                    <span>
+                      <span className="font-semibold text-foreground">{campaign.mintedItems.toLocaleString()}</span>
+                      {' '}sparkers
+                    </span>
+                  </>
+                )}
+                
+                {campaign.mintedItems !== undefined && campaign.campaignEndDate && (
+                  <span>|</span>
+                )}
+                
+                {campaign.campaignEndDate && (
+                  <span>
+                    {(() => {
+                      const endDate = new Date(campaign.campaignEndDate);
+                      const now = new Date();
+                      const diff = endDate - now;
+                      
+                      if (diff <= 0) return 'campaign ended';
+                      
+                      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                      
+                      if (days === 0) {
+                        return 'last day';
+                      } else if (days === 1) {
+                        return '1 day to go';
+                      } else {
+                        return <><span className="font-semibold text-foreground">{days}</span> days to go</>;
+                      }
+                    })()}
+                  </span>
+                )}
               </div>
             )}
             

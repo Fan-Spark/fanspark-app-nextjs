@@ -78,7 +78,7 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
   }
 };
 
-export default function HomeComponent() {
+export default function HomeComponent({ collection }) {
   const { 
     isConnected, 
     hasWallet,
@@ -122,6 +122,7 @@ export default function HomeComponent() {
   const [activeCampaign, setActiveCampaign] = useState("reward-crate");
   const [showMintSuccessPopup, setShowMintSuccessPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("rewards");
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   // Minting state management
   const [mintingStates, setMintingStates] = useState({}); // Track loading per token
@@ -639,6 +640,15 @@ export default function HomeComponent() {
     setTokensWithLiveData(tokens);
   }, [tokens]);
 
+  // Update campaign timer every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+    
+    return () => clearInterval(timer);
+  }, []);
+
   // Track if we've done the initial fetch
   const initialFetchDone = useRef(false);
   
@@ -1030,12 +1040,12 @@ export default function HomeComponent() {
             Verified on-chain authenticity
           </Badge>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6">
-            Spark This Campaign Today!
+          <h1 className="text-2xl sm:text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-2">
+            {collection?.name || 'Spark This Campaign Today!'}
           </h1>
           
           <p className="text-lg text-muted-foreground mb-8">
-            The Stellar Comet is the first issue in a brand-new sci-fi fantasy comic series set on a reimagined Mars: a lush, mysterious world where ancient magic collides with cosmic destiny
+            {collection?.description || 'The Stellar Comet is the first issue in a brand-new sci-fi fantasy comic series set on a reimagined Mars: a lush, mysterious world where ancient magic collides with cosmic destiny'}
           </p>
           
           <div className="text-center">
@@ -1110,6 +1120,42 @@ export default function HomeComponent() {
       {/* Full Width Progress Bar */}
       <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
         <div className="container mx-auto">
+          {/* Sparkers and Campaign Timer - Right aligned above progress */}
+          <div className="flex justify-end mb-2">
+            <div className="flex items-center gap-2 text-xs text-white/70">
+              <span>
+                {(() => {
+                  // Calculate total minted items (sparkers) from actual token data
+                  const totalMinted = tokensWithLiveData.reduce((sum, token) => {
+                    return sum + (token.minted || 0);
+                  }, 0);
+                  return totalMinted.toLocaleString();
+                })()}
+                {' '}sparkers
+              </span>
+              <span>|</span>
+              <span>
+                {(() => {
+                  // Calculate time remaining from campaign end date
+                  const endDate = new Date(collection?.campaignEndDate || '2025-12-15T23:59:59Z');
+                  const diff = endDate - currentTime;
+                  
+                  if (diff <= 0) return 'campaign ended';
+                  
+                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                  
+                  if (days === 0) {
+                    return 'last day';
+                  } else if (days === 1) {
+                    return '1 day to go';
+                  } else {
+                    return `${days} days to go`;
+                  }
+                })()}
+              </span>
+            </div>
+          </div>
+          
           <div className="w-full bg-black/20 backdrop-blur-sm rounded-full h-2 mb-2">
             <div 
               className="h-full bg-primary rounded-full transition-all duration-700 ease-out shadow-sm"

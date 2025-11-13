@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import PortalLink from "@/components/common/PortalLink";
+import DynamicWalletButton from "@/components/common/DynamicWalletButton";
+import { useDynamicWallet } from '@/hooks/useDynamicWallet';
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -19,6 +21,7 @@ export default function Sidebar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { isConnected } = useDynamicWallet();
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -53,11 +56,20 @@ export default function Sidebar({
   const handleNavigation = (item) => {
     if (item.status === "coming-soon") return;
     
+    // Check if it's an external link
+    if (item.isExternal) {
+      window.open(item.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    
     // Navigate to the item
     router.push(item.href);
   };
 
   const isActiveItem = (item) => {
+    // External links are never "active"
+    if (item.isExternal) return false;
+    
     // Check if this is the active item based on pathname
     if (item.href === '/' && pathname === '/') return true;
     if (item.href !== '/' && pathname.startsWith(item.href)) return true;
@@ -246,11 +258,26 @@ export default function Sidebar({
             </div>
             
             <Separator className="bg-border/30" />
-            <PortalLink 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-xs"
-            />
+            
+            {/* Portal and Wallet Connection */}
+            {isConnected ? (
+              // Logged in: Show Portal (left) and Login/Signup (right) side by side
+              <div className="flex items-center gap-2">
+                <PortalLink 
+                  variant="ghost" 
+                  size="sm" 
+                  className="flex-1 justify-start text-xs"
+                />
+                <div className="flex-1 flex justify-end">
+                  <DynamicWalletButton />
+                </div>
+              </div>
+            ) : (
+              // Logged out: Show only Login/Signup button centered
+              <div className="flex justify-center">
+                <DynamicWalletButton />
+              </div>
+            )}
           </div>
         </div>
       )}

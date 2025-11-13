@@ -9,13 +9,14 @@ export const campaigns = [
   {
     id: 'stellar-ardent-issue-1',
     slug: 'stellar-ardent-issue-1-comic-book-stellar-comet',
-    name: 'Stellar Ardent',
-    subtitle: 'Issue #1 Comic Book: Stellar Comet',
+    name: 'Issue #1 Comic Book: Stellar Comet',
+    subtitle: 'Stellar Ardent',
     description: 'First issue of the Stellar Ardent comic series featuring epic space adventures',
     image: '/first_campaign_banner.png',
     status: 'active',
     totalItems: 3,
     mintedItems: 156,
+    campaignEndDate: '2025-12-15T23:59:59Z',
     features: ['campaigns', 'gacha', 'battery-game', 'quests'],
     navigation: [
       { 
@@ -107,6 +108,7 @@ export const campaigns = [
     status: 'coming-soon',
     totalItems: 10,
     mintedItems: 0,
+    campaignEndDate: '2025-12-31T23:59:59Z',
     features: ['campaigns', 'battery-game', 'quests'],
     navigation: [
       { 
@@ -203,6 +205,7 @@ export const campaigns = [
     status: 'coming-soon',
     totalItems: 5,
     mintedItems: 0,
+    campaignEndDate: '2025-11-22T23:59:59Z',
     creator: 'Ratti Entertainment',
     remainingTime: '9 days left',
     productType: 'Comic Books',
@@ -247,6 +250,7 @@ export const campaigns = [
     status: 'coming-soon',
     totalItems: 10,
     mintedItems: 0,
+    campaignEndDate: '2025-11-22T23:59:59Z',
     creator: 'Flamewrite Entertainment',
     remainingTime: '9 days left',
     productType: 'Graphic Novels',
@@ -290,6 +294,7 @@ export const campaigns = [
     status: 'coming-soon',
     totalItems: 5,
     mintedItems: 0,
+    campaignEndDate: '2025-11-24T23:59:59Z',
     creator: 'Space Labs',
     remainingTime: '11 days left',
     productType: 'Motion Comics',

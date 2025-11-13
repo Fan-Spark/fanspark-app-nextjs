@@ -9,7 +9,8 @@ import {
   Package,
   Dice6,
   Battery,
-  Trophy
+  Trophy,
+  Send
 } from "lucide-react";
 
 export const globalNavigation = [
@@ -19,7 +20,6 @@ export const globalNavigation = [
     icon: Home,
     href: '/',
     description: 'Welcome to FanSpark',
-    status: 'active',
     // gradient: 'from-blue-500 to-cyan-600'
   },
   {
@@ -104,7 +104,8 @@ export const globalNavigation = [
     description: 'Platform-wide missions',
     status: 'coming-soon',
     
-  },{
+  },
+  {
     id: 'about',
     name: 'About',
     icon: Zap,
@@ -112,5 +113,14 @@ export const globalNavigation = [
     description: 'Learn more about us',
     status: 'coming-soon',
     
+  },
+  {
+    id: 'submit-project',
+    name: 'Submit Your Project',
+    icon: Send,
+    href: 'https://www.fanspark.xyz/submit-your-project',
+    description: 'Share your creative work',
+    // status: 'active',
+    isExternal: true,
   },
 ];
