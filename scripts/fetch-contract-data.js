@@ -15,6 +15,8 @@ const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'contract-data.json');
 
 // Collection configuration - can be passed as command line argument
 const COLLECTION = process.argv[2] || 'reward-crate';
+const METADATA_BASE_URL = process.argv[3] || process.env.METADATA_BASE_URL || 'https://fan-spark.s3.amazonaws.com/stellar-ardent';
+const USE_LOCAL_METADATA = process.env.USE_LOCAL_METADATA === 'true';
 const METADATA_DIR = path.join(__dirname, '..', 'public', 'metadata', COLLECTION);
 
 // Load contract ABI
@@ -45,14 +47,78 @@ function formatUSDCPrice(rawPrice) {
   return usdcPrice.toFixed(6);
 }
 
-// Function to load metadata for a specific token
-async function loadTokenMetadata(tokenId) {
-  try {
-    const metadataFile = path.join(METADATA_DIR, `${tokenId}.json`);
-    const metadataContent = await fs.readFile(metadataFile, 'utf8');
-    const metadata = JSON.parse(metadataContent);
+// Function to fetch metadata from URL
+async function fetchMetadataFromURL(tokenId) {
+  const metadataUrl = `${METADATA_BASE_URL}/${tokenId}.json`;
+  console.log(`🌐 Fetching metadata from: ${metadataUrl}`);
+  
+  const https = require('https');
+  const http = require('http');
+  
+  return new Promise((resolve, reject) => {
+    const client = metadataUrl.startsWith('https') ? https : http;
     
-    console.log(`📄 Loaded metadata for Token #${tokenId}: ${metadata.name}`);
+    client.get(metadataUrl, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const metadata = JSON.parse(data);
+            resolve(metadata);
+          } catch (error) {
+            reject(new Error(`Failed to parse JSON: ${error.message}`));
+          }
+        } else {
+          reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+        }
+      });
+    }).on('error', (error) => {
+      reject(error);
+    });
+  });
+}
+
+// Function to load metadata from local file
+async function loadLocalMetadata(tokenId) {
+  const metadataFile = path.join(METADATA_DIR, `${tokenId}.json`);
+  const metadataContent = await fs.readFile(metadataFile, 'utf8');
+  return JSON.parse(metadataContent);
+}
+
+// Function to load metadata for a specific token
+async function loadTokenMetadata(tokenId, isActive = true) {
+  // Skip metadata fetch for inactive tokens
+  if (!isActive) {
+    console.log(`⏭️  Skipping metadata for inactive Token #${tokenId}`);
+    return {
+      metadata: null,
+      name: `Token #${tokenId}`,
+      description: `Token #${tokenId} from the ${COLLECTION} collection`,
+      image: null,
+      external_url: null,
+      attributes: [],
+      properties: {}
+    };
+  }
+
+  try {
+    let metadata;
+    
+    // Fetch from URL or local file based on configuration
+    if (USE_LOCAL_METADATA) {
+      console.log(`📁 Loading local metadata for Token #${tokenId}...`);
+      metadata = await loadLocalMetadata(tokenId);
+    } else {
+      console.log(`🌐 Fetching remote metadata for Token #${tokenId}...`);
+      metadata = await fetchMetadataFromURL(tokenId);
+    }
+    
+    console.log(`✅ Loaded metadata for Token #${tokenId}: ${metadata.name}`);
     
     return {
       metadata: metadata,
@@ -82,6 +148,8 @@ async function fetchContractData() {
   console.log(`📊 Contract: ${CONTRACT_ADDRESS}`);
   console.log(`🌐 RPC URL: ${RPC_URL}`);
   console.log(`🎨 Collection: ${COLLECTION}`);
+  console.log(`🔗 Metadata Base URL: ${METADATA_BASE_URL}`);
+  console.log(`📁 Use Local Metadata: ${USE_LOCAL_METADATA}`);
   console.log(`📁 Metadata Directory: ${METADATA_DIR}`);
   
   if (!CONTRACT_ADDRESS || !RPC_URL) {
@@ -99,6 +167,8 @@ async function fetchContractData() {
       fetchedTimestamp: Date.now(),
       rpcUrl: RPC_URL,
       collection: COLLECTION,
+      metadataBaseUrl: METADATA_BASE_URL,
+      useLocalMetadata: USE_LOCAL_METADATA,
       metadataDirectory: METADATA_DIR,
       version: "1.0.0",
       priceFormat: "USDC" // Indicate that prices are in USDC
@@ -109,7 +179,8 @@ async function fetchContractData() {
       totalMinted: 0,
       totalAvailable: 0,
       activeTokens: 0,
-      whitelistActiveTokens: 0
+      whitelistActiveTokens: 0,
+      tokensWithMetadata: 0
     }
   };
 
@@ -117,6 +188,7 @@ async function fetchContractData() {
   let totalAvailable = 0;
   let activeTokens = 0;
   let whitelistActiveTokens = 0;
+  let tokensWithMetadata = 0;
 
   console.log('\n📦 Fetching token data...');
 
@@ -130,14 +202,19 @@ async function fetchContractData() {
         await delay(200);
       }
 
-      // Fetch token config and unminted supply with retry logic
-      const [config, unminted, tokenMetadata] = await retryWithBackoff(async () => {
+      // First, fetch token config and unminted supply with retry logic
+      const [config, unminted] = await retryWithBackoff(async () => {
         return Promise.all([
           contract.tokenConfigs(tokenId),
-          contract.getUnmintedSupply(tokenId),
-          loadTokenMetadata(tokenId)
+          contract.getUnmintedSupply(tokenId)
         ]);
       });
+
+      // Check if token is active (minting or whitelist active)
+      const isActive = config.mintingActive || config.isWhitelistActive;
+      
+      // Only fetch metadata for active tokens
+      const tokenMetadata = await loadTokenMetadata(tokenId, isActive);
 
       // Convert raw prices to USDC format
       const rawPrice = parseInt(config.price.toString());
@@ -191,8 +268,11 @@ async function fetchContractData() {
       }
       if (tokenInfo.mintingActive) activeTokens++;
       if (tokenInfo.isWhitelistActive) whitelistActiveTokens++;
+      if (tokenInfo.metadata !== null) tokensWithMetadata++;
 
-      console.log(`✅ Token #${tokenId} (${tokenInfo.name}): ${usdcPrice} USDC, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
+      const activeStatus = isActive ? '🟢 ACTIVE' : '⚪ INACTIVE';
+      const metadataStatus = tokenInfo.metadata !== null ? '📄' : '⚫';
+      console.log(`✅ Token #${tokenId} ${activeStatus} ${metadataStatus} (${tokenInfo.name}): ${usdcPrice} USDC, Minted: ${tokenInfo.minted}/${tokenInfo.maxSupplyDisplay}`);
 
     } catch (error) {
       console.error(`❌ Failed to fetch Token #${tokenId}:`, error.message);
@@ -245,6 +325,7 @@ async function fetchContractData() {
     totalAvailable,
     activeTokens,
     whitelistActiveTokens,
+    tokensWithMetadata,
     successfulFetches: contractData.tokens.filter(t => !t.error).length,
     failedFetches: contractData.tokens.filter(t => t.error).length
   };
@@ -301,11 +382,14 @@ async function main() {
     console.log(`❌ Failed fetches: ${contractData.summary.failedFetches}`);
     console.log(`🔥 Active tokens: ${contractData.summary.activeTokens}`);
     console.log(`👑 Whitelist active: ${contractData.summary.whitelistActiveTokens}`);
+    console.log(`📄 Tokens with metadata: ${contractData.summary.tokensWithMetadata}`);
     console.log(`⏱️  Total time: ${duration.toFixed(2)}s`);
     console.log(`📁 Output: ${OUTPUT_FILE}`);
     
     console.log('\n🎉 Contract data fetch completed successfully!');
     console.log(`🎨 Collection "${COLLECTION}" metadata included`);
+    console.log(`🔗 Metadata Base URL: ${METADATA_BASE_URL}`);
+    console.log(`📁 Use Local Metadata: ${USE_LOCAL_METADATA}`);
     console.log('\n💡 To use this data in your app, import it from /contract-data.json');
     
   } catch (error) {

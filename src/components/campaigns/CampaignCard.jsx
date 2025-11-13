@@ -112,60 +112,21 @@ export default function CampaignCard({ campaign }) {
             )}
             
             {/* Title */}
-            <div>
-              <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
+            <div className="min-h-[4rem]">
+              <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                 {campaign.name}
               </h3>
               {campaign.subtitle && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
                   {campaign.subtitle}
                 </p>
               )}
             </div>
             
-            {/* Backer Count (Sparkers) and Campaign Timer */}
-            {(campaign.mintedItems !== undefined || campaign.campaignEndDate) && (
-              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                {campaign.mintedItems !== undefined && (
-                  <>
-                    <span>
-                      <span className="font-semibold text-foreground">{campaign.mintedItems.toLocaleString()}</span>
-                      {' '}sparkers
-                    </span>
-                  </>
-                )}
-                
-                {campaign.mintedItems !== undefined && campaign.campaignEndDate && (
-                  <span>|</span>
-                )}
-                
-                {campaign.campaignEndDate && (
-                  <span>
-                    {(() => {
-                      const endDate = new Date(campaign.campaignEndDate);
-                      const now = new Date();
-                      const diff = endDate - now;
-                      
-                      if (diff <= 0) return 'campaign ended';
-                      
-                      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                      
-                      if (days === 0) {
-                        return 'last day';
-                      } else if (days === 1) {
-                        return '1 day to go';
-                      } else {
-                        return <><span className="font-semibold text-foreground">{days}</span> days to go</>;
-                      }
-                    })()}
-                  </span>
-                )}
-              </div>
-            )}
             
             {/* Description */}
             {campaign.description && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground line-clamp-3 min-h-[3.5rem]">
                 {campaign.description}
               </p>
             )}

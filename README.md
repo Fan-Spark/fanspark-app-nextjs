@@ -160,7 +160,11 @@ To bridge the gap between creators and fans through a seamless, user-friendly pl
 
 4. **Fetch contract data** (optional, for live contract data)
    ```bash
+   # Fetch with cloud metadata (default)
    npm run fetch-contract-data
+   
+   # Or specify collection and metadata URL
+   node scripts/fetch-contract-data.js stellar-ardent https://your-metadata-url.com
    ```
 
 5. **Start development server**
@@ -199,6 +203,27 @@ FanSpark is built on Flow EVM. Smart contract: 0x87238F9D7da480f268DeaB34906A223
 
 ### Adding New Collections
 
+#### Option 1: Cloud-Based Metadata (Recommended)
+
+1. **Upload metadata to cloud storage** (e.g., AWS S3)
+   - Upload JSON files: `0.json`, `1.json`, etc.
+   - Upload corresponding images: `0.png`, `1.png`, etc.
+   - Ensure public read access
+
+2. **Update campaigns configuration**
+   Edit `src/data/campaigns.js` to add your new collection
+
+3. **Fetch contract data with cloud metadata**
+   ```bash
+   # Using default URL
+   METADATA_BASE_URL=https://your-bucket.s3.amazonaws.com/your-collection npm run fetch-contract-data
+   
+   # Or via command line
+   node scripts/fetch-contract-data.js your-collection https://your-bucket.s3.amazonaws.com/your-collection
+   ```
+
+#### Option 2: Local Metadata
+
 1. **Create metadata directory**
    ```bash
    mkdir -p public/metadata/[collection-name]/images
@@ -211,10 +236,12 @@ FanSpark is built on Flow EVM. Smart contract: 0x87238F9D7da480f268DeaB34906A223
 3. **Update campaigns configuration**
    Edit `src/data/campaigns.js` to add your new collection
 
-4. **Fetch contract data**
+4. **Fetch contract data with local metadata**
    ```bash
-   node scripts/fetch-contract-data.js [collection-name]
+   USE_LOCAL_METADATA=true node scripts/fetch-contract-data.js [collection-name]
    ```
+
+> **Note**: The script automatically fetches metadata **only for active tokens** (where minting or whitelist is enabled), optimizing performance and reducing unnecessary API calls.
 
 ---
 
@@ -264,7 +291,8 @@ fanspark-ui-minter-app/
 └── docs/                        # Documentation
     ├── CACHING_SETUP.md         # Caching guide
     ├── DYNAMIC_SETUP.md         # Dynamic.xyz setup
-    └── ENVIRONMENT_VARIABLES.md # Environment config
+    ├── ENVIRONMENT_VARIABLES.md # Environment config
+    └── METADATA_FETCHING.md     # Metadata fetching guide
 ```
 
 ---
