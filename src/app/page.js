@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { globalNavigation } from "@/data/globalSystems";
-import { Sparkles, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
 export default function HomePage() {
@@ -39,74 +39,49 @@ export default function HomePage() {
   const filteredNavigation = globalNavigation.filter(item => item.id !== 'home');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/50 to-background">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 md:py-12">
         {/* FanSpark Season 1 Hero Section */}
-        <div className="relative overflow-hidden rounded-2xl mb-12 shadow-2xl" style={{ backgroundColor: '#eae74a' }}>
-          {/* Diagonal Split Layout */}
-          <div className="relative min-h-[550px] md:min-h-[600px] overflow-hidden">
-            {/* Left Section - Dark Black Background with Text */}
-            <div className="absolute inset-0" style={{ backgroundColor: '#1a1a1a' }}>
-              <div className="absolute inset-0" style={{
-                clipPath: 'polygon(0 0, 67% 0, 37% 100%, 0 100%)'
-              }} />
+        <div className="relative overflow-hidden rounded-2xl mb-12 shadow-2xl bg-gradient-to-br from-[#08242C] via-[#111] to-[#FEEB01]">
+          <div
+            className="absolute inset-0 opacity-30"
+            style={{ background: "radial-gradient(circle at top, #FEEB01, transparent 55%)" }}
+          />
+          <div className="absolute inset-0 opacity-10 bg-[url('/grid.svg')] bg-repeat" />
+          <div className="relative flex flex-col lg:flex-row min-h-[340px]">
+            {/* Left Content */}
+            <div className="order-2 lg:order-1 flex-1 px-6 py-5 md:px-10 lg:px-12 text-white space-y-3">
+              <p className="text-xs tracking-[0.3em] text-white/70">FANSPARK</p>
+              <h1 className="text-3xl md:text-5xl font-bold uppercase leading-tight tracking-tight">
+                Season 1<br />Digital Sticker Packs
+              </h1>
+              <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl">
+                Collect, trade, and unlock the story! Grab FanSpark Season 1 digital sticker packs and start building your collection.
+                Complete the full set to unlock super rare exclusives, behind-the-scenes access, and surprise rewards made for true fans.
+              </p>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 max-w-fit text-sm px-6 h-11"
+                disabled
+              >
+                COMING SOON
+                <ArrowUpRight className="w-4 h-4 ml-2" />
+              </Button>
             </div>
 
-            
-
-        
-
-            {/* Decorative Lines - Right Side */}
-            <div className="absolute right-0 top-0 bottom-0 w-px bg-black/10" style={{
-              clipPath: 'polygon(67% 0, 100% 0, 100% 100%, 37% 100%)'
-            }} />
-            <div className="absolute right-4 top-0 bottom-0 w-px bg-black/5" style={{
-              clipPath: 'polygon(67% 0, 100% 0, 100% 100%, 37% 100%)'
-            }} />
-
-            {/* Diagonal Separator Line */}
-            <div className="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-white/20 via-white/10 to-transparent" style={{
-              left: '67%',
-              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
-            }} />
-            <div className="absolute top-0 bottom-0 w-px bg-black/20" style={{
-              left: '67%'
-            }} />
-
-            {/* Content Container */}
-            <div className="relative z-10 flex items-center h-full min-h-[550px] md:min-h-[600px]">
-              {/* Left Content */}
-              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-center px-6 md:px-8 lg:px-12 py-12" style={{ width: '60%' }}>
-                <p className="text-sm text-white/70 mb-3 font-medium">FANSPARK</p>
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 uppercase leading-tight tracking-tight">
-                  Season 1<br />Digital Sticker Packs
-                </h1>
-                <p className="text-white text-sm md:text-base mb-8 leading-relaxed max-w-xl">
-                  Collect, trade, and unlock the story! Grab FanSpark Season 1 digital sticker packs and start building your collection. Complete the full set to unlock super rare exclusive stickers and gain access to Season 1 projects, behind-the-scenes content, and surprise rewards you won't find anywhere else. Only for true fans—start your collection today!
-                </p>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10 max-w-fit text-sm px-6 h-11"
-                  disabled
-                >
-                  COMING SOON
-                  <ArrowUpRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-
-              {/* Right Content - Image */}
-              <div className="absolute right-0 top-0 bottom-0 flex items-center justify-center px-8 md:px-12" style={{ width: '40%' }}>
-                <div className="relative max-w-sm w-full transform rotate-3">
-                  <Image
-                    src="/fs-season-one-pack-00.webp"
-                    alt="FanSpark Season 1 Sticker Pack"
-                    width={600}
-                    height={600}
-                    className="w-full h-auto object-contain"
-                    priority
-                  />
-                </div>
+            {/* Right Content - Image */}
+            <div className="order-1 lg:order-2 flex-1 flex items-center justify-center p-5 sm:p-7">
+              <div className="relative w-full max-w-[180px] sm:max-w-[220px] md:max-w-[260px] lg:max-w-[200px] rotate-3 drop-shadow-2xl overflow-visible">
+                <div className="absolute -inset-4 rounded-[32px] bg-gradient-to-br from-white/15 via-transparent to-black/30 blur-3xl opacity-70" />
+                <Image
+                  src="/fs-season-one-pack-00.webp"
+                  alt="FanSpark Season 1 Sticker Pack"
+                  width={320}
+                  height={320}
+                  className="relative w-full h-auto object-contain"
+                  priority
+                />
               </div>
             </div>
           </div>

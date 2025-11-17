@@ -1205,7 +1205,7 @@ export default function HomeComponent({ collection }) {
   );
 
   return (
-    <div className="pr-6 lg:pr-8 bg-black min-h-screen">
+    <div className="pr-6 lg:pr-8 min-h-screen">
       {dataError ? (
         <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />

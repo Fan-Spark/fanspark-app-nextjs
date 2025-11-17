@@ -7,16 +7,18 @@ import {
 
 export const campaigns = [
   {
-    id: 'stellar-ardent-issue-1',
-    slug: 'stellar-ardent-issue-1-comic-book-stellar-comet',
-    name: 'Issue #1 Comic Book: Stellar Comet',
-    subtitle: 'Stellar Ardent',
-    description: 'First issue of the Stellar Ardent comic series featuring epic space adventures',
+    id: 'super-space-defenders',
+    slug: 'super-space-defenders',
+    name: 'The Stellar Collection - Series 1 The Fallen Star',
+    creator: 'Super Nifty Megacorp',
+    description: 'The Stellar Collection – Series 1 The Fallen Star is a free drop of 2,222 AI-generated digital collectible profile pictures, kickstarting the Stellar Ardent universe. Get in early before everyone else!',
     image: '/first_campaign_banner.png',
     status: 'active',
     totalItems: 3,
     mintedItems: 156,
     campaignEndDate: '2025-12-15T23:59:59Z',
+     productType: 'Digital Collectibles',
+    location: 'Los Angeles, CA',
     features: ['campaigns', 'gacha', 'battery-game', 'quests'],
     navigation: [
       { 
@@ -98,48 +100,96 @@ export const campaigns = [
   //     }
   //   ]
   // },
+  // {
+  //   id: 'the-spectre',
+  //   slug: 'the-spectre',
+  //   name: 'The Spectre',
+  //   subtitle: 'Coming Soon',
+  //   description: 'Mysterious spectre collection with dark powers',
+  //   image: '/spectre-project-bg-01.png',
+  //   status: 'coming-soon',
+  //   totalItems: 10,
+  //   mintedItems: 0,
+  //   campaignEndDate: '2025-12-31T23:59:59Z',
+  //   features: ['campaigns', 'battery-game', 'quests'],
+  //   navigation: [
+  //     { 
+  //       id: 'campaigns', 
+  //       name: 'Shadow Campaigns', 
+  //       icon: Package, 
+  //       path: '/campaigns',
+  //       description: 'Dark mysterious campaigns',
+  //       gradient: 'from-blue-500 to-purple-600'
+  //     },
+  //     { 
+  //       id: 'battery-game', 
+  //       name: 'Dark Energy', 
+  //       icon: Battery, 
+  //       path: '/battery-game',
+  //       description: 'Harness spectral energy',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     },
+  //     { 
+  //       id: 'quests', 
+  //       name: 'Shadow Quests', 
+  //       icon: Trophy, 
+  //       path: '/quests',
+  //       description: 'Journey through shadows',
+  //       gradient: 'from-red-500 to-orange-600',
+  //       status: 'coming-soon'
+  //     }
+  //   ]
+  // },
+  ,
   {
-    id: 'the-spectre',
-    slug: 'the-spectre',
-    name: 'The Spectre',
-    subtitle: 'Coming Soon',
-    description: 'Mysterious spectre collection with dark powers',
-    image: '/spectre-project-bg-01.png',
-    status: 'coming-soon',
-    totalItems: 10,
-    mintedItems: 0,
-    campaignEndDate: '2025-12-31T23:59:59Z',
-    features: ['campaigns', 'battery-game', 'quests'],
-    navigation: [
-      { 
-        id: 'campaigns', 
-        name: 'Shadow Campaigns', 
-        icon: Package, 
-        path: '/campaigns',
-        description: 'Dark mysterious campaigns',
-        gradient: 'from-blue-500 to-purple-600'
-      },
-      { 
-        id: 'battery-game', 
-        name: 'Dark Energy', 
-        icon: Battery, 
-        path: '/battery-game',
-        description: 'Harness spectral energy',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      },
-      { 
-        id: 'quests', 
-        name: 'Shadow Quests', 
-        icon: Trophy, 
-        path: '/quests',
-        description: 'Journey through shadows',
-        gradient: 'from-red-500 to-orange-600',
-        status: 'coming-soon'
-      }
-    ]
-  },
-  
+  id: 'spectre-neo-kyoto',
+  slug: 'spectre-neo-kyoto',
+  name: 'Spectre: Neo-Kyōto Rebirth – Issue #1',
+
+  description:
+    "In a dystopian cyberpunk future ruled by SYNEX, 16-year-old Joe Hoshino becomes Spectre a forbidden fusion of flesh and ancient AI and a hunted symbol of rebellion in Neo-Kyōto.",
+
+  image: '/spectre-project-bg-01.png',
+  status: 'coming-soon',
+  totalItems: 5,
+  mintedItems: 0,
+  campaignEndDate: '2025-12-10T23:59:59Z', // you can change this
+  creator: 'Unknown',
+  remainingTime: 'Coming soon',
+  productType: 'Comic Books',
+  location: 'Neo-Kyōto (Fictional)',
+
+  navigation: [
+    { 
+      id: 'campaigns',
+      name: 'Campaigns',
+      icon: Package,
+      path: '/campaigns',
+      description: 'Spectre missions and story arcs',
+      gradient: 'from-blue-500 to-purple-600'
+    },
+    { 
+      id: 'gacha',
+      name: 'Spectre Gacha',
+      icon: Star,
+      path: '/gacha',
+      description: 'Summon characters from Neo-Kyōto',
+      gradient: 'from-red-500 to-orange-600',
+      status: 'coming-soon'
+    },
+    { 
+      id: 'quests',
+      name: 'Battle Quests',
+      icon: Trophy,
+      path: '/quests',
+      description: 'Cyberpunk action missions',
+      gradient: 'from-red-500 to-orange-600',
+      status: 'coming-soon'
+    }
+  ]
+}
+,
   // {
   //   id: 'stellar-collection-series-1',
   //   slug: 'stellar-collection-series-1',
